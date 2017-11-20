@@ -45,12 +45,10 @@ func TestLexing(t *testing.T) {
 
 		if tok.Type != exp {
 			t.Errorf("(%v) expected %s, got %s\n", i, exp, tok.Type)
-			t.Fail()
 		}
 
 		if tok.Start.Filename != "test" || tok.End.Filename != "test" {
 			t.Errorf("(%v) reported wrong file name", i)
-			t.Fail()
 		}
 	}
 }
