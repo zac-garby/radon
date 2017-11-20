@@ -28,7 +28,7 @@ func prefix(indent int, name string) string {
 func Tree(node Node, indent int, name string) string {
 	val := reflect.ValueOf(node)
 
-	typeName := fmt.Sprintf("%T", node)[5:]
+	typeName := fmt.Sprintf("%T", node)
 
 	if name != "" {
 		name = fmt.Sprintf("%s (%s)", name, typeName)
@@ -43,7 +43,12 @@ func Tree(node Node, indent int, name string) string {
 	}
 
 	for i := 0; i < val.Type().NumField(); i++ {
-		field := val.Field(i).Interface()
+		f := val.Field(i)
+		if !f.CanInterface() {
+			continue
+		}
+
+		field := f.Interface()
 		label := val.Type().Field(i).Name
 
 		if label == "Value" {
