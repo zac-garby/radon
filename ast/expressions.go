@@ -1,7 +1,10 @@
 package ast
 
-import "github.com/Zac-Garby/pluto/token"
-import "reflect"
+import (
+	"reflect"
+
+	"github.com/Zac-Garby/lang/token"
+)
 
 type expr struct{}
 

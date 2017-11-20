@@ -1,6 +1,6 @@
 package ast
 
-import "go/token"
+import "github.com/Zac-Garby/lang/token"
 
 // A Node is the interface from which all syntax
 // tree nodes extend from.

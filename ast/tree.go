@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Zac-Garby/pluto/token"
+	"github.com/Zac-Garby/lang/token"
 )
 
 const treeIndent = 2
