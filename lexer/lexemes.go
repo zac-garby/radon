@@ -3,7 +3,7 @@ package lexer
 import (
 	"strings"
 
-	"github.com/Zac-Garby/pluto/token"
+	"github.com/Zac-Garby/lang/token"
 )
 
 type transformer func(token.Type, string, string) (token.Type, string, string)
@@ -59,13 +59,14 @@ var lexicalDictionary = []lexicalPair{
 	{regex: `^\w+`, handler: lexemeHandler(token.ID, 0, idTransformer)},
 
 	// Punctuation
-	{regex: `^->`, handler: lexemeHandler(token.Arrow, 0, none)},
+	{regex: `^->`, handler: lexemeHandler(token.RightArrow, 0, none)},
+	{regex: `^<-`, handler: lexemeHandler(token.LeftArrow, 0, none)},
 	{regex: `^\+=`, handler: lexemeHandler(token.PlusEquals, 0, none)},
 	{regex: `^\+`, handler: lexemeHandler(token.Plus, 0, none)},
 	{regex: `^-=`, handler: lexemeHandler(token.MinusEquals, 0, none)},
 	{regex: `^-`, handler: lexemeHandler(token.Minus, 0, none)},
-	{regex: `^\*\*=`, handler: lexemeHandler(token.ExpEquals, 0, none)},
-	{regex: `^\*\*`, handler: lexemeHandler(token.Exp, 0, none)},
+	{regex: `^\^`, handler: lexemeHandler(token.ExpEquals, 0, none)},
+	{regex: `^\^`, handler: lexemeHandler(token.Exp, 0, none)},
 	{regex: `^\*=`, handler: lexemeHandler(token.StarEquals, 0, none)},
 	{regex: `^\*`, handler: lexemeHandler(token.Star, 0, none)},
 	{regex: `^\/\/=`, handler: lexemeHandler(token.FloorDivEquals, 0, none)},

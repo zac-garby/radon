@@ -4,18 +4,16 @@ import (
 	"regexp"
 	"unicode"
 
-	"github.com/Zac-Garby/pluto/token"
+	"github.com/Zac-Garby/lang/token"
 )
 
 var lineEndings = []token.Type{
 	token.ID,
 	token.String,
-	token.Char,
 	token.Number,
 	token.True,
 	token.False,
-	token.Null,
-	token.Param,
+	token.Nil,
 	token.Break,
 	token.Next,
 	token.Return,
@@ -27,7 +25,7 @@ var lineEndings = []token.Type{
 // Lexer takes a string and returns a stream of tokens
 // The stream of tokens is in the form of a function
 // which returns the next token.
-func Lexer(str string) func() token.Token {
+func Lexer(str, file string) func() token.Token {
 	var (
 		index = 0
 		col   = 1
@@ -84,8 +82,8 @@ func Lexer(str string) func() token.Token {
 						ch <- token.Token{
 							Type:    t,
 							Literal: literal,
-							Start:   token.Position{Line: line, Column: col},
-							End:     token.Position{Line: line, Column: col + l - 1},
+							Start:   token.Position{Line: line, Column: col, Filename: file},
+							End:     token.Position{Line: line, Column: col + l - 1, Filename: file},
 						}
 
 						index += l
@@ -114,8 +112,8 @@ func Lexer(str string) func() token.Token {
 							ch <- token.Token{
 								Type:    token.Semi,
 								Literal: ";",
-								Start:   token.Position{Line: line, Column: col},
-								End:     token.Position{Line: line, Column: col},
+								Start:   token.Position{Line: line, Column: col, Filename: file},
+								End:     token.Position{Line: line, Column: col, Filename: file},
 							}
 						}
 
@@ -127,8 +125,8 @@ func Lexer(str string) func() token.Token {
 					ch <- token.Token{
 						Type:    token.Illegal,
 						Literal: string(str[index]),
-						Start:   token.Position{Line: line, Column: col},
-						End:     token.Position{Line: line, Column: col},
+						Start:   token.Position{Line: line, Column: col, Filename: file},
+						End:     token.Position{Line: line, Column: col, Filename: file},
 					}
 
 					index++
@@ -141,8 +139,8 @@ func Lexer(str string) func() token.Token {
 				ch <- token.Token{
 					Type:    token.EOF,
 					Literal: "",
-					Start:   token.Position{Line: line, Column: col},
-					End:     token.Position{Line: line, Column: col},
+					Start:   token.Position{Line: line, Column: col, Filename: file},
+					End:     token.Position{Line: line, Column: col, Filename: file},
 				}
 			}
 		}
