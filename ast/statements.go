@@ -1,38 +1,61 @@
 package ast
 
-import "github.com/Zac-Garby/pluto/token"
+import (
+	"reflect"
+
+	"github.com/Zac-Garby/pluto/token"
+)
+
+type stmt struct{}
+
+func (s stmt) Stmt() {}
+
+func (s stmt) Token() token.Token {
+	v := reflect.ValueOf(s).FieldByName("Tok")
+	if v.IsValid() {
+		return v.Interface().(token.Token)
+	}
+
+	panic("could not get token")
+}
 
 type (
 	// ExpressionStatement is an expression which acts a statement
 	ExpressionStatement struct {
+		stmt
 		Tok  token.Token
 		Expr Expression
 	}
 
 	// ReturnStatement returns an expression from a BlockStatement
 	ReturnStatement struct {
+		stmt
 		Tok   token.Token
 		Value Expression
 	}
 
 	// NextStatement goes to the next iteration of a loop
 	NextStatement struct {
+		stmt
 		Tok token.Token
 	}
 
 	// BreakStatement breaks a loop
 	BreakStatement struct {
+		stmt
 		Tok token.Token
 	}
 
 	// Loop executes Body indefinitely
 	Loop struct {
+		stmt
 		Tok  token.Token
 		Body Expression
 	}
 
 	// WhileLoop executes Body while Condition holds true
 	WhileLoop struct {
+		stmt
 		Tok       token.Token
 		Condition Expression
 		Body      Expression
@@ -41,6 +64,7 @@ type (
 	// ForLoop executes Body while Condition holds true, evaluating Increment
 	// each iteration and evaluating Init at the start
 	ForLoop struct {
+		stmt
 		Tok token.Token
 
 		// for (Init; Condition; Increment) { Body }
@@ -50,45 +74,3 @@ type (
 		Body      Expression
 	}
 )
-
-// Stmt tells the compiler this node is a statement
-func (n ExpressionStatement) Stmt() {}
-
-//Token returns this node's token
-func (n ExpressionStatement) Token() token.Token { return n.Tok }
-
-// Stmt tells the compiler this node is a statement
-func (n ReturnStatement) Stmt() {}
-
-//Token returns this node's token
-func (n ReturnStatement) Token() token.Token { return n.Tok }
-
-// Stmt tells the compiler this node is a statement
-func (n NextStatement) Stmt() {}
-
-//Token returns this node's token
-func (n NextStatement) Token() token.Token { return n.Tok }
-
-// Stmt tells the compiler this node is a statement
-func (n BreakStatement) Stmt() {}
-
-//Token returns this node's token
-func (n BreakStatement) Token() token.Token { return n.Tok }
-
-// Stmt tells the compiler this node is a statement
-func (n Loop) Stmt() {}
-
-//Token returns this node's token
-func (n Loop) Token() token.Token { return n.Tok }
-
-// Stmt tells the compiler this node is a statement
-func (n WhileLoop) Stmt() {}
-
-//Token returns this node's token
-func (n WhileLoop) Token() token.Token { return n.Tok }
-
-// Stmt tells the compiler this node is a statement
-func (n ForLoop) Stmt() {}
-
-//Token returns this node's token
-func (n ForLoop) Token() token.Token { return n.Tok }
