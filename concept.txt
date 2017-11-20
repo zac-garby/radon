@@ -102,7 +102,7 @@ print(inside) # works; prints "i'm inside"
 
 # There are loops, too:
 
-for {
+loop {
 	print("infinite")
 }
 
