@@ -65,7 +65,7 @@ var lexicalDictionary = []lexicalPair{
 	{regex: `^\+`, handler: lexemeHandler(token.Plus, 0, none)},
 	{regex: `^-=`, handler: lexemeHandler(token.MinusEquals, 0, none)},
 	{regex: `^-`, handler: lexemeHandler(token.Minus, 0, none)},
-	{regex: `^\^`, handler: lexemeHandler(token.ExpEquals, 0, none)},
+	{regex: `^\^=`, handler: lexemeHandler(token.ExpEquals, 0, none)},
 	{regex: `^\^`, handler: lexemeHandler(token.Exp, 0, none)},
 	{regex: `^\*=`, handler: lexemeHandler(token.StarEquals, 0, none)},
 	{regex: `^\*`, handler: lexemeHandler(token.Star, 0, none)},
