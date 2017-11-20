@@ -36,7 +36,7 @@ func TestLexing(t *testing.T) {
 		For, Loop, Next, Break, Match, TypeK,
 	}
 
-	next := lexer.Lexer(input, "<repl>")
+	next := lexer.Lexer(input, "test")
 
 	i := 0
 	for tok := next(); tok.Type != EOF; tok = next() {
@@ -44,7 +44,12 @@ func TestLexing(t *testing.T) {
 		i++
 
 		if tok.Type != exp {
-			t.Logf("(%v) expected %s, got %s\n", i, exp, tok.Type)
+			t.Errorf("(%v) expected %s, got %s\n", i, exp, tok.Type)
+			t.Fail()
+		}
+
+		if tok.Start.Filename != "test" || tok.End.Filename != "test" {
+			t.Errorf("(%v) reported wrong file name", i)
 			t.Fail()
 		}
 	}
