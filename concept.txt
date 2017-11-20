@@ -1,0 +1,126 @@
+# Variables can be defined with =
+a = 5
+
+# Or :=
+b := 1
+
+# = will use variables in outer scopes, := will not
+
+# If an identifier ends in a question mark, it's an optional
+# variable, i.e. can be nil. Other variables can't be nil
+c? = 2
+c = nil
+
+# error - non-optional variable assigned to nil
+a = nil
+
+# There are all the usual data types
+list = [1, 2, 3, 4, 5]
+tuple = (2, 4, 6)
+coord = map{"x": 2, "y": 10}
+nums = set{1, 2, 5, 10, 7, 25}
+str = "Hello, world!"
+nothing? = nil
+yes = true
+
+# This is a function which maps x and y to the sum of them
+f(x, y) = x + y
+
+# Functions are called like this
+f(2, 3)
+
+# Some functions return the empty tuple, because to return
+# nil they'd have to be suffixed with ?
+print("Hi") == ()
+
+# Factorial could be defined like this, using
+# a match expression, like Haskell.
+fact(x) = match x
+	0 -> 1
+	1 -> 1
+	_ -> fact(x - 2) * fact(x - 1)
+
+# Matches can also be written on a single line, but it's not
+# good practice.
+fact(x)=match x;0->1;1->1;_->fact(x-2)*fact(x-1)
+
+# A function name ending in a question mark can return nil. This
+# function will return nil if x <= 5
+do_something?(x) = if x > 5 then "yes"
+
+# There are if expressions as usual
+value = if 5 > 3 then 2 else 10
+value == 2
+
+# Leaving the 'else' off results in nil
+value = if 5 > 3 then 10
+
+# This is illegal, however, unless the variable is optional,
+# so the previous example fails. This works though:
+two? = if true then 2
+
+# The object system uses 'types'
+vector = type (x, y)
+
+# They can be constructed using the same parameters
+my_vec = vector(2, 3)
+
+# They can take optional parameters
+person = type(name, age?)
+me = person("Zac", nil)
+
+# Methods are defined like this:
+vector.add(self, other) = vector(self.x + other.x, self.y + other.y)
+
+# Which can be called like this:
+other = vector(1, -2)
+add(my_vec, other)
+
+# So far, expressions have always been a single expression. They don't have to be:
+z = match 5
+	10 -> false
+	5 -> {
+		print("Five!")
+		true
+	}
+
+# Putting braces around any amount of statements/expressions makes a new expression.
+# This can be useful in conditions:
+
+if {
+	a = 5
+	a > 2
+} then print(a)
+
+# If-expressions don't make new scopes. This is valid
+
+if true {
+	inside = "i'm inside"
+}
+
+print(inside) # works; prints "i'm inside"
+
+# There are loops, too:
+
+for {
+	print("infinite")
+}
+
+a = 0
+while a < 10 {
+	print(a)
+	a += 1
+}
+
+# Without using braces for a block of code
+for x in [1, 2, 3] print(x)
+
+# List comprehension
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+odds_squared = [n^2 | n <- numbers, n % 2 == 1]
+
+
+
+
+
+
