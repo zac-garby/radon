@@ -126,7 +126,7 @@ type (
 		expr
 		Tok                      token.Token
 		Condition                Expression
-		Consequence, Alternative Statement
+		Consequence, Alternative Expression
 	}
 
 	// A MatchBranch is a single condition -> body branch in a match expression.

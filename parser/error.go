@@ -2,10 +2,9 @@ package parser
 
 import (
 	"fmt"
-	"strings"
+	"os"
 
 	"github.com/Zac-Garby/lang/token"
-	"github.com/fatih/color"
 )
 
 // Error represents a parsing error
@@ -93,31 +92,7 @@ func (p *Parser) unexpectedTokenErr(t token.Type) {
 
 func (p *Parser) printError(index int) {
 	err := p.Errors[index]
-
-	fmt.Printf("%s → %s\t%s\n", err.Start.String(), err.End.String(), err.Message)
-}
-
-func (p *Parser) printErrorVerbose(index int) {
-	err := p.Errors[index]
-
-	fmt.Printf("in ")
-
-	var (
-		lines = strings.Split(p.text, "\n")
-		grey  = color.New(color.FgHiWhite)
-		red   = color.New(color.FgRed).Add(color.Bold)
-	)
-
-	grey.Printf("    %d| ", err.Start.Line)
-	fmt.Printf("%s\n", lines[err.Start.Line-1])
-	red.Printf(
-		"    %s %s%s\n",
-		strings.Repeat(" ", len(fmt.Sprintf("%d", err.Start.Line))),
-		strings.Repeat(" ", err.Start.Column),
-		strings.Repeat("^", err.End.Column-err.Start.Column+1),
-	)
-
-	red.Printf("%s → %s\t%s\n\n", err.Start.String(), err.End.String(), err.Message)
+	fmt.Fprintln(os.Stderr, err.Error())
 }
 
 // PrintErrors prints all parser errors in a nice format
@@ -127,10 +102,6 @@ func (p *Parser) PrintErrors() {
 	}
 
 	for i := range p.Errors {
-		if i == 0 {
-			p.printErrorVerbose(i)
-		} else {
-			p.printError(i)
-		}
+		p.printError(i)
 	}
 }

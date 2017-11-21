@@ -21,7 +21,6 @@ type Parser struct {
 	cur, peek token.Token
 	prefixes  map[token.Type]prefixParser
 	infixes   map[token.Type]infixParser
-	argTokens []token.Type
 }
 
 // New returns a new parser for the
@@ -38,12 +37,9 @@ func New(text, file string) *Parser {
 		token.Number:     p.parseNum,
 		token.True:       p.parseBool,
 		token.False:      p.parseBool,
-		token.Null:       p.parseNull,
+		token.Nil:        p.parseNil,
 		token.LeftSquare: p.parseList,
 		token.String:     p.parseString,
-		token.Char:       p.parseChar,
-		token.LessThan:   p.parseEmission,
-		token.Param:      p.parseParam,
 
 		token.Minus: p.parsePrefix,
 		token.Plus:  p.parsePrefix,
@@ -51,53 +47,39 @@ func New(text, file string) *Parser {
 
 		token.LeftParen: p.parseGroupedExpression,
 		token.If:        p.parseIfExpression,
-		token.BackSlash: p.parseFunctionCall,
-		token.LeftBrace: p.parseBlockLiteral,
+		token.LeftBrace: p.parseBlock,
 	}
 
 	p.infixes = map[token.Type]infixParser{
-		token.Plus:               p.parseInfix,
-		token.Minus:              p.parseInfix,
-		token.Star:               p.parseInfix,
-		token.Slash:              p.parseInfix,
-		token.Equal:              p.parseInfix,
-		token.NotEqual:           p.parseInfix,
-		token.LessThan:           p.parseInfix,
-		token.GreaterThan:        p.parseInfix,
-		token.Or:                 p.parseInfix,
-		token.And:                p.parseInfix,
-		token.BitOr:              p.parseInfix,
-		token.BitAnd:             p.parseInfix,
-		token.Exp:                p.parseInfix,
-		token.FloorDiv:           p.parseInfix,
-		token.Mod:                p.parseInfix,
-		token.LessThanEq:         p.parseInfix,
-		token.GreaterThanEq:      p.parseInfix,
-		token.QuestionMark:       p.parseInfix,
-		token.AndEquals:          p.parseShorthandAssignment,
-		token.BitAndEquals:       p.parseShorthandAssignment,
-		token.BitOrEquals:        p.parseShorthandAssignment,
-		token.ExpEquals:          p.parseShorthandAssignment,
-		token.FloorDivEquals:     p.parseShorthandAssignment,
-		token.MinusEquals:        p.parseShorthandAssignment,
-		token.ModEquals:          p.parseShorthandAssignment,
-		token.OrEquals:           p.parseShorthandAssignment,
-		token.PlusEquals:         p.parseShorthandAssignment,
-		token.QuestionMarkEquals: p.parseShorthandAssignment,
-		token.SlashEquals:        p.parseShorthandAssignment,
-		token.StarEquals:         p.parseShorthandAssignment,
-		token.Assign:             p.parseAssignExpression,
-		token.Dot:                p.parseDotExpression,
-		token.Colon:              p.parseQualifiedFunctionCall,
-		token.LeftSquare:         p.parseIndexExpression,
-	}
-
-	p.argTokens = []token.Type{}
-
-	for k := range p.prefixes {
-		if !isBlacklisted(k) {
-			p.argTokens = append(p.argTokens, k)
-		}
+		token.Plus:           p.parseInfix,
+		token.Minus:          p.parseInfix,
+		token.Star:           p.parseInfix,
+		token.Slash:          p.parseInfix,
+		token.Equal:          p.parseInfix,
+		token.NotEqual:       p.parseInfix,
+		token.LessThan:       p.parseInfix,
+		token.GreaterThan:    p.parseInfix,
+		token.Or:             p.parseInfix,
+		token.And:            p.parseInfix,
+		token.BitOr:          p.parseInfix,
+		token.BitAnd:         p.parseInfix,
+		token.Exp:            p.parseInfix,
+		token.FloorDiv:       p.parseInfix,
+		token.Mod:            p.parseInfix,
+		token.LessThanEq:     p.parseInfix,
+		token.GreaterThanEq:  p.parseInfix,
+		token.AndEquals:      p.parseInfix,
+		token.BitAndEquals:   p.parseInfix,
+		token.BitOrEquals:    p.parseInfix,
+		token.ExpEquals:      p.parseInfix,
+		token.FloorDivEquals: p.parseInfix,
+		token.MinusEquals:    p.parseInfix,
+		token.ModEquals:      p.parseInfix,
+		token.OrEquals:       p.parseInfix,
+		token.PlusEquals:     p.parseInfix,
+		token.SlashEquals:    p.parseInfix,
+		token.StarEquals:     p.parseInfix,
+		token.LeftSquare:     p.parseIndex,
 	}
 
 	p.next()

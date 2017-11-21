@@ -52,6 +52,8 @@ func (p *Parser) parseNum() ast.Expression {
 	}
 
 	node.Value = val
+
+	return node
 }
 
 func (p *Parser) parseBool() ast.Expression {
@@ -120,7 +122,7 @@ func (p *Parser) parseList() ast.Expression {
 		}
 	}
 
-	return &ast.Array{
+	return &ast.List{
 		Tok:      p.cur,
 		Elements: p.parseExpressionList(token.RightSquare),
 	}
@@ -160,7 +162,7 @@ func (p *Parser) parseSet() ast.Expression {
 		}
 	}
 
-	return &ast.Array{
+	return &ast.Set{
 		Tok:      p.cur,
 		Elements: p.parseExpressionList(token.RightBrace),
 	}
@@ -278,7 +280,7 @@ func (p *Parser) parseInfix(left ast.Expression) ast.Expression {
 		Left:     left,
 	}
 
-	precedence := p.cur()
+	precedence := p.curPrecedence()
 	p.next()
 	node.Right = p.parseExpression(precedence)
 
@@ -287,8 +289,8 @@ func (p *Parser) parseInfix(left ast.Expression) ast.Expression {
 
 func (p *Parser) parseIndex(left ast.Expression) ast.Expression {
 	node := &ast.IndexExpression{
-		Tok:  p.cur,
-		Left: left,
+		Tok:        p.cur,
+		Collection: left,
 	}
 
 	p.next()

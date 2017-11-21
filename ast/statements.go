@@ -61,16 +61,14 @@ type (
 		Body      Expression
 	}
 
-	// ForLoop executes Body while Condition holds true, evaluating Increment
-	// each iteration and evaluating Init at the start
+	// ForLoop executes Body for each Var in Collection.
 	ForLoop struct {
 		stmt
 		Tok token.Token
 
-		// for (Init; Condition; Increment) { Body }
-		Init      Expression
-		Condition Expression
-		Increment Expression
-		Body      Expression
+		// for (Var in Collection) { Body }
+		Var        Expression
+		Collection Expression
+		Body       Expression
 	}
 )
