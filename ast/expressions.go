@@ -69,6 +69,13 @@ type (
 		Pairs map[Expression]Expression
 	}
 
+	// Set is a set literal
+	Set struct {
+		expr
+		Tok      token.Token
+		Elements []Expression
+	}
+
 	// A Block combines multiple statements into an expression
 	Block struct {
 		expr
@@ -127,5 +134,23 @@ type (
 		Tok                      token.Token
 		Condition                Expression
 		Consequence, Alternative Statement
+	}
+
+	// A MatchExpression executes a different piece of code depending on the
+	// input value. If a condition is an identifier who's value is a single
+	// underscore, that condition always matches, so always put underscores
+	// after everything else.
+	MatchExpression struct {
+		expr
+		Tok      token.Token
+		Input    Expression
+		Branches map[Expression]Expression
+	}
+
+	// A Type expression defines a new type with the given parameters.
+	Type struct {
+		expr
+		Tok        token.Token
+		Parameters []string
 	}
 )
