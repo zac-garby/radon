@@ -41,6 +41,12 @@ type (
 		Value bool
 	}
 
+	// Nil is the nil literal
+	Nil struct {
+		expr
+		Tok token.Token
+	}
+
 	// String is a string literal
 	String struct {
 		expr
@@ -55,8 +61,8 @@ type (
 		Value []Expression
 	}
 
-	// Array is an array literal
-	Array struct {
+	// List is an list literal
+	List struct {
 		expr
 		Tok      token.Token
 		Elements []Expression
@@ -83,12 +89,6 @@ type (
 		Statements []Statement
 	}
 
-	// Nil is the nil literal
-	Nil struct {
-		expr
-		Tok token.Token
-	}
-
 	// PrefixExpression is a prefix operator expression
 	PrefixExpression struct {
 		expr
@@ -102,13 +102,6 @@ type (
 		expr
 		Tok         token.Token
 		Operator    string
-		Left, Right Expression
-	}
-
-	// A DotExpression gets a value from a container
-	DotExpression struct {
-		expr
-		Tok         token.Token
 		Left, Right Expression
 	}
 
@@ -136,6 +129,11 @@ type (
 		Consequence, Alternative Statement
 	}
 
+	// A MatchBranch is a single condition -> body branch in a match expression.
+	MatchBranch struct {
+		Condition, Body Expression
+	}
+
 	// A MatchExpression executes a different piece of code depending on the
 	// input value. If a condition is an identifier who's value is a single
 	// underscore, that condition always matches, so always put underscores
@@ -144,13 +142,13 @@ type (
 		expr
 		Tok      token.Token
 		Input    Expression
-		Branches map[Expression]Expression
+		Branches []MatchBranch
 	}
 
 	// A Type expression defines a new type with the given parameters.
 	Type struct {
 		expr
 		Tok        token.Token
-		Parameters []string
+		Parameters []Expression
 	}
 )

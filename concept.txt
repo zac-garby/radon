@@ -36,13 +36,9 @@ print("Hi") == ()
 # Factorial could be defined like this, using
 # a match expression, like Haskell.
 fact(x) = match x
-	0 -> 1
-	1 -> 1
-	_ -> fact(x - 2) * fact(x - 1)
-
-# Matches can also be written on a single line, but it's not
-# good practice.
-fact(x)=match x;0->1;1->1;_->fact(x-2)*fact(x-1)
+	if 0 -> 1
+	if 1 -> 1
+	if _ -> fact(x - 2) * fact(x - 1)
 
 # A function name ending in a question mark can return nil. This
 # function will return nil if x <= 5
@@ -78,10 +74,16 @@ add(my_vec, other)
 
 # So far, expressions have always been a single expression. They don't have to be:
 z = match 5
-	10 -> false
-	5 -> {
+	if 10 -> true
+
+	if 5 -> {
 		print("Five!")
 		true
+	}
+
+	if _ -> {
+		print("not 10 or 5 :(")
+		false
 	}
 
 # Putting braces around any amount of statements/expressions makes a new expression.
