@@ -38,16 +38,18 @@ func New(text, file string) *Parser {
 		token.True:       p.parseBool,
 		token.False:      p.parseBool,
 		token.Nil:        p.parseNil,
-		token.LeftSquare: p.parseList,
 		token.String:     p.parseString,
-
-		token.Minus: p.parsePrefix,
-		token.Plus:  p.parsePrefix,
-		token.Bang:  p.parsePrefix,
-
-		token.LeftParen: p.parseGroupedExpression,
-		token.If:        p.parseIfExpression,
-		token.LeftBrace: p.parseBlock,
+		token.LeftSquare: p.parseList,
+		token.Map:        p.parseMap,
+		token.Set:        p.parseSet,
+		token.Minus:      p.parsePrefix,
+		token.Plus:       p.parsePrefix,
+		token.Bang:       p.parsePrefix,
+		token.LeftParen:  p.parseGroupedExpression,
+		token.If:         p.parseIfExpression,
+		token.Match:      p.parseMatchExpression,
+		token.LeftBrace:  p.parseBlock,
+		token.TypeK:      p.parseType,
 	}
 
 	p.infixes = map[token.Type]infixParser{
@@ -80,6 +82,7 @@ func New(text, file string) *Parser {
 		token.SlashEquals:    p.parseInfix,
 		token.StarEquals:     p.parseInfix,
 		token.LeftSquare:     p.parseIndex,
+		token.LeftParen:      p.parseFunctionCall,
 	}
 
 	p.next()
