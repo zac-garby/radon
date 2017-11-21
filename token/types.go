@@ -189,4 +189,10 @@ const (
 
 	// TypeK is the 'type' keyword
 	TypeK = "type"
+
+	// Map is the 'map' keyword
+	Map = "map"
+
+	// Set is the 'set' keyword
+	Set = "set"
 )

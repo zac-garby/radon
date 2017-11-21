@@ -35,8 +35,11 @@ var Keywords = map[string]Type{
 	"break":  Break,
 	"match":  Match,
 	"type":   TypeK,
+	"map":    Map,
+	"set":    Set,
 }
 
+// IsKeyword checks if a token type is a keyword type.
 func IsKeyword(t Type) bool {
 	for _, k := range Keywords {
 		if t == k {
