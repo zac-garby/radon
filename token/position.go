@@ -10,5 +10,5 @@ type Position struct {
 }
 
 func (p *Position) String() string {
-	return fmt.Sprintf("%d:%d@%s", p.Line, p.Column, p.Filename)
+	return fmt.Sprintf("%s/%d:%d", p.Filename, p.Line, p.Column)
 }

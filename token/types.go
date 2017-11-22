@@ -195,4 +195,7 @@ const (
 
 	// Set is the 'set' keyword
 	Set = "set"
+
+	// Where is the 'where' keyword
+	Where = "where"
 )

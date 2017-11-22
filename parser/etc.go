@@ -17,11 +17,13 @@ const (
 	product
 	exp
 	prefix
+	call
 	index
 )
 
 var precedences = map[token.Type]int{
 	token.Assign:         assign,
+	token.Declare:        assign,
 	token.AndEquals:      assign,
 	token.BitAndEquals:   assign,
 	token.BitOrEquals:    assign,
@@ -53,4 +55,5 @@ var precedences = map[token.Type]int{
 	token.Bang:           prefix,
 	token.Dot:            index,
 	token.LeftSquare:     index,
+	token.LeftParen:      call,
 }

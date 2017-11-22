@@ -64,6 +64,7 @@ func Tree(node Node, indent int, name string) string {
 		case token.Token:
 		case Node:
 			str += "\n" + Tree(n, indent+1, label)
+
 		case map[Statement]Statement:
 			nodes := make(map[Node]Node)
 
@@ -72,6 +73,7 @@ func Tree(node Node, indent int, name string) string {
 			}
 
 			str += "\n" + makeDictTree(indent+1, nodes, label)
+
 		case map[Expression]Expression:
 			nodes := make(map[Node]Node)
 
@@ -80,6 +82,7 @@ func Tree(node Node, indent int, name string) string {
 			}
 
 			str += "\n" + makeDictTree(indent+1, nodes, label)
+
 		case []Statement:
 			var nodes []Node
 
@@ -88,6 +91,7 @@ func Tree(node Node, indent int, name string) string {
 			}
 
 			str += "\n" + makeListTree(indent+1, nodes, label)
+
 		case []Expression:
 			var nodes []Node
 
@@ -96,6 +100,24 @@ func Tree(node Node, indent int, name string) string {
 			}
 
 			str += "\n" + makeListTree(indent+1, nodes, label)
+
+		case []MatchBranch:
+			str := prefix(indent, name) + "["
+
+			if len(n) == 0 {
+				return str + "]"
+			}
+
+			for _, branch := range n {
+				str += fmt.Sprintf("%s\n%s\n%s\n",
+					in(indent),
+					Tree(branch.Condition, indent+1, "cond"),
+					Tree(branch.Body, indent+1, "body"),
+				)
+			}
+
+			return str + "\n" + in(indent) + "]"
+
 		default:
 			str += "\n" + fmt.Sprintf("%s%s", prefix(indent+1, label), fmt.Sprintf("%v", n))
 		}

@@ -16,7 +16,7 @@ func (e expr) Token() token.Token {
 		return v.Interface().(token.Token)
 	}
 
-	panic("could not get token")
+	return token.Token{}
 }
 
 type (

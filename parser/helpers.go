@@ -48,10 +48,12 @@ func (p *Parser) expectCur(ts ...token.Type) bool {
 func (p *Parser) parseExpressionList(end token.Type) []ast.Expression {
 	exprs := []ast.Expression{}
 
-	if p.curIs(end) {
+	if p.peekIs(end) {
+		p.next()
 		return exprs
 	}
 
+	p.next()
 	exprs = append(exprs, p.parseExpression(lowest))
 
 	for p.peekIs(token.Comma) {
@@ -63,6 +65,7 @@ func (p *Parser) parseExpressionList(end token.Type) []ast.Expression {
 		}
 
 		p.next()
+
 		exprs = append(exprs, p.parseExpression(lowest))
 	}
 
@@ -119,24 +122,50 @@ func (p *Parser) parsePair() (ast.Expression, ast.Expression) {
 }
 
 func (p *Parser) parseParams(end token.Type) []ast.Expression {
-	params := []ast.Expression{}
+	params := make([]ast.Expression, 0)
 
-	if p.peekIs(end) {
+	if p.peekIs(token.RightParen) {
 		p.next()
 		return params
 	}
 
-	p.next()
-	params = append(params, p.parseID())
+	if !p.expect(token.ID) {
+		return nil
+	}
+
+	id := p.parseID()
+	params = append(params, id)
 
 	for p.peekIs(token.Comma) {
 		p.next()
-		p.next()
-		params = append(params, p.parseID())
+
+		if p.peekIs(end) {
+			break
+		}
+
+		if !p.expect(token.ID) {
+			return nil
+		}
+
+		id := p.parseID()
+		params = append(params, id)
 	}
 
-	if !p.expect(end) {
+	if !p.expect(token.RightParen) {
 		return nil
+	}
+
+	for i, ida := range params {
+		for j, idb := range params {
+			if i == j {
+				continue
+			}
+
+			if ida.(*ast.Identifier).Value == idb.(*ast.Identifier).Value {
+				p.defaultErr("identical parameters not allowed")
+				return nil
+			}
+		}
 	}
 
 	return params

@@ -2,6 +2,8 @@ package token
 
 import "fmt"
 
+// A Token is a lexical token representing
+// a part of the source code.
 type Token struct {
 	Type       Type
 	Literal    string
@@ -37,6 +39,7 @@ var Keywords = map[string]Type{
 	"type":   TypeK,
 	"map":    Map,
 	"set":    Set,
+	"where":  Where,
 }
 
 // IsKeyword checks if a token type is a keyword type.

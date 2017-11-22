@@ -15,7 +15,7 @@ type Error struct {
 
 // Error returns a string representation of an Error.
 func (e Error) Error() string {
-	return fmt.Sprintf("%s:%s ~ %s", e.Start.String(), e.End.String(), e.Message)
+	return fmt.Sprintf("%s → %s ~ %s", e.Start.String(), e.End.String(), e.Message)
 }
 
 // Err creates an Error instance with the given arguments
