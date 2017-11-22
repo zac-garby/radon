@@ -83,8 +83,10 @@ func New(text, file string) *Parser {
 		token.StarEquals:     p.parseInfix,
 		token.Assign:         p.parseInfix,
 		token.Declare:        p.parseInfix,
-		token.LeftSquare:     p.parseIndex,
-		token.LeftParen:      p.parseFunctionCall,
+		token.Dot:            p.parseInfix,
+
+		token.LeftSquare: p.parseIndex,
+		token.LeftParen:  p.parseFunctionCall,
 	}
 
 	p.next()

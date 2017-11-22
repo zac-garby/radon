@@ -38,7 +38,7 @@ print("Hi") == ()
 fact(x) = match x where
 	| 0 -> 1,
 	| 1 -> 1,
-	| _ -> fact(x - 2) * fact(x - 1),
+	| _ -> fact(x - 2) * fact(x - 1)
 
 # A function name ending in a question mark can return nil. This
 # function will return nil if x <= 5
@@ -84,7 +84,7 @@ z = match 5 where
 	| _ -> {
 		print("not 10 or 5 :(")
 		false
-	},
+	}
 
 # Putting braces around any amount of statements/expressions makes a new expression.
 # This can be useful in conditions:
@@ -96,7 +96,7 @@ if {
 
 # If-expressions don't make new scopes. This is valid
 
-if true {
+if true then {
 	inside = "i'm inside"
 }
 
@@ -119,7 +119,6 @@ for (x <- [1, 2, 3]) print(x)
 
 # List comprehension
 numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-odds_squared = [n^2 | n <- numbers, n % 2 == 1]
 
 
 
