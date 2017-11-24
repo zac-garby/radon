@@ -42,10 +42,6 @@ const (
 	// to values.
 	ContainerType = "container"
 
-	// HasherType is any type which can be hashed, and therefore
-	// used as a key in a container.
-	HasherType = "hasher"
-
 	// AnyType represents any single type.
 	AnyType = "any"
 )
@@ -61,10 +57,6 @@ func is(o Object, t Type) bool {
 
 	case ContainerType:
 		_, ok := o.(Container)
-		return ok
-
-	case HasherType:
-		_, ok := o.(Hasher)
 		return ok
 
 	default:
