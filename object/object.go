@@ -26,10 +26,3 @@ type Container interface {
 	GetKey(Object) Object
 	SetKey(Object, Object)
 }
-
-// Hasher is any object which can be a key
-// in a map
-type Hasher interface {
-	Object
-	Hash() string
-}
