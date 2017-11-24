@@ -61,6 +61,48 @@ func (t *Tuple) Equals(o Object) bool {
 	return false
 }
 
+// Equals checks if two objects are equal to each other
+func (l *List) Equals(o Object) bool {
+	if other, ok := o.(*List); ok {
+		if len(other.Value) != len(l.Value) {
+			return false
+		}
+
+		for i, elem := range l.Value {
+			if !elem.Equals(other.Value[i]) {
+				return false
+			}
+		}
+
+		return true
+	}
+
+	return false
+}
+
+// Equals checks if two objects are equal to each other
+func (m *Map) Equals(o Object) bool {
+	if other, ok := o.(*Map); ok {
+		if len(other.Values) != len(m.Values) {
+			return false
+		}
+
+		for k, v := range m.Values {
+			if _, ok := other.Values[k]; !ok {
+				return false
+			}
+
+			if !v.Equals(other.Values[k]) {
+				return false
+			}
+		}
+
+		return true
+	}
+
+	return false
+}
+
 func join(arr []Object, sep string) string {
 	sarr := make([]string, len(arr))
 
@@ -74,10 +116,10 @@ func join(arr []Object, sep string) string {
 /* String() methods */
 
 // String returns the type of this object
-func (t *Tuple) String() string { return "[" + join(t.Value, ", ") + "]" }
+func (t *Tuple) String() string { return "(" + join(t.Value, ", ") + ")" }
 
 // String returns the type of this object
-func (l *List) String() string { return "(" + join(l.Value, ", ") + ")" }
+func (l *List) String() string { return "[" + join(l.Value, ", ") + "]" }
 
 // String returns the type of this object
 func (m *Map) String() string {
