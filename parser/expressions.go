@@ -131,20 +131,6 @@ func (p *Parser) parseMap() ast.Expression {
 	return node
 }
 
-func (p *Parser) parseSet() ast.Expression {
-	node := &ast.Set{
-		Tok: p.cur,
-	}
-
-	if !p.expect(token.LeftSquare) {
-		return nil
-	}
-
-	node.Elements = p.parseExpressionList(token.RightSquare)
-
-	return node
-}
-
 func (p *Parser) parseBlock() ast.Expression {
 	node := &ast.Block{
 		Tok:        p.cur,

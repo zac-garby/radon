@@ -21,9 +21,6 @@ const (
 	// TupleType is an immutable list of items, e.g. (1, 2, 3)
 	TupleType = "tuple"
 
-	// SetType is a hashed set of unique items, e.g. set[1, 2, 3]
-	SetType = "set"
-
 	// MapType is a hash map of key value mappings, e.g. map[foo: bar, x: y]
 	MapType = "map"
 

@@ -41,7 +41,6 @@ func New(text, file string) *Parser {
 		token.String:     p.parseString,
 		token.LeftSquare: p.parseList,
 		token.Map:        p.parseMap,
-		token.Set:        p.parseSet,
 		token.Minus:      p.parsePrefix,
 		token.Plus:       p.parsePrefix,
 		token.Bang:       p.parsePrefix,

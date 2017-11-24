@@ -193,9 +193,6 @@ const (
 	// Map is the 'map' keyword
 	Map = "map"
 
-	// Set is the 'set' keyword
-	Set = "set"
-
 	// Where is the 'where' keyword
 	Where = "where"
 )

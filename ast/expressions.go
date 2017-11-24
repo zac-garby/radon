@@ -75,13 +75,6 @@ type (
 		Pairs map[Expression]Expression
 	}
 
-	// Set is a set literal
-	Set struct {
-		expr
-		Tok      token.Token
-		Elements []Expression
-	}
-
 	// A Block combines multiple statements into an expression
 	Block struct {
 		expr
