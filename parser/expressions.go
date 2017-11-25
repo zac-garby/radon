@@ -184,6 +184,8 @@ func (p *Parser) parseIfExpression() ast.Expression {
 		p.next()
 
 		node.Alternative = p.parseExpression(lowest)
+	} else {
+		node.Alternative = &ast.Nil{}
 	}
 
 	return node
