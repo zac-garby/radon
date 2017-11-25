@@ -127,11 +127,11 @@ type (
 		Condition, Body Expression
 	}
 
-	// A MatchExpression executes a different piece of code depending on the
+	// A Match executes a different piece of code depending on the
 	// input value. If a condition is an identifier who's value is a single
 	// underscore, that condition always matches, so always put underscores
 	// after everything else.
-	MatchExpression struct {
+	Match struct {
 		expr
 		Tok      token.Token
 		Input    Expression

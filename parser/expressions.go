@@ -192,7 +192,7 @@ func (p *Parser) parseIfExpression() ast.Expression {
 }
 
 func (p *Parser) parseMatchExpression() ast.Expression {
-	node := &ast.MatchExpression{
+	node := &ast.Match{
 		Tok: p.cur,
 	}
 
