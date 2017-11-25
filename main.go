@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Zac-Garby/lang/compiler"
+
 	"github.com/Zac-Garby/lang/parser"
 )
 
@@ -33,13 +35,8 @@ func main() {
 			loadFile(strings.TrimPrefix(text, load))
 		}
 
-		parse := parser.New(text, "repl")
-		prog := parse.Parse()
-
-		if len(parse.Errors) > 0 {
-			parse.PrintErrors()
-		} else {
-			fmt.Println(prog.Tree())
+		if err := execute(text, "repl"); err != nil {
+			os.Stderr.WriteString(err.Error() + "\n")
 		}
 	}
 }
@@ -55,14 +52,24 @@ func loadFile(name string) error {
 		return err
 	}
 
-	parse := parser.New(string(text), name)
+	return execute(string(text), name)
+}
+
+func execute(input, filename string) error {
+	parse := parser.New(input, filename)
 	prog := parse.Parse()
 
 	if len(parse.Errors) > 0 {
 		parse.PrintErrors()
-	} else {
-		fmt.Println(prog.Tree())
+		return nil
 	}
+
+	cmp := compiler.New()
+	if err := cmp.Compile(prog); err != nil {
+		return err
+	}
+
+	fmt.Println(cmp.Bytes)
 
 	return nil
 }
