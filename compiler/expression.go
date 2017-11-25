@@ -281,7 +281,19 @@ func (c *Compiler) compileMap(node *ast.Map) error {
 }
 
 func (c *Compiler) compileFnCall(node *ast.FunctionCall) error {
-	panic("not implemented")
+	for _, arg := range node.Arguments {
+		if err := c.CompileExpression(arg); err != nil {
+			return err
+		}
+	}
+
+	if err := c.CompileExpression(node.Function); err != nil {
+		return err
+	}
+
+	c.push(bytecode.CallFn)
+
+	return nil
 }
 
 func (c *Compiler) compileIndex(node *ast.IndexExpression) error {
