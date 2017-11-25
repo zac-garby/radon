@@ -1,6 +1,7 @@
 package compiler
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 
@@ -138,6 +139,10 @@ func (c *Compiler) compileName(name string) error {
 func (c *Compiler) compileInfix(node *ast.InfixExpression) error {
 	left, right := node.Left, node.Right
 
+	if node.Operator == "=" {
+		return c.compileAssign(left, right)
+	}
+
 	if err := c.CompileExpression(left); err != nil {
 		return err
 	}
@@ -171,6 +176,63 @@ func (c *Compiler) compileInfix(node *ast.InfixExpression) error {
 	}
 
 	c.push(op)
+
+	return nil
+}
+
+func (c *Compiler) compileAssign(l, right ast.Expression) error {
+	if err := c.CompileExpression(right); err != nil {
+		return err
+	}
+
+	switch left := l.(type) {
+	case *ast.Identifier:
+		index, err := c.addName(left.Value)
+		if err != nil {
+			return err
+		}
+
+		low, high := runeToBytes(rune(index))
+		c.push(bytecode.StoreName, high, low)
+
+	case *ast.IndexExpression:
+		if err := c.CompileExpression(left.Collection); err != nil {
+			return err
+		}
+
+		if err := c.CompileExpression(left.Index); err != nil {
+			return err
+		}
+
+		c.push(bytecode.StoreField)
+
+	case *ast.InfixExpression:
+		if left.Operator != "." {
+			return fmt.Errorf("compiler: cannot assign to an infix expression with operator: %s", left.Operator)
+		}
+
+		if err := c.CompileExpression(left.Left); err != nil {
+			return err
+		}
+
+		if id, ok := left.Right.(*ast.Identifier); ok {
+			obj := &object.String{Value: id.Value}
+			index, err := c.addConst(obj)
+			if err != nil {
+				return err
+			}
+
+			low, high := runeToBytes(rune(index))
+			c.push(bytecode.LoadConst, high, low)
+		} else {
+			return errors.New("compiler: expected an identifier to the right of a dot (.)")
+		}
+
+		c.push(bytecode.StoreField)
+
+	default:
+		return errors.New("compiler: can only assign to identifiers and field access expressions")
+	}
 
 	return nil
 }
