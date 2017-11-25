@@ -53,7 +53,7 @@ var Instructions = map[byte]data{
 	LoopStart:   {Name: "START_LOOP"},
 	LoopEnd:     {Name: "END_LOOP"},
 
-	MakeArray: {Name: "MAKE_ARRAY", HasArg: true},
+	MakeList:  {Name: "MAKE_LIST", HasArg: true},
 	MakeTuple: {Name: "MAKE_TUPLE", HasArg: true},
 	MakeMap:   {Name: "MAKE_MAP", HasArg: true},
 }

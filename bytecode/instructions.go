@@ -106,8 +106,8 @@ const (
 
 // 100-109: data constructors
 const (
-	// MakeArray makes an array object from the top n items
-	MakeArray byte = iota + 100
+	// MakeList makes an array object from the top n items
+	MakeList byte = iota + 100
 
 	// MakeTuple makes a tuple from the top n items
 	MakeTuple
