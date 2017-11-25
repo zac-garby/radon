@@ -7,6 +7,8 @@ import (
 // A Function is a piece of code which can
 // be called.
 type Function struct {
+	Parameters []string
+
 	Code      bytecode.Code
 	Constants []Object
 	Names     []string

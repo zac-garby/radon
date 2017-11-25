@@ -181,12 +181,12 @@ func (c *Compiler) compileInfix(node *ast.InfixExpression) error {
 }
 
 func (c *Compiler) compileAssign(l, right ast.Expression) error {
-	if err := c.CompileExpression(right); err != nil {
-		return err
-	}
-
 	switch left := l.(type) {
 	case *ast.Identifier:
+		if err := c.CompileExpression(right); err != nil {
+			return err
+		}
+
 		index, err := c.addName(left.Value)
 		if err != nil {
 			return err
@@ -196,6 +196,10 @@ func (c *Compiler) compileAssign(l, right ast.Expression) error {
 		c.push(bytecode.StoreName, high, low)
 
 	case *ast.IndexExpression:
+		if err := c.CompileExpression(right); err != nil {
+			return err
+		}
+
 		if err := c.CompileExpression(left.Collection); err != nil {
 			return err
 		}
@@ -207,6 +211,10 @@ func (c *Compiler) compileAssign(l, right ast.Expression) error {
 		c.push(bytecode.StoreField)
 
 	case *ast.InfixExpression:
+		if err := c.CompileExpression(right); err != nil {
+			return err
+		}
+
 		if left.Operator != "." {
 			return fmt.Errorf("compiler: cannot assign to an infix expression with operator: %s", left.Operator)
 		}
@@ -229,6 +237,51 @@ func (c *Compiler) compileAssign(l, right ast.Expression) error {
 		}
 
 		c.push(bytecode.StoreField)
+
+	case *ast.FunctionCall:
+		if _, ok := left.Function.(*ast.Identifier); !ok {
+			return errors.New("compiler: cannot define a function whose name isn't an identifier")
+		}
+
+		fn := &object.Function{}
+
+		for _, arg := range left.Arguments {
+			if id, ok := arg.(*ast.Identifier); ok {
+				fn.Parameters = append(fn.Parameters, id.Value)
+			} else {
+				return errors.New("compiler: function parameters must be identifiers")
+			}
+		}
+
+		fn.OnCall = func(*object.Function) object.Object { return nil }
+
+		fnComp := New()
+		fnComp.CompileExpression(right)
+
+		code, err := bytecode.Read(fnComp.Bytes)
+		if err != nil {
+			return err
+		}
+
+		fn.Code = code
+		fn.Constants = fnComp.Constants
+		fn.Names = fnComp.Names
+
+		index, err := c.addConst(fn)
+		if err != nil {
+			return err
+		}
+
+		low, high := runeToBytes(rune(index))
+		c.push(bytecode.LoadConst, high, low)
+
+		index, err = c.addName(left.Function.(*ast.Identifier).Value)
+		if err != nil {
+			return err
+		}
+
+		low, high = runeToBytes(rune(index))
+		c.push(bytecode.StoreName, high, low)
 
 	default:
 		return errors.New("compiler: can only assign to identifiers and field access expressions")
