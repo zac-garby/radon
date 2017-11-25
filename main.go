@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Zac-Garby/lang/bytecode"
+
 	"github.com/Zac-Garby/lang/compiler"
 
 	"github.com/Zac-Garby/lang/parser"
@@ -69,7 +71,14 @@ func execute(input, filename string) error {
 		return err
 	}
 
-	fmt.Println(cmp.Bytes)
+	code, err := bytecode.Read(cmp.Bytes)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(code)
+	fmt.Println("const:", cmp.Constants)
+	fmt.Println("names:", cmp.Names)
 
 	return nil
 }
