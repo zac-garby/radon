@@ -15,7 +15,7 @@ type Function struct {
 
 	// A function to be called every time this Function
 	// is called
-	OnCall func(f *Function) Object
+	OnCall func(f *Function, args map[string]Object) (Object, error)
 }
 
 // Type returns the type of the object

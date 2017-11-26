@@ -233,7 +233,7 @@ func (c *Compiler) compileAssign(l, right ast.Expression) error {
 			}
 		}
 
-		fn.OnCall = func(*object.Function) object.Object { return nil }
+		fn.OnCall = func(*object.Function, map[string]object.Object) (object.Object, error) { return nil, nil }
 
 		fnComp := New()
 		fnComp.CompileExpression(right)

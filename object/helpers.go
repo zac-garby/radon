@@ -9,6 +9,9 @@ var (
 
 	// FalseObj is a predefined false constant
 	FalseObj = &Boolean{Value: false}
+
+	// EmptyObj is a predefined empty tuple
+	EmptyObj = &Tuple{Value: []Object{}}
 )
 
 // IsTruthy checks whether o is truthy.

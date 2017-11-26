@@ -366,6 +366,23 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 		locals.Set(param, f.stack.pop(), true)
 	}
 
+	data := map[string]object.Object{}
+
+	for key, item := range locals.Data {
+		data[key] = item.Value
+	}
+
+	result, err := fn.OnCall(fn, data)
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	if result != nil {
+		f.stack.push(result)
+		return
+	}
+
 	// Create the function's frame
 	fnFrame := &Frame{
 		code:      fn.Code,

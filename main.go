@@ -36,6 +36,7 @@ func main() {
 
 		if strings.HasPrefix(text, load) {
 			loadFile(strings.TrimPrefix(text, load))
+			continue
 		}
 
 		if err := execute(text, "repl", sto); err != nil {

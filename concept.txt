@@ -18,7 +18,6 @@ a = nil
 list = [1, 2, 3, 4, 5]
 tuple = (2, 4, 6)
 coord = map["x": 2, "y": 10]
-nums = set[1, 2, 5, 10, 7, 25]
 str = "Hello, world!"
 nothing? = nil
 yes = true

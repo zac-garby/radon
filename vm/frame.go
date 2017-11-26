@@ -70,8 +70,8 @@ func (f *Frame) getName(arg rune) (string, bool) {
 }
 
 func (f *Frame) searchName(name string) (object.Object, bool) {
-	if val, ok := f.store.Data[name]; ok {
-		return val.Value, true
+	if val, ok := f.store.Get(name); ok {
+		return val, true
 	} else if f.prev != nil {
 		return f.prev.searchName(name)
 	}
