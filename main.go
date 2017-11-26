@@ -8,10 +8,10 @@ import (
 	"strings"
 
 	"github.com/Zac-Garby/lang/bytecode"
-
 	"github.com/Zac-Garby/lang/compiler"
-
 	"github.com/Zac-Garby/lang/parser"
+	"github.com/Zac-Garby/lang/store"
+	"github.com/Zac-Garby/lang/vm"
 )
 
 const (
@@ -23,6 +23,7 @@ const (
 // The REPL
 func main() {
 	reader := bufio.NewReader(os.Stdin)
+	sto := store.New()
 
 	for {
 		fmt.Print(prompt)
@@ -37,7 +38,7 @@ func main() {
 			loadFile(strings.TrimPrefix(text, load))
 		}
 
-		if err := execute(text, "repl"); err != nil {
+		if err := execute(text, "repl", sto); err != nil {
 			os.Stderr.WriteString(err.Error() + "\n")
 		}
 	}
@@ -54,10 +55,10 @@ func loadFile(name string) error {
 		return err
 	}
 
-	return execute(string(text), name)
+	return execute(string(text), name, store.New())
 }
 
-func execute(input, filename string) error {
+func execute(input, filename string, sto *store.Store) error {
 	parse := parser.New(input, filename)
 	prog := parse.Parse()
 
@@ -76,9 +77,16 @@ func execute(input, filename string) error {
 		return err
 	}
 
-	fmt.Println(code)
-	fmt.Println("const:", cmp.Constants)
-	fmt.Println("names:", cmp.Names)
+	sto.Names = cmp.Names
+
+	v := vm.New()
+	v.Run(code, sto, cmp.Constants)
+
+	if err := v.Error(); err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(v.ExtractValue())
+	}
 
 	return nil
 }

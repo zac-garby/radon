@@ -59,12 +59,11 @@ func (f *Frame) offsetToInstructionIndex(o int) int {
 func (f *Frame) getName(arg rune) (string, bool) {
 	index := int(arg)
 
-	if index < len(f.store.Data) {
+	if index < len(f.store.Names) {
 		name := f.store.Names[index]
 		return name, true
-	} else if f.prev != nil && index < len(f.prev.store.Names) {
-		name := f.prev.store.Names[index]
-		return name, true
+	} else if f.prev != nil {
+		return f.prev.getName(arg)
 	}
 
 	return "", false

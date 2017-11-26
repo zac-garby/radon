@@ -66,7 +66,7 @@ func (vm *VM) popFrame() *Frame {
 
 func (vm *VM) runFrame(frame *Frame) {
 	vm.pushFrame(frame)
-	vm.popFrame().execute()
+	vm.frames[len(vm.frames)-1].execute()
 }
 
 // ExtractValue returns the top value from the top frame
@@ -76,4 +76,9 @@ func (vm *VM) ExtractValue() object.Object {
 	}
 
 	return vm.frames[0].stack.top()
+}
+
+// Error returns the error if one exists, or nil otherwise
+func (vm *VM) Error() error {
+	return vm.err
 }

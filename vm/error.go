@@ -9,30 +9,30 @@ type ErrType string
 
 const (
 	// ErrInternal is thrown for any internal vm problems
-	ErrInternal = "Internal"
+	ErrInternal = "internal"
 
 	// ErrUnknown is thrown when there's an error, but the vm isn't
 	// sure of what nature it is
-	ErrUnknown = "Unknown"
+	ErrUnknown = "unknown"
 
 	// ErrNoInstruction is thrown if an instruction in the bytecode
 	// isn't yet implemented
-	ErrNoInstruction = "NoInstruction"
+	ErrNoInstruction = "no_instruction"
 
 	// ErrNotFound is thrown if a name, symbol, or index isn't found
-	ErrNotFound = "NotFound"
+	ErrNotFound = "not_found"
 
 	// ErrWrongType is thrown if an object is of the wrong type to be
 	// operated on
-	ErrWrongType = "WrongType"
+	ErrWrongType = "wrong_type"
 
 	// ErrNoOp is thrown if an operator isn't defined for the given
 	// operands
-	ErrNoOp = "NoOp"
+	ErrNoOp = "no_op"
 
 	// ErrSyntax is thrown for any syntax errors which couldn't be
 	// found in the parsing stage
-	ErrSyntax = "Syntax"
+	ErrSyntax = "syntax"
 )
 
 // Error is a runtime error thrown in the virtual machine
