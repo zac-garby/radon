@@ -13,7 +13,16 @@ var (
 
 // IsTruthy checks whether o is truthy.
 func IsTruthy(o Object) bool {
-	return o != NilObj && o != FalseObj
+	switch obj := o.(type) {
+	case *Nil:
+		return false
+
+	case *Boolean:
+		return obj.Value
+
+	default:
+		return true
+	}
 }
 
 // MakeObj converts a native value to
