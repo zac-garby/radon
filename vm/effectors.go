@@ -447,6 +447,7 @@ func byteLoopStart(f *Frame, i bytecode.Instruction) {
 func byteLoopEnd(f *Frame, i bytecode.Instruction) {
 	f.breaks = f.breaks[:len(f.breaks)-1]
 	f.nexts = f.nexts[:len(f.nexts)-1]
+	f.stack.push(object.NilObj)
 }
 
 func byteMakeList(f *Frame, i bytecode.Instruction) {
