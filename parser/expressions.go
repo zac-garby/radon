@@ -227,6 +227,22 @@ func (p *Parser) parseMatchExpression() ast.Expression {
 		}
 	}
 
+	hasWildcard := false
+
+	for _, branch := range node.Branches {
+		if id, ok := branch.Condition.(*ast.Identifier); ok && id.Value == "_" {
+			hasWildcard = true
+			break
+		}
+	}
+
+	if !hasWildcard {
+		node.Branches = append(node.Branches, ast.MatchBranch{
+			Condition: &ast.Identifier{Value: "_"},
+			Body:      &ast.Nil{},
+		})
+	}
+
 	return node
 }
 
