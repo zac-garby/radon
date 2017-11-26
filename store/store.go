@@ -15,13 +15,15 @@ type Item struct {
 // A Store contains the defined variables for
 // a scope.
 type Store struct {
-	Data map[string]*Item
+	Data  map[string]*Item
+	Names []string
 }
 
 // New creates an empty store.
 func New() *Store {
 	return &Store{
-		Data: make(map[string]*Item),
+		Data:  make(map[string]*Item),
+		Names: make([]string, 16),
 	}
 }
 
@@ -34,10 +36,17 @@ func (s *Store) Contains(name string) bool {
 
 // Set defines a name in the store.
 func (s *Store) Set(name string, val object.Object, local bool) {
-	s.Data[name] = &Item{
-		Name:    name,
-		Value:   val,
-		IsLocal: local,
+	if s.Contains(name) {
+		s.Data[name].IsLocal = local
+		s.Data[name].Value = val
+	} else {
+		s.Names = append(s.Names, name)
+
+		s.Data[name] = &Item{
+			Name:    name,
+			Value:   val,
+			IsLocal: local,
+		}
 	}
 }
 
@@ -52,4 +61,15 @@ func (s *Store) Clone() *Store {
 	return &Store{
 		Data: s.Data,
 	}
+}
+
+// GetNameIndex gets the index in Names of the given name
+func (s *Store) GetNameIndex(name string) rune {
+	for i, n := range s.Names {
+		if n == name {
+			return rune(i)
+		}
+	}
+
+	panic("name not found")
 }
