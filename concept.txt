@@ -115,4 +115,16 @@ while (a < 10) {
 }
 
 # Without using braces for a block of code
-for (x <- [1, 2, 3]) print(x)
+for (x = 0; x < 5; x += 1) print(x)
+
+# Support for lower level access to the stack
+5
+pop() == 5
+
+# Can be quite useful:
+items = [1, 2, 3, 4, 5]
+
+for (i = 0; i < len(items); i += 1) items[i] * 2
+
+doubled = list(5) # Collects the top 5 items on the stack and makes them into a list
+doubled == [2, 4, 6, 8, 10]

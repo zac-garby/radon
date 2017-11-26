@@ -66,9 +66,9 @@ type (
 		stmt
 		Tok token.Token
 
-		// for (Var in Collection) { Body }
-		Var        Expression
-		Collection Expression
-		Body       Expression
+		Init      Expression
+		Condition Expression
+		Increment Expression
+		Body      Expression
 	}
 )

@@ -122,20 +122,28 @@ func (p *Parser) parseFor() ast.Statement {
 	}
 
 	p.next()
-	node.Var = p.parseExpression(lowest)
+	node.Init = p.parseExpression(lowest)
 
-	if !p.expect(token.LeftArrow) {
+	if !p.expect(token.Semi) {
 		return nil
 	}
 
 	p.next()
-	node.Collection = p.parseExpression(lowest)
+	node.Condition = p.parseExpression(lowest)
+
+	if !p.expect(token.Semi) {
+		return nil
+	}
+
+	p.next()
+	node.Increment = p.parseExpression(lowest)
 
 	if !p.expect(token.RightParen) {
 		return nil
 	}
 
 	p.next()
+
 	node.Body = p.parseExpression(lowest)
 
 	return node

@@ -112,30 +112,6 @@ func (c *Compiler) compileIdentifier(node *ast.Identifier) error {
 	return c.compileName(node.Value)
 }
 
-func (c *Compiler) addName(name string) (rune, error) {
-	for i, n := range c.Names {
-		if name == n {
-			return rune(i), nil
-		}
-	}
-
-	c.Names = append(c.Names, name)
-	index := len(c.Names) - 1
-
-	return rune(index), nil
-}
-
-func (c *Compiler) compileName(name string) error {
-	index, err := c.addName(name)
-	if err != nil {
-		return err
-	}
-
-	c.loadName(rune(index))
-
-	return nil
-}
-
 func (c *Compiler) compileInfix(node *ast.InfixExpression) error {
 	left, right := node.Left, node.Right
 
