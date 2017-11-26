@@ -119,6 +119,10 @@ func (c *Compiler) compileInfix(node *ast.InfixExpression) error {
 		return c.compileAssign(left, right)
 	}
 
+	if node.Operator == "." {
+		return c.compileDot(left, right)
+	}
+
 	if err := c.CompileExpression(left); err != nil {
 		return err
 	}
@@ -262,6 +266,27 @@ func (c *Compiler) compileAssign(l, right ast.Expression) error {
 	default:
 		return errors.New("compiler: can only assign to identifiers and field access expressions")
 	}
+
+	return nil
+}
+
+func (c *Compiler) compileDot(left, right ast.Expression) error {
+	if err := c.CompileExpression(left); err != nil {
+		return err
+	}
+
+	if id, ok := right.(*ast.Identifier); ok {
+		index, err := c.addConst(&object.String{Value: id.Value})
+		if err != nil {
+			return err
+		}
+
+		c.loadConst(index)
+	} else {
+		return errors.New("compiler: expected an identifier to the right of a dot")
+	}
+
+	c.push(bytecode.LoadField)
 
 	return nil
 }
