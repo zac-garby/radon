@@ -202,8 +202,8 @@ func (l *List) SetIndex(i int, o Object) {
 
 /* Container implementations */
 
-// Get gets an object at the given key
-func (m *Map) Get(key Object) Object {
+// GetKey gets an object at the given key
+func (m *Map) GetKey(key Object) Object {
 	if hash, err := structhash.Hash(key, 1); err == nil {
 		if val, ok := m.Values[hash]; ok {
 			return val
@@ -213,8 +213,8 @@ func (m *Map) Get(key Object) Object {
 	return NilObj
 }
 
-// Set sets an object at the given key
-func (m *Map) Set(key, value Object) {
+// SetKey sets an object at the given key
+func (m *Map) SetKey(key, value Object) {
 	if hash, err := structhash.Hash(key, 1); err == nil {
 		m.Values[hash] = value
 		m.Keys[hash] = key
