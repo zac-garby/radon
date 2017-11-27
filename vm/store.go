@@ -1,4 +1,4 @@
-package store
+package vm
 
 import (
 	"github.com/Zac-Garby/lang/object"
@@ -19,8 +19,8 @@ type Store struct {
 	Names []string
 }
 
-// New creates an empty store.
-func New() *Store {
+// NewStore creates an empty store.
+func NewStore() *Store {
 	return &Store{
 		Data:  make(map[string]*Item),
 		Names: make([]string, 16),

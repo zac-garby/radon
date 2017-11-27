@@ -3,7 +3,6 @@ package vm
 import (
 	"github.com/Zac-Garby/lang/bytecode"
 	"github.com/Zac-Garby/lang/object"
-	"github.com/Zac-Garby/lang/store"
 )
 
 // A Frame is a VM frame. One is created for every
@@ -13,7 +12,7 @@ type Frame struct {
 	code          bytecode.Code
 	offset        int
 	vm            *VM
-	store         *store.Store
+	store         *Store
 	stack         *stack
 	breaks, nexts []int
 	constants     []object.Object

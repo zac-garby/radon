@@ -3,7 +3,6 @@ package vm
 import (
 	"github.com/Zac-Garby/lang/bytecode"
 	"github.com/Zac-Garby/lang/object"
-	"github.com/Zac-Garby/lang/store"
 )
 
 // A VM interprets and executes bytecode.
@@ -25,8 +24,8 @@ func New() *VM {
 }
 
 // Run executes some bytecode in a new frame.
-func (vm *VM) Run(code bytecode.Code, s *store.Store, constants []object.Object) {
-	frame := vm.makeFrame(code, store.New(), s, constants)
+func (vm *VM) Run(code bytecode.Code, s *Store, constants []object.Object) {
+	frame := vm.makeFrame(code, NewStore(), s, constants)
 
 	vm.runFrame(frame)
 }
@@ -34,10 +33,10 @@ func (vm *VM) Run(code bytecode.Code, s *store.Store, constants []object.Object)
 // RunDefault executes some bytecode in a new frame
 // with empty globals and locals.
 func (vm *VM) RunDefault(code bytecode.Code, constants []object.Object) {
-	vm.Run(code, store.New(), constants)
+	vm.Run(code, NewStore(), constants)
 }
 
-func (vm *VM) makeFrame(code bytecode.Code, args, s *store.Store, constants []object.Object) *Frame {
+func (vm *VM) makeFrame(code bytecode.Code, args, s *Store, constants []object.Object) *Frame {
 	frame := &Frame{
 		code:      code,
 		store:     s,

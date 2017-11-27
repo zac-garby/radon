@@ -33,6 +33,10 @@ const (
 	// ErrSyntax is thrown for any syntax errors which couldn't be
 	// found in the parsing stage
 	ErrSyntax = "syntax"
+
+	// ErrRange is thrown when an index or any other thing is
+	// out of its allowed range
+	ErrRange = "range"
 )
 
 // Error is a runtime error thrown in the virtual machine

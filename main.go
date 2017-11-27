@@ -10,7 +10,6 @@ import (
 	"github.com/Zac-Garby/lang/bytecode"
 	"github.com/Zac-Garby/lang/compiler"
 	"github.com/Zac-Garby/lang/parser"
-	"github.com/Zac-Garby/lang/store"
 	"github.com/Zac-Garby/lang/vm"
 )
 
@@ -23,7 +22,7 @@ const (
 // The REPL
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-	sto := store.New()
+	sto := vm.NewStore()
 
 	for {
 		fmt.Print(prompt)
@@ -56,10 +55,10 @@ func loadFile(name string) error {
 		return err
 	}
 
-	return execute(string(text), name, store.New())
+	return execute(string(text), name, vm.NewStore())
 }
 
-func execute(input, filename string, sto *store.Store) error {
+func execute(input, filename string, sto *vm.Store) error {
 	parse := parser.New(input, filename)
 	prog := parse.Parse()
 
