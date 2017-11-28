@@ -38,6 +38,13 @@ fact(x) = match x where
 	| 0 -> 1,
 	| _ -> n * f(n - 1)
 
+# Similarly, a function to find the nth fibonacci
+# number could be defined like this.
+fib(n) = match n where
+	| 0 -> 1,
+	| 1 -> 1,
+	| _ -> fib(n - 1) + fib(n - 2)
+
 # A function name ending in a question mark can return nil. This
 # function will return nil if x <= 5
 do_something?(x) = if x > 5 then "yes"
