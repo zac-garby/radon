@@ -17,6 +17,7 @@ type Item struct {
 type Store struct {
 	Data  map[string]*Item
 	Names []string
+	Outer *Store
 }
 
 // NewStore creates an empty store.
@@ -50,11 +51,24 @@ func (s *Store) Set(name string, val object.Object, local bool) {
 	}
 }
 
+// Update defines a name in the store, but if it isn't
+// already defined in this store it checks the outer
+// store instead.
+func (s *Store) Update(name string, val object.Object) {
+	if !s.Contains(name) && s.Outer != nil {
+		s.Outer.Update(name, val)
+	}
+}
+
 // Get gets the value of a name.
 func (s *Store) Get(name string) (object.Object, bool) {
 	val, ok := s.Data[name]
 	if !ok {
-		return nil, false
+		if s.Outer == nil {
+			return nil, false
+		}
+
+		return s.Outer.Get(name)
 	}
 
 	return val.Value, true

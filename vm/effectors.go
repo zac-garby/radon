@@ -366,16 +366,17 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 		return
 	}
 
-	locals := f.store
-	locals.Names = fn.Names
+	store := NewStore()
+	store.Outer = f.store
+	store.Names = fn.Names
 
 	for _, param := range fn.Parameters {
-		locals.Set(param, f.stack.pop(), true)
+		store.Set(param, f.stack.pop(), true)
 	}
 
 	data := map[string]object.Object{}
 
-	for key, item := range locals.Data {
+	for key, item := range store.Data {
 		data[key] = item.Value
 	}
 
@@ -394,7 +395,7 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 	fnFrame := &Frame{
 		code:      fn.Code,
 		constants: fn.Constants,
-		store:     locals,
+		store:     store,
 		offset:    0,
 		prev:      f,
 		stack:     newStack(),
