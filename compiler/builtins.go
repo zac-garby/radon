@@ -1,6 +1,9 @@
 package compiler
 
-import "github.com/Zac-Garby/lang/bytecode"
+import (
+	"github.com/Zac-Garby/lang/bytecode"
+	"github.com/Zac-Garby/lang/object"
+)
 
 type builtinFn struct {
 	// The name of the function. Used to call it
@@ -22,6 +25,13 @@ var builtinFns = []*builtinFn{
 
 		compile: func(c *Compiler) error {
 			c.push(bytecode.Println)
+			index, err := c.addConst(object.EmptyObj)
+			if err != nil {
+				return err
+			}
+
+			c.loadConst(index)
+
 			return nil
 		},
 	},
@@ -32,6 +42,13 @@ var builtinFns = []*builtinFn{
 
 		compile: func(c *Compiler) error {
 			c.push(bytecode.Print)
+			index, err := c.addConst(object.EmptyObj)
+			if err != nil {
+				return err
+			}
+
+			c.loadConst(index)
+
 			return nil
 		},
 	},
