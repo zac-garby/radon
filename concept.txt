@@ -36,8 +36,7 @@ print("Hi") == ()
 # a match expression, like Haskell.
 fact(x) = match x where
 	| 0 -> 1,
-	| 1 -> 1,
-	| _ -> fact(x - 2) * fact(x - 1)
+	| _ -> n * f(n - 1)
 
 # A function name ending in a question mark can return nil. This
 # function will return nil if x <= 5
