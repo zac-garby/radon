@@ -30,10 +30,6 @@ func NewStore() *Store {
 // Contains checks if the store contains a variable
 // with the given name.
 func (s *Store) Contains(name string) bool {
-	if _, ok := Builtins[name]; ok {
-		return true
-	}
-
 	_, ok := s.Data[name]
 	return ok
 }
@@ -56,10 +52,6 @@ func (s *Store) Set(name string, val object.Object, local bool) {
 
 // Get gets the value of a name.
 func (s *Store) Get(name string) (object.Object, bool) {
-	if builtin, ok := Builtins[name]; ok {
-		return builtin, true
-	}
-
 	val, ok := s.Data[name]
 	if !ok {
 		return nil, false
