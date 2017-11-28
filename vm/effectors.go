@@ -353,9 +353,16 @@ func byteNotEqual(f *Frame, i bytecode.Instruction) {
 }
 
 func byteCall(f *Frame, i bytecode.Instruction) {
+	argCount := f.stack.pop().(*object.Number).Value
+
 	fn, ok := f.stack.pop().(*object.Function)
 	if !ok {
 		f.vm.err = Errf("cannot call non-function type: %s", ErrWrongType, fn.Type())
+		return
+	}
+
+	if argCount != float64(len(fn.Parameters)) {
+		f.vm.err = Errf("wrong amount of arguments supplied to the function. expected %v", ErrArgument, len(fn.Parameters))
 		return
 	}
 

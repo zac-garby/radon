@@ -417,7 +417,11 @@ func (c *Compiler) compileFnCall(node *ast.FunctionCall) error {
 		}
 	}
 
+	count := 0
+
 	for _, arg := range node.Arguments {
+		count++
+
 		if err := c.CompileExpression(arg); err != nil {
 			return err
 		}
@@ -427,6 +431,12 @@ func (c *Compiler) compileFnCall(node *ast.FunctionCall) error {
 		return err
 	}
 
+	index, err := c.addConst(object.MakeObj(count))
+	if err != nil {
+		return err
+	}
+
+	c.loadConst(index)
 	c.push(bytecode.CallFn)
 
 	return nil

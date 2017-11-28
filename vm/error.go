@@ -37,6 +37,10 @@ const (
 	// ErrRange is thrown when an index or any other thing is
 	// out of its allowed range
 	ErrRange = "range"
+
+	// ErrArgument is thrown when either not enough or too many
+	// arguments were passed to a function
+	ErrArgument = "argument"
 )
 
 // Error is a runtime error thrown in the virtual machine
