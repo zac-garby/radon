@@ -401,6 +401,22 @@ func (c *Compiler) compileMap(node *ast.Map) error {
 }
 
 func (c *Compiler) compileFnCall(node *ast.FunctionCall) error {
+	if id, ok := node.Function.(*ast.Identifier); ok {
+		if builtin, ok := getBuiltin(id.Value); ok {
+			if len(node.Arguments) == builtin.parameters {
+				for _, arg := range node.Arguments {
+					if err := c.CompileExpression(arg); err != nil {
+						return err
+					}
+				}
+			} else {
+				return fmt.Errorf("syntax: wrong amount of arguments to builtin function '%s'. expected %v", builtin.name, builtin.parameters)
+			}
+
+			return builtin.compile(c)
+		}
+	}
+
 	for _, arg := range node.Arguments {
 		if err := c.CompileExpression(arg); err != nil {
 			return err
