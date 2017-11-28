@@ -15,8 +15,7 @@ import (
 
 const (
 	prompt = "~ "
-
-	load = ":load "
+	load   = ":load "
 )
 
 // The REPL
