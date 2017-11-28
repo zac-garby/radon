@@ -69,9 +69,9 @@ func (vm *VM) runFrame(frame *Frame) {
 }
 
 // ExtractValue returns the top value from the top frame
-func (vm *VM) ExtractValue() object.Object {
+func (vm *VM) ExtractValue() (object.Object, error) {
 	if len(vm.frames) < 1 || len(vm.frames[0].stack.objects) < 1 {
-		return nil
+		return nil, nil
 	}
 
 	return vm.frames[0].stack.top()

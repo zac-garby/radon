@@ -101,7 +101,13 @@ func byteStoreName(f *Frame, i bytecode.Instruction) {
 		return
 	}
 
-	f.store.Update(name, f.stack.top(), true)
+	top, err := f.stack.top()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	f.store.Update(name, top, true)
 }
 
 func byteDeclareName(f *Frame, i bytecode.Instruction) {
@@ -111,11 +117,27 @@ func byteDeclareName(f *Frame, i bytecode.Instruction) {
 		return
 	}
 
-	f.store.Set(name, f.stack.top(), true)
+	top, err := f.stack.top()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	f.store.Set(name, top, true)
 }
 
 func byteLoadField(f *Frame, i bytecode.Instruction) {
-	field, obj := f.stack.pop(), f.stack.pop()
+	field, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	obj, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
 
 	var val object.Object
 
@@ -138,7 +160,23 @@ func byteLoadField(f *Frame, i bytecode.Instruction) {
 }
 
 func byteStoreField(f *Frame, i bytecode.Instruction) {
-	field, obj, val := f.stack.pop(), f.stack.pop(), f.stack.top()
+	field, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	obj, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	val, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
 
 	if col, ok := obj.(object.Collection); ok {
 		if index, ok := field.(*object.Number); ok {
@@ -157,7 +195,11 @@ func byteStoreField(f *Frame, i bytecode.Instruction) {
 }
 
 func bytePrefix(f *Frame, i bytecode.Instruction) {
-	right := f.stack.pop()
+	right, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
 
 	if i.Code == bytecode.UnaryInvert {
 		f.stack.push(object.MakeObj(!object.IsTruthy(right)))
@@ -188,7 +230,17 @@ func numPrefix(opcode byte, val float64) object.Object {
 }
 
 func byteInfix(f *Frame, i bytecode.Instruction) {
-	right, left := f.stack.pop(), f.stack.pop()
+	right, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	left, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
 
 	if n, ok := left.(*object.Number); ok {
 		if m, ok := right.(*object.Number); ok {
@@ -323,7 +375,17 @@ func colInfix(f *Frame, opcode byte, left, right object.Collection) object.Objec
 func bincmp(f *Frame, i bytecode.Instruction) {
 	f.offsetToInstructionIndex(int(i.Arg))
 
-	b, a := f.stack.pop(), f.stack.pop()
+	b, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	a, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
 
 	n, ok := a.(*object.Number)
 	if !ok {
@@ -357,23 +419,57 @@ func bincmp(f *Frame, i bytecode.Instruction) {
 }
 
 func byteEquals(f *Frame, i bytecode.Instruction) {
-	right, left := f.stack.pop(), f.stack.pop()
+	right, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	left, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
 	eq := left.Equals(right)
 
 	f.stack.push(object.MakeObj(eq))
 }
 
 func byteNotEqual(f *Frame, i bytecode.Instruction) {
-	right, left := f.stack.pop(), f.stack.pop()
+	right, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	left, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
 	eq := left.Equals(right)
 
 	f.stack.push(object.MakeObj(!eq))
 }
 
 func byteCall(f *Frame, i bytecode.Instruction) {
-	argCount := f.stack.pop().(*object.Number).Value
+	top, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
 
-	fn, ok := f.stack.pop().(*object.Function)
+	argCount := top.(*object.Number).Value
+
+	top, err = f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	fn, ok := top.(*object.Function)
 	if !ok {
 		f.vm.err = Errf("cannot call non-function type: %s", ErrWrongType, fn.Type())
 		return
@@ -389,7 +485,13 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 	store.Names = fn.Names
 
 	for _, param := range fn.Parameters {
-		store.Set(param, f.stack.pop(), true)
+		top, err = f.stack.pop()
+		if err != nil {
+			f.vm.err = err
+			return
+		}
+
+		store.Set(param, top, true)
 	}
 
 	data := map[string]object.Object{}
@@ -424,7 +526,11 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 	f.vm.runFrame(fnFrame)
 
 	if len(fnFrame.stack.objects) > 0 {
-		ret := fnFrame.stack.pop()
+		ret, err := fnFrame.stack.pop()
+		if err != nil {
+			f.vm.err = err
+			return
+		}
 
 		// Push the returned value
 		f.stack.push(ret)
@@ -440,7 +546,11 @@ func byteJump(f *Frame, i bytecode.Instruction) {
 }
 
 func byteJumpIfTrue(f *Frame, i bytecode.Instruction) {
-	obj := f.stack.pop()
+	obj, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
 
 	if object.IsTruthy(obj) {
 		f.offset = f.offsetToInstructionIndex(int(i.Arg))
@@ -448,7 +558,11 @@ func byteJumpIfTrue(f *Frame, i bytecode.Instruction) {
 }
 
 func byteJumpIfFalse(f *Frame, i bytecode.Instruction) {
-	obj := f.stack.pop()
+	obj, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
 
 	if !object.IsTruthy(obj) {
 		f.offset = f.offsetToInstructionIndex(int(i.Arg))
@@ -496,7 +610,13 @@ func byteMakeList(f *Frame, i bytecode.Instruction) {
 	elems := make([]object.Object, i.Arg)
 
 	for n := int(i.Arg) - 1; n >= 0; n-- {
-		elems[n] = f.stack.pop()
+		top, err := f.stack.pop()
+		if err != nil {
+			f.vm.err = err
+			return
+		}
+
+		elems[n] = top
 	}
 
 	f.stack.push(&object.List{
@@ -508,7 +628,13 @@ func byteMakeTuple(f *Frame, i bytecode.Instruction) {
 	elems := make([]object.Object, i.Arg)
 
 	for n := int(i.Arg) - 1; n >= 0; n-- {
-		elems[n] = f.stack.pop()
+		top, err := f.stack.pop()
+		if err != nil {
+			f.vm.err = err
+			return
+		}
+
+		elems[n] = top
 	}
 
 	f.stack.push(&object.Tuple{
@@ -521,7 +647,17 @@ func byteMakeMap(f *Frame, i bytecode.Instruction) {
 	values := make(map[string]object.Object, i.Arg)
 
 	for n := 0; n < int(i.Arg); n++ {
-		val, key := f.stack.pop(), f.stack.pop()
+		val, err := f.stack.pop()
+		if err != nil {
+			f.vm.err = err
+			return
+		}
+
+		key, err := f.stack.pop()
+		if err != nil {
+			f.vm.err = err
+			return
+		}
 
 		hash, err := structhash.Hash(key, 1)
 		if err != nil {

@@ -82,9 +82,14 @@ func execute(input, filename string, sto *vm.Store) error {
 	v.Run(code, sto, cmp.Constants)
 
 	if err := v.Error(); err != nil {
-		fmt.Println(err)
+		os.Stderr.WriteString(err.Error() + "\n")
 	} else {
-		fmt.Println(v.ExtractValue())
+		val, err := v.ExtractValue()
+		if err != nil {
+			os.Stderr.WriteString(err.Error() + "\n")
+		} else {
+			fmt.Println(val)
+		}
 	}
 
 	return nil

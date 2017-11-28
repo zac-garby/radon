@@ -41,6 +41,10 @@ const (
 	// ErrArgument is thrown when either not enough or too many
 	// arguments were passed to a function
 	ErrArgument = "argument"
+
+	// ErrStack is thrown for any stack-based errors, such as
+	// trying to pop from an empty stack
+	ErrStack = "stack"
 )
 
 // Error is a runtime error thrown in the virtual machine
