@@ -76,10 +76,6 @@ func execute(input, filename string, sto *vm.Store) error {
 		return err
 	}
 
-	// fmt.Println(code)
-	// fmt.Println("names: ", cmp.Names)
-	// fmt.Println("consts:", cmp.Constants)
-
 	sto.Names = cmp.Names
 
 	v := vm.New()
