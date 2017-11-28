@@ -40,6 +40,7 @@ const (
 	// Unary operators pop one item and do something with it
 	UnaryInvert byte = iota + 20
 	UnaryNegate
+	PushTop
 
 	// Binary operators pop two items and do something with them
 	BinaryAdd byte = iota + 25

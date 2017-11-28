@@ -31,7 +31,6 @@ var builtinFns = []*builtinFn{
 			}
 
 			c.loadConst(index)
-
 			return nil
 		},
 	},
@@ -48,7 +47,6 @@ var builtinFns = []*builtinFn{
 			}
 
 			c.loadConst(index)
-
 			return nil
 		},
 	},
@@ -59,6 +57,16 @@ var builtinFns = []*builtinFn{
 
 		compile: func(c *Compiler) error {
 			c.push(bytecode.Length)
+			return nil
+		},
+	},
+
+	&builtinFn{
+		name:       "pop",
+		parameters: 0,
+
+		compile: func(c *Compiler) error {
+			c.push(bytecode.PushTop)
 			return nil
 		},
 	},

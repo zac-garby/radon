@@ -27,6 +27,7 @@ func init() {
 
 		bytecode.UnaryInvert: bytePrefix,
 		bytecode.UnaryNegate: bytePrefix,
+		bytecode.PushTop:     bytePushTop,
 
 		bytecode.BinaryAdd:      byteInfix,
 		bytecode.BinarySubtract: byteInfix,
@@ -168,6 +169,12 @@ func bytePrefix(f *Frame, i bytecode.Instruction) {
 		f.stack.push(numPrefix(i.Code, val))
 	} else {
 		f.vm.err = Err("prefix r-value of invalid type", ErrWrongType)
+	}
+}
+
+func bytePushTop(f *Frame, i bytecode.Instruction) {
+	if len(f.stack.objects) == 0 {
+		f.stack.push(object.NilObj)
 	}
 }
 
