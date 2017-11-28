@@ -39,8 +39,8 @@ func stringTransformer(t token.Type, literal, whole string) (token.Type, string,
 }
 
 func idTransformer(t token.Type, literal, whole string) (token.Type, string, string) {
-	if t, ok := token.Keywords[literal]; ok {
-		return t, literal, whole
+	if kwType, ok := token.Keywords[literal]; ok {
+		return kwType, literal, whole
 	}
 
 	return t, literal, whole
