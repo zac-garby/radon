@@ -23,6 +23,11 @@ const (
 	// StoreName stores the top item
 	StoreName
 
+	// DeclareName is the same as StoreName, but only
+	// operates in the single enclosing scope, not the
+	// parent ones
+	DeclareName
+
 	// LoadField pops two items, essentially does second[top]
 	LoadField
 

@@ -54,9 +54,11 @@ func (s *Store) Set(name string, val object.Object, local bool) {
 // Update defines a name in the store, but if it isn't
 // already defined in this store it checks the outer
 // store instead.
-func (s *Store) Update(name string, val object.Object) {
+func (s *Store) Update(name string, val object.Object, local bool) {
 	if !s.Contains(name) && s.Outer != nil {
-		s.Outer.Update(name, val)
+		s.Outer.Update(name, val, local)
+	} else {
+		s.Set(name, val, local)
 	}
 }
 

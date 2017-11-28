@@ -18,11 +18,12 @@ func init() {
 		bytecode.Pop: bytePop,
 		bytecode.Dup: byteDup,
 
-		bytecode.LoadConst:  byteLoadConst,
-		bytecode.LoadName:   byteLoadName,
-		bytecode.StoreName:  byteStoreName,
-		bytecode.LoadField:  byteLoadField,
-		bytecode.StoreField: byteStoreField,
+		bytecode.LoadConst:   byteLoadConst,
+		bytecode.LoadName:    byteLoadName,
+		bytecode.StoreName:   byteStoreName,
+		bytecode.LoadField:   byteLoadField,
+		bytecode.DeclareName: byteDeclareName,
+		bytecode.StoreField:  byteStoreField,
 
 		bytecode.UnaryInvert: bytePrefix,
 		bytecode.UnaryNegate: bytePrefix,
@@ -93,6 +94,16 @@ func byteLoadName(f *Frame, i bytecode.Instruction) {
 }
 
 func byteStoreName(f *Frame, i bytecode.Instruction) {
+	name, ok := f.getName(i.Arg)
+	if !ok {
+		f.vm.err = Err("name not defined when storing a name", ErrInternal)
+		return
+	}
+
+	f.store.Update(name, f.stack.top(), true)
+}
+
+func byteDeclareName(f *Frame, i bytecode.Instruction) {
 	name, ok := f.getName(i.Arg)
 	if !ok {
 		f.vm.err = Err("name not defined when storing a name", ErrInternal)

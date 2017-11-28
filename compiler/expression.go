@@ -115,11 +115,15 @@ func (c *Compiler) compileIdentifier(node *ast.Identifier) error {
 func (c *Compiler) compileInfix(node *ast.InfixExpression) error {
 	left, right := node.Left, node.Right
 
-	if node.Operator == "=" {
+	// Some operators are handled differently
+	switch node.Operator {
+	case "=":
 		return c.compileAssign(left, right)
-	}
 
-	if node.Operator == "." {
+	case ":=":
+		return c.compileDeclare(left, right)
+
+	case ".":
 		return c.compileDot(left, right)
 	}
 
@@ -266,7 +270,76 @@ func (c *Compiler) compileAssign(l, right ast.Expression) error {
 		c.push(bytecode.StoreName, high, low)
 
 	default:
-		return errors.New("compiler: can only assign to identifiers and field access expressions")
+		return errors.New("compiler: can only assign to identifiers, functions and field access expressions")
+	}
+
+	return nil
+}
+
+func (c *Compiler) compileDeclare(l, right ast.Expression) error {
+	switch left := l.(type) {
+	case *ast.Identifier:
+		if err := c.CompileExpression(right); err != nil {
+			return err
+		}
+
+		index, err := c.addName(left.Value)
+		if err != nil {
+			return err
+		}
+
+		low, high := runeToBytes(rune(index))
+		c.push(bytecode.DeclareName, high, low)
+
+	case *ast.FunctionCall:
+		if _, ok := left.Function.(*ast.Identifier); !ok {
+			return errors.New("compiler: cannot define a function whose name isn't an identifier")
+		}
+
+		fn := &object.Function{}
+
+		for _, arg := range left.Arguments {
+			if id, ok := arg.(*ast.Identifier); ok {
+				fn.Parameters = append(fn.Parameters, id.Value)
+			} else {
+				return errors.New("compiler: function parameters must be identifiers")
+			}
+		}
+
+		fn.OnCall = func(f *object.Function, args map[string]object.Object) (object.Object, error) {
+			return nil, nil
+		}
+
+		fnComp := New()
+		fnComp.CompileExpression(right)
+
+		code, err := bytecode.Read(fnComp.Bytes)
+		if err != nil {
+			return err
+		}
+
+		fn.Code = code
+		fn.Constants = fnComp.Constants
+		fn.Names = fnComp.Names
+
+		index, err := c.addConst(fn)
+		if err != nil {
+			return err
+		}
+
+		low, high := runeToBytes(rune(index))
+		c.push(bytecode.LoadConst, high, low)
+
+		index, err = c.addName(left.Function.(*ast.Identifier).Value)
+		if err != nil {
+			return err
+		}
+
+		low, high = runeToBytes(rune(index))
+		c.push(bytecode.DeclareName, high, low)
+
+	default:
+		return errors.New("compiler: can only declare to functions and identifiers")
 	}
 
 	return nil
