@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	prompt = "~ "
+	prompt = "~> "
 	load   = ":load "
 )
 
