@@ -19,13 +19,12 @@ const (
 )
 
 var (
-	store *vm.Store
+	store = vm.NewStore()
 )
 
 // The REPL
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-	store := vm.NewStore()
 
 	for {
 		fmt.Print(prompt)

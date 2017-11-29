@@ -15,8 +15,9 @@ var effectors map[byte]effector
 
 func init() {
 	effectors = map[byte]effector{
-		bytecode.Pop: bytePop,
-		bytecode.Dup: byteDup,
+		bytecode.Dummy: byteDummy,
+		bytecode.Pop:   bytePop,
+		bytecode.Dup:   byteDup,
 
 		bytecode.LoadConst:   byteLoadConst,
 		bytecode.LoadName:    byteLoadName,
@@ -64,6 +65,10 @@ func init() {
 		bytecode.MakeTuple: byteMakeTuple,
 		bytecode.MakeMap:   byteMakeMap,
 	}
+}
+
+func byteDummy(f *Frame, i bytecode.Instruction) {
+	// Nothing :)
 }
 
 func bytePop(f *Frame, i bytecode.Instruction) {
