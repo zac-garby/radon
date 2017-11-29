@@ -27,10 +27,10 @@ func TestEquality(t *testing.T) {
 		m2 = &Map{Keys: make(map[string]Object), Values: make(map[string]Object)}
 	)
 
-	m1.Set(s1, n1)
+	m1.SetKey(s1, n1)
 
-	m2.Set(s1, n1)
-	m2.Set(s2, n2)
+	m2.SetKey(s1, n1)
+	m2.SetKey(s2, n2)
 
 	cases := []struct {
 		left, right Object
