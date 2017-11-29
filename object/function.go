@@ -6,7 +6,7 @@ import (
 
 // OnCall is the type of the function which a Function object
 // can call when it's called itself.
-type OnCall = func(f *Function, args map[string]Object) (Object, error)
+type OnCall func(f *Function, args map[string]Object) (Object, error)
 
 // A Function is a piece of code which can
 // be called.
