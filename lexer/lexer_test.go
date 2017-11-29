@@ -13,10 +13,12 @@ func TestLexing(t *testing.T) {
 	+-*^/ //%()<><=>={}[];==!=||&& # a comment after a line
 	| & = := , -> <- : . ! += -=#this comment touches the token
 	*= ^= /= //= %= ||= &&= |= &= #nospacesnospacesnospaces!!
-	
+
 	# keywords now :)
 	return true false nil if then else
 	while for loop next break match type
+
+	$
 	`
 
 	expected := []Type{
@@ -34,6 +36,8 @@ func TestLexing(t *testing.T) {
 
 		Return, True, False, Nil, If, Then, Else, While,
 		For, Loop, Next, Break, Match, TypeK,
+
+		Illegal,
 	}
 
 	next := lexer.Lexer(input, "test")
