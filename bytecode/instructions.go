@@ -2,8 +2,11 @@ package bytecode
 
 // 0-9: stack operations
 const (
+	// Dummy does absolutely nothing
+	Dummy byte = iota
+
 	// Pop pops the stack
-	Pop byte = iota
+	Pop
 
 	// Dup duplicates the top item, so [x, y, z] -> [x, y, z, z]
 	Dup

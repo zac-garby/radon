@@ -7,9 +7,10 @@ type data struct {
 
 // Instructions stores data about the different instruction types
 var Instructions = map[byte]data{
-	Pop: {Name: "POP"},
-	Dup: {Name: "DUP"},
-	Rot: {Name: "ROT"},
+	Dummy: {Name: "DUMMY", HasArg: true},
+	Pop:   {Name: "POP"},
+	Dup:   {Name: "DUP"},
+	Rot:   {Name: "ROT"},
 
 	LoadConst:   {Name: "LOAD_CONST", HasArg: true},
 	LoadName:    {Name: "LOAD_NAME", HasArg: true},

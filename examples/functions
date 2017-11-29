@@ -1,0 +1,4 @@
+print(add(2, 3))
+
+# Forward declared
+add(x, y) = x + y
