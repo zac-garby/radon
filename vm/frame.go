@@ -96,12 +96,6 @@ func (f *Frame) forwardDeclare() {
 			}
 
 			if next := f.code[nextIndex]; next.Code == bytecode.StoreName {
-				f.code[i].Code = bytecode.Dummy
-				f.code[i].Name = "DUMMY"
-
-				f.code[nextIndex].Code = bytecode.Dummy
-				f.code[nextIndex].Name = "DUMMY"
-
 				var (
 					name = f.store.Names[next.Arg]
 					fn   = f.constants[instr.Arg]
@@ -110,6 +104,12 @@ func (f *Frame) forwardDeclare() {
 				if fn.Type() != object.FunctionType {
 					continue
 				}
+
+				f.code[i].Code = bytecode.Dummy
+				f.code[i].Name = "DUMMY"
+
+				f.code[nextIndex].Code = bytecode.Dummy
+				f.code[nextIndex].Name = "DUMMY"
 
 				f.store.Set(name, fn, true)
 			}
