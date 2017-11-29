@@ -237,10 +237,6 @@ func (c *Compiler) compileAssign(l, right ast.Expression) error {
 			}
 		}
 
-		fn.OnCall = func(f *object.Function, args map[string]object.Object) (object.Object, error) {
-			return nil, nil
-		}
-
 		fnComp := New()
 		fnComp.CompileExpression(right)
 
@@ -304,10 +300,6 @@ func (c *Compiler) compileDeclare(l, right ast.Expression) error {
 			} else {
 				return errors.New("compiler: function parameters must be identifiers")
 			}
-		}
-
-		fn.OnCall = func(f *object.Function, args map[string]object.Object) (object.Object, error) {
-			return nil, nil
 		}
 
 		fnComp := New()
