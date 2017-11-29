@@ -18,10 +18,14 @@ const (
 	load   = ":load "
 )
 
+var (
+	store *vm.Store
+)
+
 // The REPL
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-	sto := vm.NewStore()
+	store := vm.NewStore()
 
 	for {
 		fmt.Print(prompt)
@@ -33,11 +37,14 @@ func main() {
 		text = strings.TrimRight(text, "\n")
 
 		if strings.HasPrefix(text, load) {
-			loadFile(strings.TrimPrefix(text, load))
+			if err := loadFile(strings.TrimPrefix(text, load)); err != nil {
+				os.Stderr.WriteString(err.Error() + "\n")
+			}
+
 			continue
 		}
 
-		if err := execute(text, "repl", sto); err != nil {
+		if err := execute(text, "repl", store); err != nil {
 			os.Stderr.WriteString(err.Error() + "\n")
 		}
 	}
@@ -54,7 +61,7 @@ func loadFile(name string) error {
 		return err
 	}
 
-	return execute(string(text), name, vm.NewStore())
+	return execute(string(text), name, store)
 }
 
 func execute(input, filename string, sto *vm.Store) error {
