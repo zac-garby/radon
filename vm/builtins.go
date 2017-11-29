@@ -8,11 +8,23 @@ import (
 )
 
 func bytePrint(f *Frame, i bytecode.Instruction) {
-	fmt.Print(f.stack.pop())
+	top, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	fmt.Print(top)
 }
 
 func bytePrintln(f *Frame, i bytecode.Instruction) {
-	fmt.Println(f.stack.pop())
+	top, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	fmt.Println(top)
 }
 
 func byteLength(f *Frame, i bytecode.Instruction) {
