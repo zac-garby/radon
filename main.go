@@ -68,7 +68,7 @@ func execute(input, filename string, sto *vm.Store) error {
 	prog := parse.Parse()
 
 	if len(parse.Errors) > 0 {
-		parse.PrintErrors()
+		parse.PrintErrors(os.Stderr)
 		return nil
 	}
 

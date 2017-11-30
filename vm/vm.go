@@ -1,6 +1,9 @@
 package vm
 
 import (
+	"io"
+	"os"
+
 	"github.com/Zac-Garby/lang/bytecode"
 	"github.com/Zac-Garby/lang/object"
 )
@@ -11,6 +14,7 @@ type VM struct {
 	frame     *Frame
 	returnVal object.Object
 	err       error
+	Out       io.Writer
 }
 
 // New creates a new virtual machine.
@@ -20,6 +24,7 @@ func New() *VM {
 		frame:     nil,
 		returnVal: nil,
 		err:       nil,
+		Out:       os.Stdout,
 	}
 }
 

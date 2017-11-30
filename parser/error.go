@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/Zac-Garby/lang/token"
@@ -90,18 +91,22 @@ func (p *Parser) unexpectedTokenErr(t token.Type) {
 	p.defaultErr(msg)
 }
 
-func (p *Parser) printError(index int) {
+func (p *Parser) printError(index int, w io.Writer) {
 	err := p.Errors[index]
-	fmt.Fprintln(os.Stderr, err.Error())
+	fmt.Fprintln(w, err.Error())
 }
 
 // PrintErrors prints all parser errors in a nice format
-func (p *Parser) PrintErrors() {
+func (p *Parser) PrintErrors(w io.Writer) {
+	if w == nil {
+		w = os.Stderr
+	}
+
 	if len(p.Errors) == 0 {
 		return
 	}
 
 	for i := range p.Errors {
-		p.printError(i)
+		p.printError(i, w)
 	}
 }

@@ -14,7 +14,7 @@ func bytePrint(f *Frame, i bytecode.Instruction) {
 		return
 	}
 
-	fmt.Print(top)
+	fmt.Fprint(f.vm.Out, top)
 }
 
 func bytePrintln(f *Frame, i bytecode.Instruction) {
@@ -24,7 +24,7 @@ func bytePrintln(f *Frame, i bytecode.Instruction) {
 		return
 	}
 
-	fmt.Println(top)
+	fmt.Fprintln(f.vm.Out, top)
 }
 
 func byteLength(f *Frame, i bytecode.Instruction) {
