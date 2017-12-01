@@ -93,7 +93,7 @@ func execute(input, filename string, sto *vm.Store) error {
 		val, err := v.ExtractValue()
 		if err != nil {
 			os.Stderr.WriteString(err.Error() + "\n")
-		} else {
+		} else if val != nil {
 			fmt.Println(val)
 		}
 	}
