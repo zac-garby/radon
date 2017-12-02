@@ -533,6 +533,11 @@ func callFunction(f *Frame, fn *object.Function, argCount int) {
 }
 
 func callModel(f *Frame, model *object.Model, argCount int) {
+	if argCount != len(model.Parameters) {
+		f.vm.err = Errf("wrong amount of arguments supplied to model. expected %v", ErrArgument, len(model.Parameters))
+		return
+	}
+
 	var (
 		params = model.Parameters
 		args   = make([]object.Object, len(params))
@@ -545,7 +550,7 @@ func callModel(f *Frame, model *object.Model, argCount int) {
 			return
 		}
 
-		args[i] = top
+		args[len(params)-i-1] = top
 	}
 
 	obj, err := model.Instantiate(args...)
