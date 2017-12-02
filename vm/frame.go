@@ -101,7 +101,7 @@ func (f *Frame) forwardDeclare() {
 					fn   = f.constants[instr.Arg]
 				)
 
-				if fn.Type() != object.FunctionType {
+				if !(fn.Type() == object.FunctionType || fn.Type() == object.ModelType) {
 					continue
 				}
 

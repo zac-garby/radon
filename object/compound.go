@@ -23,7 +23,13 @@ type (
 	// Keys maps the hashes to the keys they were
 	// hashed from, and Values maps the hashes to
 	// the keys' corresponding values.
+	//
+	// The Model field, if not nil, specifies the
+	// model from which the map derives. If it is
+	// nil, it doesn't have a model and just acts
+	// as a normal hash map.
 	Map struct {
+		Model  *Model
 		Keys   map[string]Object
 		Values map[string]Object
 	}

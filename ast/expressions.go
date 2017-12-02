@@ -138,8 +138,8 @@ type (
 		Branches []MatchBranch
 	}
 
-	// A Type expression defines a new type with the given parameters.
-	Type struct {
+	// A Model expression defines a new model with the given parameters.
+	Model struct {
 		expr
 		Tok        token.Token
 		Parameters []Expression

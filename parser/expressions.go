@@ -246,8 +246,8 @@ func (p *Parser) parseMatchExpression() ast.Expression {
 	return node
 }
 
-func (p *Parser) parseType() ast.Expression {
-	node := &ast.Type{
+func (p *Parser) parseModel() ast.Expression {
+	node := &ast.Model{
 		Tok: p.cur,
 	}
 

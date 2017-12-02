@@ -43,6 +43,8 @@ func (c *Compiler) CompileExpression(e ast.Expression) error {
 		return c.compileBlock(node)
 	case *ast.Match:
 		return c.compileMatch(node)
+	case *ast.Model:
+		return c.compileModel(node)
 	default:
 		return fmt.Errorf("compiler: compilation not yet implemented for %s", reflect.TypeOf(e))
 	}
@@ -268,6 +270,27 @@ func (c *Compiler) compileAssign(l, right ast.Expression) error {
 	default:
 		return errors.New("compiler: can only assign to identifiers, functions and field access expressions")
 	}
+
+	return nil
+}
+
+func (c *Compiler) compileModel(node *ast.Model) error {
+	model := &object.Model{}
+
+	for _, param := range node.Parameters {
+		if id, ok := param.(*ast.Identifier); ok {
+			model.Parameters = append(model.Parameters, id.Value)
+		} else {
+			return errors.New("compiler: all model parameters should be identifiers")
+		}
+	}
+
+	index, err := c.addConst(model)
+	if err != nil {
+		return err
+	}
+
+	c.loadConst(index)
 
 	return nil
 }
