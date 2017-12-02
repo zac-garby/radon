@@ -77,6 +77,9 @@ func MakeObj(v interface{}) Object {
 	case uint64:
 		return &Number{Value: float64(val)}
 
+	case []Object:
+		return &List{Value: val}
+
 	default:
 		return NilObj
 	}

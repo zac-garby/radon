@@ -63,8 +63,6 @@ func (f *Frame) getName(arg rune) (string, bool) {
 	if index < len(f.store.Names) {
 		name := f.store.Names[index]
 		return name, true
-	} else if f.prev != nil {
-		return f.prev.getName(arg)
 	}
 
 	return "", false
@@ -73,8 +71,6 @@ func (f *Frame) getName(arg rune) (string, bool) {
 func (f *Frame) searchName(name string) (object.Object, bool) {
 	if val, ok := f.store.Get(name); ok {
 		return val, true
-	} else if f.prev != nil {
-		return f.prev.searchName(name)
 	}
 
 	return nil, false

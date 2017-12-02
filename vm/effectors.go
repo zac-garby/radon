@@ -158,7 +158,7 @@ func byteLoadField(f *Frame, i bytecode.Instruction) {
 	} else if cont, ok := obj.(object.Container); ok {
 		val = cont.GetKey(field)
 	} else {
-		f.vm.err = Errf("cannot index type %s", ErrNotFound, obj.Type())
+		f.vm.err = Errf("cannot index type %s", ErrWrongType, obj.Type())
 	}
 
 	f.stack.push(val)
@@ -253,7 +253,7 @@ func byteInfix(f *Frame, i bytecode.Instruction) {
 		} else if m, ok := right.(object.Collection); ok {
 			f.stack.push(numColInfix(f, i.Code, n.Value, m))
 		} else {
-			f.vm.err = Err("infix r-value of invalid type when l-value is <number>", ErrWrongType)
+			f.vm.err = Err("infix r-value of invalid type when l-value is number", ErrWrongType)
 			return
 		}
 	} else if n, ok := left.(object.Collection); ok {

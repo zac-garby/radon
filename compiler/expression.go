@@ -144,7 +144,7 @@ func (c *Compiler) compileInfix(node *ast.InfixExpression) error {
 		"/":  bytecode.BinaryDivide,
 		"^":  bytecode.BinaryExponent,
 		"//": bytecode.BinaryFloorDiv,
-		"%":  bytecode.BinaryFloorDiv,
+		"%":  bytecode.BinaryMod,
 		"||": bytecode.BinaryOr,
 		"&&": bytecode.BinaryAnd,
 		"|":  bytecode.BinaryBitOr,

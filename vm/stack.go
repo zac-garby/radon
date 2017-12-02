@@ -2,8 +2,6 @@ package vm
 
 import (
 	"errors"
-	"fmt"
-	"strings"
 
 	"github.com/Zac-Garby/lang/object"
 )
@@ -48,14 +46,4 @@ func (s *stack) dup() error {
 
 	s.objects = append(s.objects, top)
 	return nil
-}
-
-func (s *stack) String() string {
-	var strs []string
-
-	for _, obj := range s.objects {
-		strs = append(strs, obj.String())
-	}
-
-	return fmt.Sprintf("[%s]", strings.Join(strs, ", "))
 }

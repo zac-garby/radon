@@ -1,6 +1,7 @@
 package vm_test
 
 import (
+	"io/ioutil"
 	"testing"
 
 	"github.com/Zac-Garby/lang/bytecode"
@@ -19,7 +20,9 @@ func TestEvaluation(t *testing.T) {
 		"5 / 5":  "1",
 		"5 ^ 2":  "25",
 		"5 // 2": "2",
-		"5 % 2":  "2",
+		"5 % 2":  "1",
+		"5 | 3":  "7",
+		"5 & 7":  "5",
 		"5 == 5": "true",
 		"5 != 5": "false",
 		"5 > 5":  "false",
@@ -63,6 +66,11 @@ func TestEvaluation(t *testing.T) {
 		"for (i = 0; i < 10; i = i + 1) i":             "10",
 		"loop { if i > 10 then { break }; i = i + 1 }": "",
 		"a = 0; while (a < 10) { next; a }":            "",
+		`for (i = 0; i < 20; i = i + 1) {
+			if i > 10 then {
+				break
+			} else i = i + 1
+		}`: "12",
 
 		`f(x, y, z) = x * y - z;
 		f(1, 2, 3)`: "5",
@@ -72,6 +80,10 @@ func TestEvaluation(t *testing.T) {
 			z - 1
 		}
 		f(1, 2)`: "2",
+
+		`a = 10
+		f() = a
+		f()`: "10",
 
 		`match 5 where
 			| 0 -> "foo",
@@ -86,6 +98,14 @@ func TestEvaluation(t *testing.T) {
 		`vec = model(x, y)
 		a = vec(2, 5)
 		a.x`: "2",
+
+		"!true":                 "false",
+		"2 * [1, 2, 3]":         "[1, 2, 3, 1, 2, 3]",
+		"[1, 2, 3] * 2":         "[1, 2, 3, 1, 2, 3]",
+		"[1, 2, 3] | [2, 3, 4]": "[1, 2, 3, 4]",
+		"[1, 2, 3] & [2, 3, 4]": "[2, 3]",
+		"[1, 2, 3] + [2, 3, 4]": "[1, 2, 3, 2, 3, 4]",
+		"[1, 2, 3] - [1, 3]":    "[2]",
 	}
 
 	for in, out := range tests {
@@ -113,7 +133,7 @@ func TestEvaluation(t *testing.T) {
 		}
 
 		store.Names = cmp.Names
-
+		vm.Out = ioutil.Discard
 		vm.Run(code, store, cmp.Constants)
 
 		result, err := vm.ExtractValue()
