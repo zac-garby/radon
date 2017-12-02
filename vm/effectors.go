@@ -1,6 +1,7 @@
 package vm
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/cnf/structhash"
@@ -61,9 +62,10 @@ func init() {
 		bytecode.LoopStart:   byteLoopStart,
 		bytecode.LoopEnd:     byteLoopEnd,
 
-		bytecode.MakeList:  byteMakeList,
-		bytecode.MakeTuple: byteMakeTuple,
-		bytecode.MakeMap:   byteMakeMap,
+		bytecode.MakeList:    byteMakeList,
+		bytecode.MakeTuple:   byteMakeTuple,
+		bytecode.MakeMap:     byteMakeMap,
+		bytecode.Instantiate: byteInstantiate,
 	}
 }
 
@@ -659,6 +661,43 @@ func byteMakeMap(f *Frame, i bytecode.Instruction) {
 	obj := &object.Map{
 		Keys:   keys,
 		Values: values,
+	}
+
+	f.stack.push(obj)
+}
+
+func byteInstantiate(f *Frame, i bytecode.Instruction) {
+	modelObj, err := f.stack.pop()
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	model, ok := modelObj.(*object.Model)
+	if !ok {
+		f.vm.err = fmt.Errorf("cannot instantiate non-model type: %s", modelObj.Type())
+		return
+	}
+
+	var (
+		params = model.Parameters
+		args   = make([]object.Object, len(params))
+	)
+
+	for i := 0; i < len(params); i++ {
+		top, popErr := f.stack.pop()
+		if err != nil {
+			f.vm.err = popErr
+			return
+		}
+
+		args[i] = top
+	}
+
+	obj, err := model.Instantiate(args...)
+	if err != nil {
+		f.vm.err = err
+		return
 	}
 
 	f.stack.push(obj)
