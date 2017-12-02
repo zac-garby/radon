@@ -1,7 +1,6 @@
 package vm
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/cnf/structhash"
@@ -62,10 +61,9 @@ func init() {
 		bytecode.LoopStart:   byteLoopStart,
 		bytecode.LoopEnd:     byteLoopEnd,
 
-		bytecode.MakeList:    byteMakeList,
-		bytecode.MakeTuple:   byteMakeTuple,
-		bytecode.MakeMap:     byteMakeMap,
-		bytecode.Instantiate: byteInstantiate,
+		bytecode.MakeList:  byteMakeList,
+		bytecode.MakeTuple: byteMakeTuple,
+		bytecode.MakeMap:   byteMakeMap,
 	}
 }
 
@@ -468,7 +466,7 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 		return
 	}
 
-	argCount := top.(*object.Number).Value
+	argCount := int(top.(*object.Number).Value)
 
 	top, err = f.stack.pop()
 	if err != nil {
@@ -476,13 +474,20 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 		return
 	}
 
-	fn, ok := top.(*object.Function)
-	if !ok {
-		f.vm.err = Errf("cannot call non-function type: %s", ErrWrongType, fn.Type())
-		return
-	}
+	switch callee := top.(type) {
+	case *object.Function:
+		callFunction(f, callee, argCount)
 
-	if argCount != float64(len(fn.Parameters)) {
+	case *object.Model:
+		callModel(f, callee, argCount)
+
+	default:
+		f.vm.err = Err("can only call functions and models", ErrWrongType)
+	}
+}
+
+func callFunction(f *Frame, fn *object.Function, argCount int) {
+	if argCount != len(fn.Parameters) {
 		f.vm.err = Errf("wrong amount of arguments supplied to the function. expected %v", ErrArgument, len(fn.Parameters))
 		return
 	}
@@ -492,7 +497,7 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 	store.Names = fn.Names
 
 	for _, param := range fn.Parameters {
-		top, err = f.stack.pop()
+		top, err := f.stack.pop()
 		if err != nil {
 			f.vm.err = err
 			return
@@ -525,6 +530,31 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 		// Push the returned value
 		f.stack.push(ret)
 	}
+}
+
+func callModel(f *Frame, model *object.Model, argCount int) {
+	var (
+		params = model.Parameters
+		args   = make([]object.Object, len(params))
+	)
+
+	for i := 0; i < len(params); i++ {
+		top, err := f.stack.pop()
+		if err != nil {
+			f.vm.err = err
+			return
+		}
+
+		args[i] = top
+	}
+
+	obj, err := model.Instantiate(args...)
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	f.stack.push(obj)
 }
 
 func byteReturn(f *Frame, i bytecode.Instruction) {
@@ -661,43 +691,6 @@ func byteMakeMap(f *Frame, i bytecode.Instruction) {
 	obj := &object.Map{
 		Keys:   keys,
 		Values: values,
-	}
-
-	f.stack.push(obj)
-}
-
-func byteInstantiate(f *Frame, i bytecode.Instruction) {
-	modelObj, err := f.stack.pop()
-	if err != nil {
-		f.vm.err = err
-		return
-	}
-
-	model, ok := modelObj.(*object.Model)
-	if !ok {
-		f.vm.err = fmt.Errorf("cannot instantiate non-model type: %s", modelObj.Type())
-		return
-	}
-
-	var (
-		params = model.Parameters
-		args   = make([]object.Object, len(params))
-	)
-
-	for i := 0; i < len(params); i++ {
-		top, popErr := f.stack.pop()
-		if err != nil {
-			f.vm.err = popErr
-			return
-		}
-
-		args[i] = top
-	}
-
-	obj, err := model.Instantiate(args...)
-	if err != nil {
-		f.vm.err = err
-		return
 	}
 
 	f.stack.push(obj)
