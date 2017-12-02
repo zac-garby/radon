@@ -24,7 +24,9 @@ func (m *Model) Debug() string { return "<model>" }
 // for the model.
 func (m *Model) Instantiate(args ...Object) (Object, error) {
 	result := &Map{
-		Model: m,
+		Model:  m,
+		Keys:   make(map[string]Object),
+		Values: make(map[string]Object),
 	}
 
 	if len(args) != len(m.Parameters) {
