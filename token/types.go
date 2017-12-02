@@ -187,8 +187,8 @@ const (
 	// Match is the 'match' keyword
 	Match = "match"
 
-	// TypeK is the 'type' keyword
-	TypeK = "type"
+	// Model is the 'model' keyword
+	Model = "model"
 
 	// Map is the 'map' keyword
 	Map = "map"
