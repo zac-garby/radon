@@ -48,7 +48,7 @@ func New(text, file string) *Parser {
 		token.If:         p.parseIfExpression,
 		token.Match:      p.parseMatchExpression,
 		token.LeftBrace:  p.parseBlock,
-		token.TypeK:      p.parseType,
+		token.Model:      p.parseModel,
 	}
 
 	p.infixes = map[token.Type]infixParser{
