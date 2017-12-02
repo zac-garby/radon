@@ -30,6 +30,9 @@ const (
 	// FunctionType is a callable function, e.g. f(x, y) = x + y
 	FunctionType = "function"
 
+	// ModelType is a model which maps can be instantiated from
+	ModelType = "model"
+
 	// CollectionType is an abstract, non-concrete type, which represents
 	// any type which can be thought of as a series of items.
 	CollectionType = "collection"
