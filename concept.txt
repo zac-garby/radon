@@ -60,14 +60,14 @@ value = if 5 > 3 then 10
 # so the previous example fails. This works though:
 two? = if true then 2
 
-# The object system uses 'types'
-vector = type (x, y)
+# The object system uses 'models'
+vector = model(x, y)
 
 # They can be constructed using the same parameters
 my_vec = vector(2, 3)
 
 # They can take optional parameters
-person = type(name, age?)
+person = model(name, age?)
 me = person("Zac", nil)
 
 # Methods are defined like this:
