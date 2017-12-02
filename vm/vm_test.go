@@ -82,6 +82,10 @@ func TestEvaluation(t *testing.T) {
 		`print("print :)")`: "()",
 		`echo("echo'd")`:    "()",
 		"len([1, 2, 3])":    "3",
+
+		`vec = model(x, y)
+		a = vec(2, 5)
+		a.x`: "2",
 	}
 
 	for in, out := range tests {
