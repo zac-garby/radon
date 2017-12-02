@@ -43,7 +43,7 @@ func main() {
 			continue
 		}
 
-		if err := execute(text, "repl", store); err != nil {
+		if err := execute(text, "repl", true, store); err != nil {
 			os.Stderr.WriteString(err.Error() + "\n")
 		}
 	}
@@ -60,10 +60,10 @@ func loadFile(name string) error {
 		return err
 	}
 
-	return execute(string(text), name, store)
+	return execute(string(text), name, false, store)
 }
 
-func execute(input, filename string, sto *vm.Store) error {
+func execute(input, filename string, print bool, sto *vm.Store) error {
 	parse := parser.New(input, filename)
 	prog := parse.Parse()
 
@@ -93,7 +93,7 @@ func execute(input, filename string, sto *vm.Store) error {
 		val, err := v.ExtractValue()
 		if err != nil {
 			os.Stderr.WriteString(err.Error() + "\n")
-		} else if val != nil {
+		} else if val != nil && print {
 			fmt.Println(val)
 		}
 	}
