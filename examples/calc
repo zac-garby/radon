@@ -1,0 +1,15 @@
+calc(input) = {
+    result = 0
+
+    for (i = 0; i < len(input); i = i + 1) {
+        match input[i] where
+            | "+" -> result = result + 1,
+            | "-" -> result = result - 1,
+            | "*" -> result = result * 2,
+            | "/" -> result = result / 2
+    }
+
+    result
+}
+
+print(calc("++*++/"))
