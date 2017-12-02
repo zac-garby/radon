@@ -275,7 +275,9 @@ func (c *Compiler) compileAssign(l, right ast.Expression) error {
 }
 
 func (c *Compiler) compileModel(node *ast.Model) error {
-	model := &object.Model{}
+	model := &object.Model{
+		Store: make(map[string]object.Object),
+	}
 
 	for _, param := range node.Parameters {
 		if id, ok := param.(*ast.Identifier); ok {
