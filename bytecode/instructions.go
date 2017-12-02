@@ -124,4 +124,9 @@ const (
 	// MakeMap makes a map from the top n * 2 items.
 	// The top n*2 items should be in key, val, ..., key, val order
 	MakeMap
+
+	// Instantiate instantiates a model where the top item in
+	// the stack is a Model and there are n items afterwards,
+	// where n is the number of parameters on the model.
+	Instantiate
 )
