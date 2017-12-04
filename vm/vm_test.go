@@ -99,6 +99,17 @@ func TestEvaluation(t *testing.T) {
 		a = vec(2, 5)
 		a.x`: "2",
 
+		`vec = model(x, y)
+		f(s) = {
+			self.x = self.x * s
+			self.y = self.y * s
+			self
+		}
+		vec.scale = f
+		a = vec(3, 2)
+		a.scale(2)
+		a.x + a.y`: "10",
+
 		"!true":                 "false",
 		"2 * [1, 2, 3]":         "[1, 2, 3, 1, 2, 3]",
 		"[1, 2, 3] * 2":         "[1, 2, 3, 1, 2, 3]",

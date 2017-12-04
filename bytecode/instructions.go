@@ -71,6 +71,12 @@ const (
 	// popping arguments as necessary
 	CallFn byte = iota + 50
 
+	// CallMethod calls the function at the top of the stack.
+	// The second item in the stack is assumed to be the
+	// caller (map) and the next n items are the arguments,
+	// where n is the instructions' argument.
+	CallMethod
+
 	// Return skips to the end of the context
 	Return
 )

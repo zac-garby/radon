@@ -225,10 +225,6 @@ func (c *Compiler) compileAssign(l, right ast.Expression) error {
 		c.push(bytecode.StoreField)
 
 	case *ast.FunctionCall:
-		if _, ok := left.Function.(*ast.Identifier); !ok {
-			return errors.New("compiler: cannot define a function whose name isn't an identifier")
-		}
-
 		fn := &object.Function{}
 
 		for _, arg := range left.Arguments {
@@ -256,16 +252,45 @@ func (c *Compiler) compileAssign(l, right ast.Expression) error {
 			return err
 		}
 
-		low, high := runeToBytes(rune(index))
-		c.push(bytecode.LoadConst, high, low)
+		c.loadConst(index)
 
-		index, err = c.addName(left.Function.(*ast.Identifier).Value)
-		if err != nil {
-			return err
+		switch name := left.Function.(type) {
+		case *ast.Identifier:
+			index, err = c.addName(name.Value)
+			if err != nil {
+				return err
+			}
+
+			low, high := runeToBytes(rune(index))
+			c.push(bytecode.StoreName, high, low)
+
+		case *ast.InfixExpression:
+			if name.Operator != "." {
+				return errors.New("compiler: can only define functions as identifiers or methods")
+			}
+
+			if err := c.CompileExpression(name.Left); err != nil {
+				return err
+			}
+
+			if id, ok := name.Right.(*ast.Identifier); ok {
+				obj := &object.String{Value: id.Value}
+				index, err := c.addConst(obj)
+				if err != nil {
+					return err
+				}
+
+				low, high := runeToBytes(rune(index))
+				c.push(bytecode.LoadConst, high, low)
+			} else {
+				return errors.New("compiler: expected an identifier to the right of a dot (.)")
+			}
+
+			c.push(bytecode.StoreField)
+
+		default:
+			return errors.New("compiler: can only define functions as identifiers or methods")
 		}
-
-		low, high = runeToBytes(rune(index))
-		c.push(bytecode.StoreName, high, low)
 
 	default:
 		return errors.New("compiler: can only assign to identifiers, functions and field access expressions")
@@ -275,7 +300,9 @@ func (c *Compiler) compileAssign(l, right ast.Expression) error {
 }
 
 func (c *Compiler) compileModel(node *ast.Model) error {
-	model := &object.Model{}
+	model := &object.Model{
+		Store: make(map[string]object.Object),
+	}
 
 	for _, param := range node.Parameters {
 		if id, ok := param.(*ast.Identifier); ok {
@@ -521,13 +548,8 @@ func (c *Compiler) compileFnCall(node *ast.FunctionCall) error {
 		return err
 	}
 
-	index, err := c.addConst(object.MakeObj(count))
-	if err != nil {
-		return err
-	}
-
-	c.loadConst(index)
-	c.push(bytecode.CallFn)
+	low, high := runeToBytes(rune(count))
+	c.push(bytecode.CallFn, high, low)
 
 	return nil
 }

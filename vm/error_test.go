@@ -91,6 +91,11 @@ func TestErrors(t *testing.T) {
 			msg: "wrong amount of arguments supplied to the function. expected 0",
 		},
 
+		"f() = { break }; f()": {
+			t:   ErrSyntax,
+			msg: "break statement found outside loop",
+		},
+
 		"m = model(x, y); m(1)": {
 			t:   ErrArgument,
 			msg: "wrong amount of arguments supplied to the function. expected 2",

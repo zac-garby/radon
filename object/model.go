@@ -1,11 +1,14 @@
 package object
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // A Model is a user-defined type, similar to
 // a struct in Go.
 type Model struct {
 	Parameters []string
+	Store      map[string]Object
 }
 
 // Type returns the type of this object
@@ -43,4 +46,24 @@ func (m *Model) Instantiate(args ...Object) (Object, error) {
 	}
 
 	return result, nil
+}
+
+// GetKey gets a field, usually a method, from the model
+func (m *Model) GetKey(name Object) Object {
+	id, ok := name.(*String)
+	if !ok {
+		return NilObj
+	}
+
+	return m.Store[id.Value]
+}
+
+// SetKey sets a field, usually a method, in the model
+func (m *Model) SetKey(name, value Object) {
+	id, ok := name.(*String)
+	if !ok {
+		return
+	}
+
+	m.Store[id.Value] = value
 }

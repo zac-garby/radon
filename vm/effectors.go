@@ -466,17 +466,14 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 		return
 	}
 
-	argCount := int(top.(*object.Number).Value)
-
-	top, err = f.stack.pop()
-	if err != nil {
-		f.vm.err = err
-		return
-	}
+	argCount := int(i.Arg)
 
 	switch callee := top.(type) {
 	case *object.Function:
 		callFunction(f, callee, argCount)
+
+	case *object.Method:
+		callMethod(f, callee, argCount)
 
 	case *object.Model:
 		callModel(f, callee, argCount)
@@ -488,7 +485,7 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 
 func callFunction(f *Frame, fn *object.Function, argCount int) {
 	if argCount != len(fn.Parameters) {
-		f.vm.err = Errf("wrong amount of arguments supplied to the function. expected %v", ErrArgument, len(fn.Parameters))
+		f.vm.err = Errf("wrong amount of arguments supplied to the function. expected %v, got %v", ErrArgument, len(fn.Parameters), argCount)
 		return
 	}
 
@@ -528,6 +525,52 @@ func callFunction(f *Frame, fn *object.Function, argCount int) {
 		}
 
 		// Push the returned value
+		f.stack.push(ret)
+	}
+}
+
+func callMethod(f *Frame, meth *object.Method, argCount int) {
+	if argCount != len(meth.Parameters) {
+		f.vm.err = Errf("wrong amount of arguments supplied to function. expected %v, got %v", ErrArgument, len(meth.Parameters), argCount)
+		return
+	}
+
+	store := NewStore()
+	store.Outer = f.store
+	store.Names = meth.Names
+
+	for _, param := range meth.Parameters {
+		top, err := f.stack.pop()
+		if err != nil {
+			f.vm.err = err
+			return
+		}
+
+		store.Set(param, top, true)
+	}
+
+	store.Set("self", meth.Map, true)
+
+	// Create the Frame
+	frame := &Frame{
+		code:      meth.Code,
+		constants: meth.Constants,
+		store:     store,
+		offset:    0,
+		prev:      f,
+		stack:     newStack(),
+		vm:        f.vm,
+	}
+
+	f.vm.runFrame(frame)
+
+	if len(frame.stack.objects) > 0 {
+		ret, err := frame.stack.pop()
+		if err != nil {
+			f.vm.err = err
+			return
+		}
+
 		f.stack.push(ret)
 	}
 }

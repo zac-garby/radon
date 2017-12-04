@@ -1,6 +1,11 @@
 vec = model(x, y)
 a = vec(3, -2)
 
+vec.scale (x, y) = {
+    self.x = self.x * x
+    self.y = self.y * y
+}
+
 print(a) # [x: 3, y: -2]
 
 a == map['x': 3, 'y': -2] # true
