@@ -1,12 +1,10 @@
 vec = model(x, y)
 a = vec(3, -2)
 
-f(x, y) = {
+vec.scale (x, y) = {
     self.x = self.x * x
     self.y = self.y * y
 }
-
-vec.scale = f
 
 print(a) # [x: 3, y: -2]
 
