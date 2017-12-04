@@ -30,6 +30,9 @@ const (
 	// FunctionType is a callable function, e.g. f(x, y) = x + y
 	FunctionType = "function"
 
+	// MethodType is a function bound to a map
+	MethodType = "method"
+
 	// ModelType is a model which maps can be instantiated from
 	ModelType = "model"
 

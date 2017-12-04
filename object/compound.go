@@ -216,7 +216,18 @@ func (m *Map) GetKey(key Object) Object {
 		}
 	}
 
-	return NilObj
+	super := m.Model.GetKey(key)
+	fn, ok := super.(*Function)
+	if !ok {
+		return super
+	}
+
+	method := &Method{
+		Function: fn,
+		Map:      m,
+	}
+
+	return method
 }
 
 // SetKey sets an object at the given key

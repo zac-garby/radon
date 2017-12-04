@@ -523,13 +523,8 @@ func (c *Compiler) compileFnCall(node *ast.FunctionCall) error {
 		return err
 	}
 
-	index, err := c.addConst(object.MakeObj(count))
-	if err != nil {
-		return err
-	}
-
-	c.loadConst(index)
-	c.push(bytecode.CallFn)
+	low, high := runeToBytes(rune(count))
+	c.push(bytecode.CallFn, high, low)
 
 	return nil
 }

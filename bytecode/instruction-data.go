@@ -40,7 +40,7 @@ var Instructions = map[byte]data{
 	BinaryLessEq:   {Name: "BINARY_LESS_EQ"},
 	BinaryMoreEq:   {Name: "BINARY_MORE_EQ"},
 
-	CallFn: {Name: "CALL_FN"},
+	CallFn: {Name: "CALL_FN", HasArg: true},
 	Return: {Name: "RETURN_FN"},
 
 	Print:   {Name: "PRINT"},
