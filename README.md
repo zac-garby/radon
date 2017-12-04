@@ -77,5 +77,5 @@ list(3)     # [1, 2, 3]
      imported file directly into the importing file's AST.
    - Global package store
      - Some directory
-     - `import "pkg/package-name"` imports the directory relative to the global store
+     - `package "package-name"` imports the directory relative to the global store
      - Bash command to import packages from GitHub by username and repo
