@@ -41,7 +41,7 @@ func (m *Model) Instantiate(args ...Object) (Object, error) {
 	}
 
 	for i, arg := range args {
-		name := &String{m.Parameters[i]}
+		name := &String{Value: m.Parameters[i]}
 		result.SetKey(name, arg)
 	}
 
