@@ -151,13 +151,28 @@ func byteLoadField(f *Frame, i bytecode.Instruction) {
 			idx := int(index.Value)
 
 			val = col.GetIndex(idx)
-		} else {
-			f.vm.err = Errf("non-numeric type %s used to index a collection", ErrWrongType, field.Type())
-			return
 		}
-	} else if cont, ok := obj.(object.Container); ok {
+	}
+
+	if cont, ok := obj.(object.Container); ok && val == nil {
 		val = cont.GetKey(field)
-	} else {
+	}
+
+	if meth, ok := obj.(object.Methoder); ok && val == nil {
+		name, ok := field.(*object.String)
+		if !ok {
+			val = object.NilObj
+		} else {
+			builtin, ok := meth.GetMethod(name.Value)
+			if !ok {
+				val = object.NilObj
+			} else {
+				val = builtin
+			}
+		}
+	}
+
+	if val == nil {
 		f.vm.err = Errf("cannot index type %s", ErrWrongType, obj.Type())
 	}
 
