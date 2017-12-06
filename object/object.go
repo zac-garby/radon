@@ -27,6 +27,9 @@ type Container interface {
 	SetKey(Object, Object)
 }
 
-// A BuiltinMethod is a method which is called on
-// a builtin type, for example "hello world".split(" ")
-type BuiltinMethod func(caller Object, args ...Object) (Object, error)
+// Methoder is any object which has methods.
+// Methods are accesses using the dot operator.
+type Methoder interface {
+	Object
+	GetMethod(name string) (*Builtin, bool)
+}

@@ -50,9 +50,8 @@ func (f *Method) Debug() string { return "<method>" }
 // A Builtin a function usable through the language
 // but which is implemented in Go.
 type Builtin struct {
-	Fn       func(args ...Object) (Object, error)
-	ArgCount int
-	Name     string
+	Fn   func(args ...Object) (Object, error)
+	Name string
 }
 
 // Type returns the type of the object
