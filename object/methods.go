@@ -1,8 +1,31 @@
 package object
 
+import (
+	"fmt"
+	"strings"
+)
+
 // Split splits a string by the separator.
 func (s *String) Split(args ...Object) (Object, error) {
-	return NilObj, nil
+	var sep string
+
+	if len(args) == 0 {
+		sep = " "
+	} else if len(args) == 1 {
+		sep = args[0].String()
+	} else {
+		return nil, fmt.Errorf("argument: wrong amount of arguments supplied to the function. expected 0 or 1, got %v", len(args))
+	}
+
+	var result []Object
+
+	for _, substr := range strings.Split(s.Value, sep) {
+		result = append(result, &String{
+			Value: substr,
+		})
+	}
+
+	return &List{result}, nil
 }
 
 // GetMethod gets the method of the given name from
