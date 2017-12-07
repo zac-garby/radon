@@ -61,7 +61,7 @@ func (b *Builtin) Type() Type { return BuiltinType }
 func (b *Builtin) Equals(o Object) bool { return false }
 
 // String returns a string representing the builtin
-func (b *Builtin) String() string { return fmt.Sprintf("<builtin %s>", b.Name) }
+func (b *Builtin) String() string { return fmt.Sprintf("<builtin '%s'>", b.Name) }
 
 // Debug returns a string representing the builtin
-func (b *Builtin) Debug() string { return fmt.Sprintf("<builtin %s>", b.Name) }
+func (b *Builtin) Debug() string { return fmt.Sprintf("<builtin '%s'>", b.Name) }
