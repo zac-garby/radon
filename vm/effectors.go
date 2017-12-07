@@ -493,9 +493,34 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 	case *object.Model:
 		callModel(f, callee, argCount)
 
+	case *object.Builtin:
+		callBuiltin(f, callee, argCount)
+
 	default:
 		f.vm.err = Err("can only call functions and models", ErrWrongType)
 	}
+}
+
+func callBuiltin(f *Frame, fn *object.Builtin, argCount int) {
+	var args []object.Object
+
+	for i := 0; i < argCount; i++ {
+		top, err := f.stack.pop()
+		if err != nil {
+			f.vm.err = err
+			return
+		}
+
+		args = append(args, top)
+	}
+
+	result, err := fn.Fn(args...)
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	f.stack.push(result)
 }
 
 func callFunction(f *Frame, fn *object.Function, argCount int) {
