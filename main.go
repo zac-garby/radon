@@ -8,18 +8,31 @@ import (
 
 	"github.com/Zac-Garby/lang/bytecode"
 	"github.com/Zac-Garby/lang/compiler"
+	"github.com/Zac-Garby/lang/lexer"
 	"github.com/Zac-Garby/lang/parser"
+	"github.com/Zac-Garby/lang/token"
 	"github.com/Zac-Garby/lang/vm"
 	"github.com/carmark/pseudo-terminal-go/terminal"
 )
 
-const (
-	prompt = "~> "
-	load   = ":load "
-)
+type command func(arg string)
+
+const prompt = "~> "
 
 var (
-	store = vm.NewStore()
+	store     = vm.NewStore()
+	printToks = false
+	printTree = false
+	printCode = false
+	execCode  = true
+
+	commands = map[string]command{
+		"toks": func(arg string) { printToks = arg == "on" },
+		"tree": func(arg string) { printTree = arg == "on" },
+		"code": func(arg string) { printCode = arg == "on" },
+		"exec": func(arg string) { execCode = arg == "on" },
+		"quit": func(_ string) { os.Exit(0) },
+	}
 )
 
 // The REPL
@@ -31,18 +44,21 @@ func main() {
 	defer term.ReleaseFromStdInOut()
 	term.SetPrompt(prompt)
 
+outer:
 	for {
 		text, err := term.ReadLine()
 		if err != nil {
 			break
 		}
 
-		if strings.HasPrefix(text, load) {
-			if err := loadFile(strings.TrimPrefix(text, load)); err != nil {
-				os.Stderr.WriteString(err.Error() + "\n")
+		for name, fn := range commands {
+			if !strings.HasPrefix(text, ":"+name) {
+				continue
 			}
 
-			continue
+			arg := strings.TrimSpace(strings.TrimLeft(text, ":"+name))
+			fn(arg)
+			continue outer
 		}
 
 		if err := execute(text, "repl", true, store); err != nil {
@@ -66,12 +82,24 @@ func loadFile(name string) error {
 }
 
 func execute(input, filename string, print bool, sto *vm.Store) error {
+	if printToks && print {
+		lex := lexer.Lexer(input, filename)
+
+		for tok := lex(); tok.Type != token.EOF; tok = lex() {
+			fmt.Println(tok.String())
+		}
+	}
+
 	parse := parser.New(input, filename)
 	prog := parse.Parse()
 
 	if len(parse.Errors) > 0 {
 		parse.PrintErrors(os.Stderr)
 		return nil
+	}
+
+	if printTree && print {
+		fmt.Println(prog.Tree())
 	}
 
 	cmp := compiler.New()
@@ -82,6 +110,16 @@ func execute(input, filename string, print bool, sto *vm.Store) error {
 	code, err := bytecode.Read(cmp.Bytes)
 	if err != nil {
 		return err
+	}
+
+	if printCode && print {
+		for _, instr := range code {
+			fmt.Printf("%20s (%d)\n", instr.Name, instr.Arg)
+		}
+	}
+
+	if !execCode {
+		return nil
 	}
 
 	sto.Names = cmp.Names

@@ -58,13 +58,6 @@ list(3)     # [1, 2, 3]
  - Go interop
  - Don't print the REPL result if it's `()`
  - Remove `Token()` method from AST nodes
- - Add more REPL commands
-   - `:toks [on/off]` Toggle printing of the tokens.
-   - `:tree [on/off]` Toggle printing of the AST.
-   - `:code [on/off]` Toggle printing of the bytecode.
-   - `:exec [on/off]` Toggle the execution of the bytecode.
-   - `:info` Print the current version and other info.
-   - `:quit` Quit the REPL.
  - Add better stack memory management
    - Maybe clear the stack after every statement. However, that would probably
      mean an instruction would have to be added after each statement, bloating
