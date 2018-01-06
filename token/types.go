@@ -72,4 +72,5 @@ const (
 	Model  = "model"
 	Map    = "map"
 	Where  = "where"
+	Import = "import"
 )
