@@ -68,8 +68,6 @@ list(3)     # [1, 2, 3]
  - Model inheritance
    - `model (x) : parent (x, 0)`
    - see github.com/Zac-Garby/language
- - Methods on builtin types
-   - e.g. `list.append(...)`
  - For loops over collections
    - e.g. `for item in [1, 2, 3]` or `for i, item in [1, 2, 3]`
  - Importing files
