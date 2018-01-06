@@ -14,6 +14,7 @@ import (
 	"github.com/Zac-Garby/lang/token"
 	"github.com/Zac-Garby/lang/vm"
 	"github.com/carmark/pseudo-terminal-go/terminal"
+	"github.com/fatih/color"
 )
 
 type command func(arg string)
@@ -135,7 +136,7 @@ func execute(input, filename string, print bool, sto *vm.Store) error {
 		if err != nil {
 			os.Stderr.WriteString(err.Error() + "\n")
 		} else if val != nil && !(val.Type() == object.TupleType && len(val.(*object.Tuple).Value) == 0) && print {
-			fmt.Println(val)
+			color.Cyan(" %s", val.String())
 		}
 	}
 
