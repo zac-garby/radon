@@ -136,7 +136,7 @@ doubled = list(5) # Collects the top 5 items on the stack and makes them into a 
 doubled == [2, 4, 6, 8, 10]
 
 # Using go packages
-[go package "fmt"]
+go import "fmt"
 
 a = 10
 b = -5
