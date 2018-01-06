@@ -1,3 +1,6 @@
+## This file is an example of what will be possible in the future. Not all of it
+## will work yet.
+
 # Variables can be defined with =
 a = 5
 
@@ -80,12 +83,10 @@ add(my_vec, other)
 # So far, expressions have always been a single expression. They don't have to be:
 z = match 5 where
 	| 10 -> true,
-
 	| 5 -> {
 		print("Five!")
 		true
 	},
-
 	| _ -> {
 		print("not 10 or 5 :(")
 		false
@@ -133,3 +134,12 @@ for (i = 0; i < len(items); i += 1) items[i] * 2
 
 doubled = list(5) # Collects the top 5 items on the stack and makes them into a list
 doubled == [2, 4, 6, 8, 10]
+
+# Using go packages
+[go package "fmt"]
+
+a = 10
+b = -5
+
+s = fmt.Sprintf("sprintf'd %d %d", a, b)
+fmt.Println(s)
