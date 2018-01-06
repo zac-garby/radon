@@ -83,12 +83,9 @@ list(3)     # [1, 2, 3]
    - see github.com/Zac-Garby/language
  - For loops over collections
    - e.g. `for item in [1, 2, 3]` or `for i, item in [1, 2, 3]`
- - Importing files
-   - e.g. `import "path/to/file"`
+ - Importing things
    - e.g. `import "path/to/directory"` imports the files in the directory
      - Only in the top level, to allow package-private things
-   - File importing will probably be done by inserting the AST of the
-     imported file directly into the importing file's AST.
    - Global package store
      - Some directory
      - `package "package-name"` imports the directory relative to the global store
