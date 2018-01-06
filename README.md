@@ -70,6 +70,8 @@ list(3)     # [1, 2, 3]
    - see github.com/Zac-Garby/language
  - Methods on builtin types
    - e.g. `list.append(...)`
+ - For loops over collections
+   - e.g. `for item in [1, 2, 3]` or `for i, item in [1, 2, 3]`
  - Importing files
    - e.g. `import "path/to/file"`
    - e.g. `import "path/to/directory"` imports the files in the directory
