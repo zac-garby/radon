@@ -8,6 +8,30 @@ import (
 	"github.com/Zac-Garby/lang/ast"
 )
 
+// PreprocessProgram recursively preprocesses a program.
+func PreprocessProgram(prog ast.Program) (ast.Program, error) {
+	for i, _ := range prog.Statements {
+		for {
+			p, err := preprocessStatement(prog.Statements[i])
+			if err != nil {
+				return prog, err
+			}
+
+			var (
+				before = ast.Tree(prog.Statements[i], 0, "")
+				after  = ast.Tree(p, 0, "")
+			)
+
+			if before == after {
+				prog.Statements[i] = p
+				break
+			}
+		}
+	}
+
+	return prog, nil
+}
+
 // Preprocess preprocesses an AST node.
 func Preprocess(node ast.Node) (ast.Node, error) {
 	if expr, ok := node.(ast.Expression); ok {
