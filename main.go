@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -11,6 +10,7 @@ import (
 	"github.com/Zac-Garby/lang/compiler"
 	"github.com/Zac-Garby/lang/parser"
 	"github.com/Zac-Garby/lang/vm"
+	"github.com/carmark/pseudo-terminal-go/terminal"
 )
 
 const (
@@ -24,16 +24,18 @@ var (
 
 // The REPL
 func main() {
-	reader := bufio.NewReader(os.Stdin)
+	term, err := terminal.NewWithStdInOut()
+	if err != nil {
+		panic(err)
+	}
+	defer term.ReleaseFromStdInOut()
+	term.SetPrompt(prompt)
 
 	for {
-		fmt.Print(prompt)
-		text, err := reader.ReadString('\n')
+		text, err := term.ReadLine()
 		if err != nil {
-			panic(err)
+			break
 		}
-
-		text = strings.TrimRight(text, "\n")
 
 		if strings.HasPrefix(text, load) {
 			if err := loadFile(strings.TrimPrefix(text, load)); err != nil {
