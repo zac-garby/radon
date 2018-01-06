@@ -3,30 +3,24 @@ package compiler
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"reflect"
 
 	"github.com/Zac-Garby/lang/ast"
+	"github.com/Zac-Garby/lang/parser"
 )
 
 // PreprocessProgram recursively preprocesses a program.
 func PreprocessProgram(prog ast.Program) (ast.Program, error) {
-	for i, _ := range prog.Statements {
-		for {
-			p, err := preprocessStatement(prog.Statements[i])
-			if err != nil {
-				return prog, err
-			}
-
-			var (
-				before = ast.Tree(prog.Statements[i], 0, "")
-				after  = ast.Tree(p, 0, "")
-			)
-
-			if before == after {
-				prog.Statements[i] = p
-				break
-			}
+	for i, stmt := range prog.Statements {
+		p, err := preprocessStatement(stmt)
+		if err != nil {
+			return prog, err
 		}
+
+		prog.Statements[i] = p
 	}
 
 	return prog, nil
@@ -339,7 +333,48 @@ func preprocessStatement(n ast.Statement) (ast.Statement, error) {
 
 		return node, nil
 
+	case *ast.Import:
+		return processImport(node)
+
 	default:
 		return nil, fmt.Errorf("preprocessor: not implemented for node %s", reflect.TypeOf(node))
 	}
+}
+
+func processImport(node *ast.Import) (ast.Statement, error) {
+	path := filepath.Join(filepath.Dir(node.Tok.Start.Filename), node.Path)
+
+	file, err := os.Open(path)
+	if err != nil {
+		pathErr := err.(*os.PathError)
+		return nil, fmt.Errorf("import: couldn't import '%s' (%s)", path, pathErr)
+	}
+
+	content, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
+
+	var (
+		p    = parser.New(string(content), node.Path)
+		prog = p.Parse()
+	)
+
+	if len(p.Errors) > 0 {
+		p.PrintErrors(os.Stdout)
+		return nil, p.Errors[0]
+	}
+
+	prog, err = PreprocessProgram(prog)
+	if err != nil {
+		return nil, err
+	}
+
+	stmt := &ast.ExpressionStatement{
+		Expr: &ast.Block{
+			Statements: prog.Statements,
+		},
+	}
+
+	return stmt, nil
 }
