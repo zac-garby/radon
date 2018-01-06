@@ -26,6 +26,11 @@ func New() *Compiler {
 
 // Compile compiles an entire ast.Program
 func (c *Compiler) Compile(p ast.Program) error {
+	p, err := PreprocessReduceProgram(p)
+	if err != nil {
+		return err
+	}
+
 	for _, stmt := range p.Statements {
 		if err := c.CompileStatement(stmt); err != nil {
 			return err

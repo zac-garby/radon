@@ -1,0 +1,4 @@
+# demonstrates importing of local files
+
+import 'calc'
+import '../examples/functions'

@@ -71,4 +71,13 @@ type (
 		Increment Expression
 		Body      Expression
 	}
+
+	// Import imports the file or directory specified into the
+	// scope.
+	Import struct {
+		stmt
+		Tok token.Token
+
+		Path string
+	}
 )
