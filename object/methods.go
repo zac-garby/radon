@@ -30,13 +30,16 @@ func (s *String) Split(args ...Object) (Object, error) {
 
 // GetMethod gets the method of the given name from
 // an object.
+// TODO: This function, and the whole method system,
+// needs to be refactored.
 func (s *String) GetMethod(name string) (*Builtin, bool) {
-	builtins := map[string]func(...Object) (Object, error){
-		"split": s.Split,
-	}
+	var builtin func(args ...Object) (Object, error)
 
-	builtin, ok := builtins[name]
-	if !ok {
+	switch name {
+	case "split":
+		builtin = s.Split
+
+	default:
 		return nil, false
 	}
 
