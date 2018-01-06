@@ -55,6 +55,7 @@ list(3)     # [1, 2, 3]
  - More builtins
    - Stack operations, `dup()`, `rot()`, etc...
    - Files, `open()`, `write()`, etc...
+ - Go interop
 
 **New language features**
  - Optional/non-optional variables
