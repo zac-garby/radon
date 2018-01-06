@@ -26,7 +26,7 @@ func New() *Compiler {
 
 // Compile compiles an entire ast.Program
 func (c *Compiler) Compile(p ast.Program) error {
-	p, err := PreprocessProgram(p)
+	p, err := PreprocessReduceProgram(p)
 	if err != nil {
 		return err
 	}

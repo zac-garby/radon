@@ -12,7 +12,7 @@ import (
 	"github.com/Zac-Garby/lang/parser"
 )
 
-// PreprocessProgram recursively preprocesses a program.
+// PreprocessProgram preprocesses a program.
 func PreprocessProgram(prog ast.Program) (ast.Program, error) {
 	for i, stmt := range prog.Statements {
 		p, err := preprocessStatement(stmt)
@@ -21,6 +21,27 @@ func PreprocessProgram(prog ast.Program) (ast.Program, error) {
 		}
 
 		prog.Statements[i] = p
+	}
+
+	return prog, nil
+}
+
+// PreprocessReduceProgram until it can't be done any more.
+func PreprocessReduceProgram(prog ast.Program) (ast.Program, error) {
+	for {
+		p, err := PreprocessProgram(prog)
+		if err != nil {
+			return prog, err
+		}
+
+		var (
+			before = prog.Tree()
+			after  = p.Tree()
+		)
+
+		if before == after {
+			break
+		}
 	}
 
 	return prog, nil
