@@ -55,8 +55,7 @@ list(3)     # [1, 2, 3]
  - More builtins
    - Stack operations, `dup()`, `rot()`, etc...
    - Files, `open()`, `write()`, etc...
- - Allow object interface methods to return errors
-   - e.g. `GetKey()` could return an error if the key doesn't exist
+ - Go interop
 
 **New language features**
  - Optional/non-optional variables
