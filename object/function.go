@@ -1,6 +1,8 @@
 package object
 
 import (
+	"fmt"
+
 	"github.com/Zac-Garby/lang/bytecode"
 )
 
@@ -44,3 +46,22 @@ func (f *Method) String() string { return "<method>" }
 
 // Debug returns a string representing the method
 func (f *Method) Debug() string { return "<method>" }
+
+// A Builtin a function usable through the language
+// but which is implemented in Go.
+type Builtin struct {
+	Fn   func(args ...Object) (Object, error)
+	Name string
+}
+
+// Type returns the type of the object
+func (b *Builtin) Type() Type { return BuiltinType }
+
+// Equals checks if the builtin is equal to another object
+func (b *Builtin) Equals(o Object) bool { return false }
+
+// String returns a string representing the builtin
+func (b *Builtin) String() string { return fmt.Sprintf("<builtin '%s'>", b.Name) }
+
+// Debug returns a string representing the builtin
+func (b *Builtin) Debug() string { return fmt.Sprintf("<builtin '%s'>", b.Name) }

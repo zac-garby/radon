@@ -33,6 +33,9 @@ const (
 	// MethodType is a function bound to a map
 	MethodType = "method"
 
+	// BuiltinType is a builtin function implemented in Go
+	BuiltinType = "builtin"
+
 	// ModelType is a model which maps can be instantiated from
 	ModelType = "model"
 

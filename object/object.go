@@ -26,3 +26,10 @@ type Container interface {
 	GetKey(Object) Object
 	SetKey(Object, Object)
 }
+
+// Methoder is any object which has methods.
+// Methods are accesses using the dot operator.
+type Methoder interface {
+	Object
+	GetMethod(name string) (*Builtin, bool)
+}

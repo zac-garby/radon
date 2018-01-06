@@ -151,13 +151,28 @@ func byteLoadField(f *Frame, i bytecode.Instruction) {
 			idx := int(index.Value)
 
 			val = col.GetIndex(idx)
-		} else {
-			f.vm.err = Errf("non-numeric type %s used to index a collection", ErrWrongType, field.Type())
-			return
 		}
-	} else if cont, ok := obj.(object.Container); ok {
+	}
+
+	if cont, ok := obj.(object.Container); ok && val == nil {
 		val = cont.GetKey(field)
-	} else {
+	}
+
+	if meth, ok := obj.(object.Methoder); ok && val == nil {
+		name, ok := field.(*object.String)
+		if !ok {
+			val = object.NilObj
+		} else {
+			builtin, ok := meth.GetMethod(name.Value)
+			if !ok {
+				val = object.NilObj
+			} else {
+				val = builtin
+			}
+		}
+	}
+
+	if val == nil {
 		f.vm.err = Errf("cannot index type %s", ErrWrongType, obj.Type())
 	}
 
@@ -478,9 +493,34 @@ func byteCall(f *Frame, i bytecode.Instruction) {
 	case *object.Model:
 		callModel(f, callee, argCount)
 
+	case *object.Builtin:
+		callBuiltin(f, callee, argCount)
+
 	default:
 		f.vm.err = Err("can only call functions and models", ErrWrongType)
 	}
+}
+
+func callBuiltin(f *Frame, fn *object.Builtin, argCount int) {
+	var args []object.Object
+
+	for i := 0; i < argCount; i++ {
+		top, err := f.stack.pop()
+		if err != nil {
+			f.vm.err = err
+			return
+		}
+
+		args = append(args, top)
+	}
+
+	result, err := fn.Fn(args...)
+	if err != nil {
+		f.vm.err = err
+		return
+	}
+
+	f.stack.push(result)
 }
 
 func callFunction(f *Frame, fn *object.Function, argCount int) {

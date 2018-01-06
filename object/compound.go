@@ -222,12 +222,12 @@ func (m *Map) GetKey(key Object) Object {
 		return super
 	}
 
-	method := &Method{
+	meth := &Method{
 		Function: fn,
 		Map:      m,
 	}
 
-	return method
+	return meth
 }
 
 // SetKey sets an object at the given key
