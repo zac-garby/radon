@@ -9,6 +9,7 @@ import (
 	"github.com/Zac-Garby/lang/bytecode"
 	"github.com/Zac-Garby/lang/compiler"
 	"github.com/Zac-Garby/lang/lexer"
+	"github.com/Zac-Garby/lang/object"
 	"github.com/Zac-Garby/lang/parser"
 	"github.com/Zac-Garby/lang/token"
 	"github.com/Zac-Garby/lang/vm"
@@ -133,7 +134,7 @@ func execute(input, filename string, print bool, sto *vm.Store) error {
 		val, err := v.ExtractValue()
 		if err != nil {
 			os.Stderr.WriteString(err.Error() + "\n")
-		} else if val != nil && print {
+		} else if val != nil && !(val.Type() == object.TupleType && len(val.(*object.Tuple).Value) == 0) && print {
 			fmt.Println(val)
 		}
 	}
