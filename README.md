@@ -56,6 +56,8 @@ list(3)     # [1, 2, 3]
    - Stack operations, `dup()`, `rot()`, etc...
    - Files, `open()`, `write()`, etc...
  - Go interop
+ - Don't print the REPL result if it's `()`
+ - Remove `Token()` method from AST nodes
 
 **New language features**
  - Optional/non-optional variables
