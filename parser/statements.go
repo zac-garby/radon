@@ -30,6 +30,9 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.For:
 		node = p.parseFor()
 
+	case token.Import:
+		node = p.parseImport()
+
 	default:
 		node = p.parseExpressionStmt()
 	}
@@ -145,6 +148,26 @@ func (p *Parser) parseFor() ast.Statement {
 	p.next()
 
 	node.Body = p.parseExpression(lowest)
+
+	return node
+}
+
+func (p *Parser) parseImport() ast.Statement {
+	node := &ast.Import{
+		Tok: p.cur,
+	}
+
+	if !p.expect(token.String) {
+		return nil
+	}
+
+	expr, ok := p.parseExpression(lowest).(*ast.String)
+	if !ok {
+		p.defaultErr("expected a string literal")
+		return nil
+	}
+
+	node.Path = expr.Value
 
 	return node
 }
