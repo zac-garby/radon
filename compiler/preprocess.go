@@ -365,6 +365,10 @@ func preprocessStatement(n ast.Statement) (ast.Statement, error) {
 func processImport(node *ast.Import) (ast.Statement, error) {
 	path := filepath.Join(filepath.Dir(node.Tok.Start.Filename), node.Path)
 
+	return importFile(path)
+}
+
+func importFile(path string) (ast.Statement, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		pathErr := err.(*os.PathError)
@@ -377,7 +381,7 @@ func processImport(node *ast.Import) (ast.Statement, error) {
 	}
 
 	var (
-		p    = parser.New(string(content), node.Path)
+		p    = parser.New(string(content), path)
 		prog = p.Parse()
 	)
 
