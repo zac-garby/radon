@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 
 	"github.com/Zac-Garby/radon/ast"
 	"github.com/Zac-Garby/radon/parser"
@@ -422,6 +423,10 @@ func importDir(path string) (ast.Statement, error) {
 	var stmts []ast.Statement
 
 	for _, file := range files {
+		if !strings.HasSuffix(file.Name(), ".rn") {
+			continue
+		}
+
 		fstmt, err := importFile(filepath.Join(path, file.Name()))
 		if err != nil {
 			return nil, err
