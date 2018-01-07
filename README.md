@@ -6,6 +6,8 @@ This is what it looks like:
 Function definitions look a lot like how you'd define a function in maths.
 ```
 # Function definition
+
+[![Join the chat at https://gitter.im/radon-lang/Lobby](https://badges.gitter.im/radon-lang/Lobby.svg)](https://gitter.im/radon-lang/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 fib(n) = match n where
     | 0 -> 1,
     | 1 -> 1,
