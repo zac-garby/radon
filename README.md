@@ -59,7 +59,7 @@ pos = vector(101, 38)
    - `f(1, 2, 3)` &rarr; `6`
  - Model inheritance
    - `model (x) : parent (x, 0)`
-   - see github.com/Zac-Garby/radonuage
+   - see github.com/Zac-Garby/language
  - For loops over collections
    - e.g. `for item in [1, 2, 3]` or `for i, item in [1, 2, 3]`
  - Global package store
