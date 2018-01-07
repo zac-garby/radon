@@ -32,18 +32,6 @@ vector.translate(x, y) = {
 pos = vector(101, 38)
 ```
 
-Since the VM is stack-based, there are builtin functions to manipulate the stack.
-When an expression is evaluated, it's implicitly pushed to the stack.
-```
-5
-pop() + 1   # 6
-
-1
-2
-3
-list(3)     # [1, 2, 3]
-```
-
 # TODO
 
 **Improvements**
@@ -53,7 +41,6 @@ list(3)     # [1, 2, 3]
    - String transformations
    - Look through Go std libraries
  - More builtins
-   - Stack operations, `dup()`, `rot()`, etc...
    - Files, `open()`, `write()`, etc...
  - Go interop
  - Don't print the REPL result if it's `()`
