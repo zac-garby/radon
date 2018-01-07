@@ -19,6 +19,10 @@ div.wrapper {
 h1.title {
     font-size: 40pt;
     text-align: center;
+    color: white;
+    padding: 15px;
+    background: linear-gradient(to top left, #c91a5d, #db4930);
+    border-radius: 5px;
 }
 
 h2 {
