@@ -1,8 +1,8 @@
 package compiler
 
 import (
-	"github.com/Zac-Garby/lang/ast"
-	"github.com/Zac-Garby/lang/object"
+	"github.com/Zac-Garby/radon/ast"
+	"github.com/Zac-Garby/radon/object"
 )
 
 // A Compiler translates an abstract syntax tree

@@ -3,7 +3,7 @@ package ast
 import (
 	"reflect"
 
-	"github.com/Zac-Garby/lang/token"
+	"github.com/Zac-Garby/radon/token"
 )
 
 type stmt struct{}

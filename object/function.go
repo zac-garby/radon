@@ -3,7 +3,7 @@ package object
 import (
 	"fmt"
 
-	"github.com/Zac-Garby/lang/bytecode"
+	"github.com/Zac-Garby/radon/bytecode"
 )
 
 // A Function is a piece of code which can

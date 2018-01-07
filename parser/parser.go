@@ -3,9 +3,9 @@ package parser
 import (
 	"fmt"
 
-	"github.com/Zac-Garby/lang/ast"
-	"github.com/Zac-Garby/lang/lexer"
-	"github.com/Zac-Garby/lang/token"
+	"github.com/Zac-Garby/radon/ast"
+	"github.com/Zac-Garby/radon/lexer"
+	"github.com/Zac-Garby/radon/token"
 )
 
 type prefixParser func() ast.Expression

@@ -3,8 +3,8 @@ package compiler
 import (
 	"fmt"
 
-	"github.com/Zac-Garby/lang/bytecode"
-	"github.com/Zac-Garby/lang/object"
+	"github.com/Zac-Garby/radon/bytecode"
+	"github.com/Zac-Garby/radon/object"
 )
 
 const maxRune = 1 << 16

@@ -3,7 +3,7 @@ package vm
 import (
 	"errors"
 
-	"github.com/Zac-Garby/lang/object"
+	"github.com/Zac-Garby/radon/object"
 )
 
 type stack struct {

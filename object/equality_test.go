@@ -3,7 +3,7 @@ package object_test
 import (
 	"testing"
 
-	. "github.com/Zac-Garby/lang/object"
+	. "github.com/Zac-Garby/radon/object"
 )
 
 func TestEquality(t *testing.T) {

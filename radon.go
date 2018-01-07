@@ -6,20 +6,20 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Zac-Garby/lang/bytecode"
-	"github.com/Zac-Garby/lang/compiler"
-	"github.com/Zac-Garby/lang/lexer"
-	"github.com/Zac-Garby/lang/object"
-	"github.com/Zac-Garby/lang/parser"
-	"github.com/Zac-Garby/lang/token"
-	"github.com/Zac-Garby/lang/vm"
+	"github.com/Zac-Garby/radon/bytecode"
+	"github.com/Zac-Garby/radon/compiler"
+	"github.com/Zac-Garby/radon/lexer"
+	"github.com/Zac-Garby/radon/object"
+	"github.com/Zac-Garby/radon/parser"
+	"github.com/Zac-Garby/radon/token"
+	"github.com/Zac-Garby/radon/vm"
 	"github.com/carmark/pseudo-terminal-go/terminal"
 	"github.com/fatih/color"
 )
 
 type command func(arg string)
 
-const prompt = "~> "
+const prompt = "rn> "
 
 var (
 	store     = vm.NewStore()

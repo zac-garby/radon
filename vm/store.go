@@ -1,7 +1,7 @@
 package vm
 
 import (
-	"github.com/Zac-Garby/lang/object"
+	"github.com/Zac-Garby/radon/object"
 )
 
 // An Item is created for each variable stored

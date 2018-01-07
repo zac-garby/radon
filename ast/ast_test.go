@@ -3,7 +3,7 @@ package ast_test
 import (
 	"testing"
 
-	. "github.com/Zac-Garby/lang/ast"
+	. "github.com/Zac-Garby/radon/ast"
 )
 
 // Since the AST package only defines data structures,

@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"reflect"
 
-	"github.com/Zac-Garby/lang/ast"
-	"github.com/Zac-Garby/lang/parser"
+	"github.com/Zac-Garby/radon/ast"
+	"github.com/Zac-Garby/radon/parser"
 )
 
 // PreprocessProgram preprocesses a program.

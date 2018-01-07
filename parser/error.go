@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/Zac-Garby/lang/token"
+	"github.com/Zac-Garby/radon/token"
 )
 
 // Error represents a parsing error

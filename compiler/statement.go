@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/Zac-Garby/lang/bytecode"
+	"github.com/Zac-Garby/radon/bytecode"
 
-	"github.com/Zac-Garby/lang/ast"
+	"github.com/Zac-Garby/radon/ast"
 )
 
 // CompileStatement compiles a single ast.Statement

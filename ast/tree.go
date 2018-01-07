@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Zac-Garby/lang/token"
+	"github.com/Zac-Garby/radon/token"
 )
 
 const treeIndent = 2

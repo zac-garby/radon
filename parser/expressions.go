@@ -3,8 +3,8 @@ package parser
 import (
 	"strconv"
 
-	"github.com/Zac-Garby/lang/ast"
-	"github.com/Zac-Garby/lang/token"
+	"github.com/Zac-Garby/radon/ast"
+	"github.com/Zac-Garby/radon/token"
 )
 
 // parseExpression parses an expression starting at the current

@@ -1,6 +1,5 @@
-This is a scripting language. It's currently unnamed. It's dynamically typed and
-compiled. It compiles to [bytecode](./bytecode) which is executed on the [virtual
-machine](vm).
+Radon is a dynamically typed, compiled scripting language which runs on a virtual
+machine.
 
 This is what it looks like:
 
@@ -46,7 +45,6 @@ list(3)     # [1, 2, 3]
 # TODO
 
 **Improvements**
- - Think of a name
  - Add more tests
  - Standard library
    - HTTP
@@ -73,7 +71,7 @@ list(3)     # [1, 2, 3]
    - `f(1, 2, 3)` &rarr; `6`
  - Model inheritance
    - `model (x) : parent (x, 0)`
-   - see github.com/Zac-Garby/language
+   - see github.com/Zac-Garby/radonuage
  - For loops over collections
    - e.g. `for item in [1, 2, 3]` or `for i, item in [1, 2, 3]`
  - Importing things

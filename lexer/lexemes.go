@@ -3,7 +3,7 @@ package lexer
 import (
 	"strings"
 
-	"github.com/Zac-Garby/lang/token"
+	"github.com/Zac-Garby/radon/token"
 )
 
 type transformer func(token.Type, string, string) (token.Type, string, string)

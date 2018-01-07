@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/Zac-Garby/lang/token"
+	"github.com/Zac-Garby/radon/token"
 )
 
 const (

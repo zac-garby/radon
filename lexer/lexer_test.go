@@ -3,8 +3,8 @@ package lexer_test
 import (
 	"testing"
 
-	"github.com/Zac-Garby/lang/lexer"
-	. "github.com/Zac-Garby/lang/token"
+	"github.com/Zac-Garby/radon/lexer"
+	. "github.com/Zac-Garby/radon/token"
 )
 
 func TestLexing(t *testing.T) {

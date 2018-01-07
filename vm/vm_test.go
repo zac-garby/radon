@@ -4,10 +4,10 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/Zac-Garby/lang/bytecode"
-	"github.com/Zac-Garby/lang/compiler"
-	"github.com/Zac-Garby/lang/parser"
-	. "github.com/Zac-Garby/lang/vm"
+	"github.com/Zac-Garby/radon/bytecode"
+	"github.com/Zac-Garby/radon/compiler"
+	"github.com/Zac-Garby/radon/parser"
+	. "github.com/Zac-Garby/radon/vm"
 )
 
 func TestEvaluation(t *testing.T) {

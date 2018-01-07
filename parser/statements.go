@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"github.com/Zac-Garby/lang/ast"
-	"github.com/Zac-Garby/lang/token"
+	"github.com/Zac-Garby/radon/ast"
+	"github.com/Zac-Garby/radon/token"
 )
 
 func (p *Parser) parseStatement() ast.Statement {
