@@ -1,8 +1,6 @@
 package compiler
 
 import (
-	"errors"
-
 	"github.com/Zac-Garby/radon/ast"
 	"github.com/Zac-Garby/radon/bytecode"
 	"github.com/Zac-Garby/radon/object"
@@ -67,37 +65,6 @@ var builtinFns = []*builtinFn{
 
 		compile: func(c *Compiler, args []ast.Expression) error {
 			c.push(bytecode.Length)
-			return nil
-		},
-	},
-
-	&builtinFn{
-		name:       "pop",
-		parameters: 0,
-
-		compile: func(c *Compiler, args []ast.Expression) error {
-			c.push(bytecode.PushTop)
-			return nil
-		},
-	},
-
-	&builtinFn{
-		name:       "list",
-		parameters: 1,
-
-		compile: func(c *Compiler, args []ast.Expression) error {
-			num, ok := args[0].(*ast.Number)
-			if !ok {
-				return errors.New("wrong_type: list(..) accepts a single numerical argument")
-			}
-
-			var (
-				length    = num.Value
-				low, high = runeToBytes(rune(length))
-			)
-
-			c.push(bytecode.MakeList, high, low)
-
 			return nil
 		},
 	},
