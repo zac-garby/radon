@@ -365,6 +365,15 @@ func preprocessStatement(n ast.Statement) (ast.Statement, error) {
 func processImport(node *ast.Import) (ast.Statement, error) {
 	path := filepath.Join(filepath.Dir(node.Tok.Start.Filename), node.Path)
 
+	info, err := os.Stat(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if info.IsDir() {
+		return importDir(path)
+	}
+
 	return importFile(path)
 }
 
@@ -398,6 +407,32 @@ func importFile(path string) (ast.Statement, error) {
 	stmt := &ast.ExpressionStatement{
 		Expr: &ast.Block{
 			Statements: prog.Statements,
+		},
+	}
+
+	return stmt, nil
+}
+
+func importDir(path string) (ast.Statement, error) {
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var stmts []ast.Statement
+
+	for _, file := range files {
+		fstmt, err := importFile(filepath.Join(path, file.Name()))
+		if err != nil {
+			return nil, err
+		}
+
+		stmts = append(stmts, fstmt)
+	}
+
+	stmt := &ast.ExpressionStatement{
+		Expr: &ast.Block{
+			Statements: stmts,
 		},
 	}
 
