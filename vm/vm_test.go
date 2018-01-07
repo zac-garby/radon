@@ -61,10 +61,10 @@ func TestEvaluation(t *testing.T) {
 		"f(); f() = 5":                       "5",
 		"f() = { return 5; return 3; }; f()": "5",
 
-		"for (i = 0; i < 10; i = i + 1) i":             "10",
+		"for i = 0; i < 10; i = i + 1 do i":            "10",
 		"loop { if i > 10 then { break }; i = i + 1 }": "",
 		"a = 0; while (a < 10) { next; a }":            "",
-		`for (i = 0; i < 20; i = i + 1) {
+		`for i = 0; i < 20; i = i + 1 {
 			if i > 10 then {
 				break
 			} else i = i + 1
