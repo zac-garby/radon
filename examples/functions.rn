@@ -1,6 +1,3 @@
 print(add(2, 3))
 
-add(x, y) = {
-    g(x, y)
-    g(x, y) = x + y
-}
+add(x, y) = x + y

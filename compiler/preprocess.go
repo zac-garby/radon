@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 
 	"github.com/Zac-Garby/radon/ast"
 	"github.com/Zac-Garby/radon/parser"
@@ -365,6 +366,19 @@ func preprocessStatement(n ast.Statement) (ast.Statement, error) {
 func processImport(node *ast.Import) (ast.Statement, error) {
 	path := filepath.Join(filepath.Dir(node.Tok.Start.Filename), node.Path)
 
+	info, err := os.Stat(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if info.IsDir() {
+		return importDir(path)
+	}
+
+	return importFile(path)
+}
+
+func importFile(path string) (ast.Statement, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		pathErr := err.(*os.PathError)
@@ -377,7 +391,7 @@ func processImport(node *ast.Import) (ast.Statement, error) {
 	}
 
 	var (
-		p    = parser.New(string(content), node.Path)
+		p    = parser.New(string(content), path)
 		prog = p.Parse()
 	)
 
@@ -394,6 +408,36 @@ func processImport(node *ast.Import) (ast.Statement, error) {
 	stmt := &ast.ExpressionStatement{
 		Expr: &ast.Block{
 			Statements: prog.Statements,
+		},
+	}
+
+	return stmt, nil
+}
+
+func importDir(path string) (ast.Statement, error) {
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var stmts []ast.Statement
+
+	for _, file := range files {
+		if !strings.HasSuffix(file.Name(), ".rn") {
+			continue
+		}
+
+		fstmt, err := importFile(filepath.Join(path, file.Name()))
+		if err != nil {
+			return nil, err
+		}
+
+		stmts = append(stmts, fstmt)
+	}
+
+	stmt := &ast.ExpressionStatement{
+		Expr: &ast.Block{
+			Statements: stmts,
 		},
 	}
 
