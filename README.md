@@ -62,10 +62,7 @@ pos = vector(101, 38)
    - see github.com/Zac-Garby/radonuage
  - For loops over collections
    - e.g. `for item in [1, 2, 3]` or `for i, item in [1, 2, 3]`
- - Importing things
-   - e.g. `import "path/to/directory"` imports the files in the directory
-     - Only in the top level, to allow package-private things
-   - Global package store
-     - Some directory
-     - `package "package-name"` imports the directory relative to the global store
-     - Bash command to import packages from GitHub by username and repo
+ - Global package store
+   - Some directory, maybe `$RADONPATH`
+   - `import "* package-name"` imports the directory relative to the global store
+   - Bash command to import packages from GitHub by username and repo
