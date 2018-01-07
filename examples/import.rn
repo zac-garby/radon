@@ -1,4 +1,4 @@
 # demonstrates importing of local files
 
-import 'calc'
-import '../examples/functions'
+import 'calc.rn'
+import '../examples/functions.rn'
