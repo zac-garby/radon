@@ -43,7 +43,6 @@ pos = vector(101, 38)
  - More builtins
    - Files, `open()`, `write()`, etc...
  - Go interop
- - Don't print the REPL result if it's `()`
  - Remove `Token()` method from AST nodes
  - Add better stack memory management
    - Maybe clear the stack after every statement. However, that would probably
