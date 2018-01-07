@@ -30,9 +30,7 @@ func TestEvaluation(t *testing.T) {
 		"5 >= 5": "true",
 		"5 <= 5": "true",
 
-		"x":       "",
-		"pop()":   "nil",
-		"list(5)": "",
+		"x": "",
 
 		`"Hello"`:                  "Hello",
 		"true":                     "true",
@@ -155,16 +153,16 @@ func TestEvaluation(t *testing.T) {
 
 		if out == "" {
 			if result != nil {
-				t.Errorf("expected no output, got: %s", result.String())
+				t.Errorf("(%s) expected no output, got: %s", in, result.String())
 			}
 		} else if result != nil {
 			resString := result.String()
 			if resString != out {
-				t.Errorf("expected: %s\ngot: %s\n", out, resString)
+				t.Errorf("(%s) expected: %s\ngot: %s\n", in, out, resString)
 				return
 			}
 		} else {
-			t.Errorf("expected: %s\ngot nothing", out)
+			t.Errorf("(%s) expected: %s\ngot nothing", in, out)
 		}
 	}
 }
