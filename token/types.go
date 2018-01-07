@@ -66,6 +66,7 @@ const (
 	While  = "while"
 	For    = "for"
 	Loop   = "loop"
+	Do     = "do"
 	Next   = "next"
 	Break  = "break"
 	Match  = "match"

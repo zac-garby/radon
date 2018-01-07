@@ -98,19 +98,20 @@ func (p *Parser) parseWhile() ast.Statement {
 		Tok: p.cur,
 	}
 
-	if !p.expect(token.LeftParen) {
-		return nil
-	}
-
 	p.next()
 	node.Condition = p.parseExpression(lowest)
 
-	if !p.expect(token.RightParen) {
-		return nil
-	}
+	if p.peekIs(token.LeftBrace) {
+		p.next()
+		node.Body = p.parseBlock()
+	} else {
+		if !p.expect(token.Do) {
+			return nil
+		}
 
-	p.next()
-	node.Body = p.parseExpression(lowest)
+		p.next()
+		node.Body = p.parseExpression(lowest)
+	}
 
 	return node
 }
@@ -118,10 +119,6 @@ func (p *Parser) parseWhile() ast.Statement {
 func (p *Parser) parseFor() ast.Statement {
 	node := &ast.ForLoop{
 		Tok: p.cur,
-	}
-
-	if !p.expect(token.LeftParen) {
-		return nil
 	}
 
 	p.next()
@@ -141,13 +138,17 @@ func (p *Parser) parseFor() ast.Statement {
 	p.next()
 	node.Increment = p.parseExpression(lowest)
 
-	if !p.expect(token.RightParen) {
-		return nil
+	if p.peekIs(token.LeftBrace) {
+		p.next()
+		node.Body = p.parseBlock()
+	} else {
+		if !p.expect(token.Do) {
+			return nil
+		}
+
+		p.next()
+		node.Body = p.parseExpression(lowest)
 	}
-
-	p.next()
-
-	node.Body = p.parseExpression(lowest)
 
 	return node
 }

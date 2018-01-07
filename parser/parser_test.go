@@ -34,9 +34,9 @@ func TestErrors(t *testing.T) {
 		"while (a",
 
 		"for a",
-		"for (a)",
-		"for (a; b)",
-		"for (a; b; c",
+		"for a",
+		"for a; b",
+		"for a; b; c",
 
 		"import",
 		"import 5",
@@ -88,8 +88,10 @@ func TestNoErrors(t *testing.T) {
 		"break",
 		"next",
 		"loop a",
-		"while (a < b) c",
-		"for (a; b; c) d",
+		"while a < b do c",
+		"while a < b { c }",
+		"for a; b; c do d",
+		"for a; b; c { d }",
 		"import 'path/to/file'",
 		"return a",
 
