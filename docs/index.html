@@ -3,8 +3,103 @@
     <head>
         <meta charset="utf-8">
         <title>Radon</title>
+
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        Just to test GitHub pages.
+        <div class="wrapper">
+            <h1 class="title">Radon</h1>
+
+            <p>
+                Radon is a dynamically typed language which compiles to bytecode
+                and is executed on a virtual machine.
+            </p>
+
+            <p>
+                It's in very early development, and the source is
+                <a href="github.com/Zac-Garby/radon">hosted on GitHub</a>. If
+                anyone wants to make a pull request, that's great :) There's a
+                huge TODO list in the README.
+            </p>
+
+            <p>
+                Here are some examples of its various features:
+            </p>
+
+            <table>
+                <tr>
+                    <td>
+                        <h2>Basic syntax</h2>
+                        <pre>
+                            <code>
+v = fib(20)
+print(v)
+
+a = (2 ^ v) - 1
+
+# hoisted
+fib(n) = match n where
+    | 0 -> 1,
+    | 1 -> 1,
+    | _ -> fib(n - 1) + fib(n - 2)</code></pre>
+                    </td>
+                    <td>
+                        <h2>Models</h2>
+                        <pre>
+                            <code>
+vector = model(x, y)
+
+vector.add(other) = {
+    self.x = self.x + other.x
+    self.y = self.y + other.y
+}
+
+a = vector(5, 2)
+b = vector(-1, 8)
+c = a.add(b)</code></pre>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h2>Control flow</h2>
+                        <pre>
+                            <code>
+x = 5
+y = 10
+
+if x > y then print("hello")
+
+if true then {
+    print("x")
+} else if false then {
+    print("y")
+} else {
+    print("z")
+}</code></pre>
+                    </td>
+                    <td>
+                        <h2>Iteration</h2>
+                        <pre>
+                            <code>
+x = 0
+
+while (x < 10) {
+    print(x)
+    x = x + 1
+}
+
+for (i = 0; i &lt; 10; i = i+1) print(i)
+
+loop {
+    print("help, i'm stuck in an infinite loop")
+}</code></pre>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <footer>
+            By Zac Garby &mdash; By the way, the minimal CSS is intentional.
+        </footer>
     </body>
 </html>
