@@ -157,9 +157,7 @@ func (p *Parser) parseImport() ast.Statement {
 		Tok: p.cur,
 	}
 
-	if !p.expect(token.String) {
-		return nil
-	}
+	p.next()
 
 	expr, ok := p.parseExpression(lowest).(*ast.String)
 	if !ok {

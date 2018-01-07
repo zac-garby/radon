@@ -25,23 +25,13 @@ func (p *Parser) peekIs(ts ...token.Type) bool {
 	return false
 }
 
-func (p *Parser) expect(ts ...token.Type) bool {
-	if p.peekIs(ts...) {
+func (p *Parser) expect(t token.Type) bool {
+	if p.peekIs(t) {
 		p.next()
 		return true
 	}
 
-	p.peekErr(ts...)
-	return false
-}
-
-func (p *Parser) expectCur(ts ...token.Type) bool {
-	if p.curIs(ts...) {
-		p.next()
-		return true
-	}
-
-	p.curErr(ts...)
+	p.peekErr(t)
 	return false
 }
 
@@ -79,8 +69,7 @@ func (p *Parser) parseExpressionList(end token.Type) []ast.Expression {
 func (p *Parser) parseExpressionPairs(end token.Type) map[ast.Expression]ast.Expression {
 	pairs := map[ast.Expression]ast.Expression{}
 
-	if p.curIs(token.Colon) {
-		p.next()
+	if p.curIs(token.RightSquare) {
 		return pairs
 	}
 

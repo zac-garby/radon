@@ -40,50 +40,9 @@ func (p *Parser) defaultErr(msg string) {
 	p.Errors = append(p.Errors, err)
 }
 
-func (p *Parser) peekErr(ts ...token.Type) {
-	if len(ts) > 1 {
-		msg := "expected either "
-
-		for i, t := range ts {
-			msg += string(t)
-
-			if i+1 < len(ts) {
-				msg += ", "
-			} else if i < len(ts) {
-				msg += ", or "
-			}
-		}
-
-		msg += ", but got " + string(p.peek.Type)
-
-		p.Err(msg, p.peek.Start, p.peek.End)
-	} else if len(ts) == 1 {
-		msg := fmt.Sprintf("expected %s, but got %s", ts[0], p.peek.Type)
-		p.Err(msg, p.peek.Start, p.peek.End)
-	}
-}
-
-func (p *Parser) curErr(ts ...token.Type) {
-	if len(ts) > 1 {
-		msg := "expected either "
-
-		for i, t := range ts {
-			msg += string(t)
-
-			if i+1 < len(ts) {
-				msg += ", "
-			} else if i < len(ts) {
-				msg += ", or "
-			}
-		}
-
-		msg += ", but got " + string(p.cur.Type)
-
-		p.Err(msg, p.cur.Start, p.cur.End)
-	} else if len(ts) == 1 {
-		msg := fmt.Sprintf("expected %s, but got %s", ts[0], p.cur.Type)
-		p.Err(msg, p.cur.Start, p.cur.End)
-	}
+func (p *Parser) peekErr(t token.Type) {
+	msg := fmt.Sprintf("expected %s, but got %s", t, p.peek.Type)
+	p.Err(msg, p.peek.Start, p.peek.End)
 }
 
 func (p *Parser) unexpectedTokenErr(t token.Type) {
