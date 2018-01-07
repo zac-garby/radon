@@ -172,12 +172,17 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	p.next()
 	node.Condition = p.parseExpression(lowest)
 
-	if !p.expect(token.Then) {
-		return nil
-	}
+	if p.peekIs(token.LeftBrace) {
+		p.next()
+		node.Consequence = p.parseBlock()
+	} else {
+		if !p.expect(token.Then) {
+			return nil
+		}
 
-	p.next()
-	node.Consequence = p.parseExpression(lowest)
+		p.next()
+		node.Consequence = p.parseExpression(lowest)
+	}
 
 	if p.peekIs(token.Else) {
 		p.next()

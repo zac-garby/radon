@@ -152,6 +152,7 @@ func TestNoErrors(t *testing.T) {
 		"a(b, c,)",
 
 		"if a then b",
+		"if a { b }",
 		"if a then b else c",
 		"if a then b else if c then d else e",
 
