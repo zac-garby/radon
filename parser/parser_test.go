@@ -42,6 +42,7 @@ func TestErrors(t *testing.T) {
 		"import 5",
 
 		"5 => a",
+		"=>",
 	}
 
 	for _, test := range tests {
@@ -174,6 +175,8 @@ func TestNoErrors(t *testing.T) {
 		"() => b",
 		"(a) => b",
 		"(a, b) => c",
+		"=> a",
+		"=> a => b => c",
 	}
 
 	for _, test := range tests {
