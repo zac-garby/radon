@@ -58,9 +58,6 @@ pos = vector(101, 38)
  - Allow functions to be named
    - `a(x, y) = x + y` will be called `a`
    - Will be printed as `<function a>` instead of `<function>`
- - Add lambda functions
-   - `(x, y) -> x + y` makes a lambda function
-   - Syntax sugar: `-> print('hi')` is the same as `() -> print('hi')`
  - Ruby-like code blocks after functions
    - `f(x) { print("hello") }` is the same as `f(x, -> print("hello"))`
    - Doesn't have to be in braces -- just a normal expression
