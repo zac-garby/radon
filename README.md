@@ -50,16 +50,32 @@ pos = vector(101, 38)
      the bytecode.
 
 **New language features**
- - Optional/non-optional variables
-   - A variable ending in `?` can be set to `nil`
-   - Other variables cannot
-   - This will be checked at compile time
+ - Implement the operator-assignment operators (e.g. `+=`)
+   - They already parse properly, they just need compilation
+ - Allow models to be named
+   - `model vector(x, y)` instead of `vector = model(x, y)`
+   - Will be printed as `<model vector>` instead of just `<model>`
+ - Allow functions to be named
+   - `a(x, y) = x + y` will be called `a`
+   - Will be printed as `<function a>` instead of `<function>`
+ - Add lambda functions
+   - `(x, y) -> x + y` makes a lambda function
+   - Syntax sugar: `-> print('hi')` is the same as `() -> print('hi')`
+ - Ruby-like code blocks after functions
+   - `f(x) { print("hello") }` is the same as `f(x, -> print("hello"))`
+   - Doesn't have to be in braces -- just a normal expression
+ - String interpolation
+   - `x = "world"; "hello ${x}"` is the same as `"hello world"`
+   - Only occurs in double-quoted strings
  - Variadic parameters
    - e.g. `f(x, ...y) = x + sum(y)`
    - `f(1, 2, 3)` &rarr; `6`
  - Model inheritance
    - `model (x) : parent (x, 0)`
    - see github.com/Zac-Garby/language
+ - Special model methods
+   - `init` is called when the model is instantiated
+   - Various ones for operators, such as `plus`
  - For loops over collections
    - e.g. `for item in [1, 2, 3]` or `for i, item in [1, 2, 3]`
  - Global package store
