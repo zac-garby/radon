@@ -3,11 +3,11 @@
 }
 
 html {
-    font-family: sans-serif;
+    font-family: 'Open Sans', sans-serif;
 }
 
 div.wrapper {
-    width: 600px;
+    width: 750px;
     position: absolute;
     left: 0;
     right: 0;
@@ -35,6 +35,10 @@ pre {
     text-align: left;
 }
 
+pre, code {
+    font-family: 'Inconsolata', monospace;
+}
+
 p {
     text-align: left;
     font-size: 13pt;
@@ -42,6 +46,7 @@ p {
 
 table {
     display: inline-table;
+    margin-bottom: 50px;
 }
 
 
@@ -55,7 +60,8 @@ footer {
     position: fixed;
     bottom: 0;
     padding: 4px;
+    padding-right: 16px;
     color: #b1b1b1;
     width: 100%;
-    text-align: center;
+    text-align: right;
 }

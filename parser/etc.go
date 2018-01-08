@@ -7,6 +7,7 @@ import (
 const (
 	lowest = iota
 	assign
+	lambda
 	or
 	and
 	bitOr
@@ -56,4 +57,5 @@ var precedences = map[token.Type]int{
 	token.Dot:            index,
 	token.LeftSquare:     index,
 	token.LeftParen:      call,
+	token.LambdaArrow:    lambda,
 }

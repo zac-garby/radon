@@ -40,6 +40,9 @@ func TestErrors(t *testing.T) {
 
 		"import",
 		"import 5",
+
+		"5 => a",
+		"=>",
 	}
 
 	for _, test := range tests {
@@ -167,6 +170,13 @@ func TestNoErrors(t *testing.T) {
 		"model(x, y,)",
 
 		"import 'hello'",
+
+		"a => b",
+		"() => b",
+		"(a) => b",
+		"(a, b) => c",
+		"=> a",
+		"=> a => b => c",
 	}
 
 	for _, test := range tests {

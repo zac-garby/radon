@@ -11,7 +11,7 @@ func TestLexing(t *testing.T) {
 	input := `123.50 1 2#;
 	"hello" "hello world" foo bar # where a semicolon should be inserted
 	+-*^/ //%()<><=>={}[];==!=||&& # a comment after a line
-	| & = := , -> <- : . ! += -=#this comment touches the token
+	| & = := , -> : . ! += -=#this comment touches the token
 	*= ^= /= //= %= ||= &&= |= &= #nospacesnospacesnospaces!!
 
 	# keywords now :)
@@ -29,7 +29,7 @@ func TestLexing(t *testing.T) {
 		LessThanEq, GreaterThanEq, LeftBrace, RightBrace,
 		LeftSquare, RightSquare, Semi, Equal, NotEqual,
 		Or, And, BitOr, BitAnd, Assign, Declare,
-		Comma, RightArrow, LeftArrow, Colon, Dot, Bang,
+		Comma, RightArrow, Colon, Dot, Bang,
 		PlusEquals, MinusEquals, StarEquals, ExpEquals,
 		SlashEquals, FloorDivEquals, ModEquals, OrEquals,
 		AndEquals, BitOrEquals, BitAndEquals,

@@ -33,22 +33,23 @@ func New(text, file string) *Parser {
 	}
 
 	p.prefixes = map[token.Type]prefixParser{
-		token.ID:         p.parseID,
-		token.Number:     p.parseNum,
-		token.True:       p.parseBool,
-		token.False:      p.parseBool,
-		token.Nil:        p.parseNil,
-		token.String:     p.parseString,
-		token.LeftSquare: p.parseList,
-		token.Map:        p.parseMap,
-		token.Minus:      p.parsePrefix,
-		token.Plus:       p.parsePrefix,
-		token.Bang:       p.parsePrefix,
-		token.LeftParen:  p.parseGroupedExpression,
-		token.If:         p.parseIfExpression,
-		token.Match:      p.parseMatchExpression,
-		token.LeftBrace:  p.parseBlock,
-		token.Model:      p.parseModel,
+		token.ID:          p.parseID,
+		token.Number:      p.parseNum,
+		token.True:        p.parseBool,
+		token.False:       p.parseBool,
+		token.Nil:         p.parseNil,
+		token.String:      p.parseString,
+		token.LeftSquare:  p.parseList,
+		token.Map:         p.parseMap,
+		token.Minus:       p.parsePrefix,
+		token.Plus:        p.parsePrefix,
+		token.Bang:        p.parsePrefix,
+		token.LeftParen:   p.parseGroupedExpression,
+		token.If:          p.parseIfExpression,
+		token.Match:       p.parseMatchExpression,
+		token.LeftBrace:   p.parseBlock,
+		token.Model:       p.parseModel,
+		token.LambdaArrow: p.parseLambdaPrefix,
 	}
 
 	p.infixes = map[token.Type]infixParser{
@@ -84,8 +85,9 @@ func New(text, file string) *Parser {
 		token.Declare:        p.parseInfix,
 		token.Dot:            p.parseInfix,
 
-		token.LeftSquare: p.parseIndex,
-		token.LeftParen:  p.parseFunctionCall,
+		token.LeftSquare:  p.parseIndex,
+		token.LeftParen:   p.parseFunctionCall,
+		token.LambdaArrow: p.parseLambdaInfix,
 	}
 
 	p.next()
