@@ -265,6 +265,18 @@ func (p *Parser) parseModel() ast.Expression {
 	return node
 }
 
+func (p *Parser) parseLambdaPrefix() ast.Expression {
+	node := &ast.Lambda{
+		Tok: p.cur,
+	}
+
+	p.next()
+
+	node.Body = p.parseExpression(lowest)
+
+	return node
+}
+
 // Infix Expression Parsers
 
 func (p *Parser) parseInfix(left ast.Expression) ast.Expression {
