@@ -58,8 +58,6 @@ a = vector(5, 2)
 b = vector(-1, 8)
 c = a.add(b)</code></pre>
                     </td>
-                </tr>
-                <tr>
                     <td>
                         <h2>Control flow</h2>
                         <pre>
@@ -77,6 +75,8 @@ if true then {
     print("z")
 }</code></pre>
                     </td>
+                </tr>
+                <tr>
                     <td>
                         <h2>Iteration</h2>
                         <pre>
@@ -94,6 +94,19 @@ for i = 0; i &lt; 10; i = i+1 do
 loop {
     print("∞")
 }</code></pre>
+                    </td>
+                    <td>
+                        <h2>Lambda functions</h2>
+                        <pre>
+                            <code>
+# anonymous lambda functions
+((a, b) => a - b)(10, 5) == 5
+
+apply(i => i * 2, 5) == 10
+call(=>5) == 5
+
+call(fn) = fn()
+apply(fn, n) = fn(n)</code></pre>
                     </td>
                 </tr>
             </table>
