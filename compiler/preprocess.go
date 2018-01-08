@@ -270,6 +270,16 @@ func preprocessExpression(n ast.Expression) (ast.Expression, error) {
 
 		return node, nil
 
+	case *ast.Lambda:
+		pb, err := preprocessExpression(node.Body)
+		if err != nil {
+			return nil, err
+		}
+
+		node.Body = pb
+
+		return node, nil
+
 	default:
 		return nil, fmt.Errorf("preprocessor: not implemented for node %s", reflect.TypeOf(node))
 	}

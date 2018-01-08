@@ -45,6 +45,8 @@ func (c *Compiler) CompileExpression(e ast.Expression) error {
 		return c.compileMatch(node)
 	case *ast.Model:
 		return c.compileModel(node)
+	case *ast.Lambda:
+		return c.compileLambda(node)
 	default:
 		return fmt.Errorf("compiler: compilation not yet implemented for %s", reflect.TypeOf(e))
 	}
@@ -626,6 +628,39 @@ func (c *Compiler) compileMatch(node *ast.Match) error {
 		c.Bytes[jmp+1] = high
 		c.Bytes[jmp+2] = low
 	}
+
+	return nil
+}
+
+func (c *Compiler) compileLambda(node *ast.Lambda) error {
+	fn := &object.Function{}
+
+	for _, param := range node.Parameters {
+		if id, ok := param.(*ast.Identifier); ok {
+			fn.Parameters = append(fn.Parameters, id.Value)
+		} else {
+			return errors.New("compiler: function parameters must be identifiers")
+		}
+	}
+
+	fnComp := New()
+	fnComp.CompileExpression(node.Body)
+
+	code, err := bytecode.Read(fnComp.Bytes)
+	if err != nil {
+		return err
+	}
+
+	fn.Code = code
+	fn.Constants = fnComp.Constants
+	fn.Names = fnComp.Names
+
+	index, err := c.addConst(fn)
+	if err != nil {
+		return err
+	}
+
+	c.loadConst(index)
 
 	return nil
 }
