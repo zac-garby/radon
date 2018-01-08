@@ -61,6 +61,7 @@ var lexicalDictionary = []lexicalPair{
 
 	// Punctuation
 	{regex: `^->`, handler: lexemeHandler(token.RightArrow, 0, none)},
+	{regex: `^=>`, handler: lexemeHandler(token.LambdaArrow, 0, none)},
 	{regex: `^\+=`, handler: lexemeHandler(token.PlusEquals, 0, none)},
 	{regex: `^\+`, handler: lexemeHandler(token.Plus, 0, none)},
 	{regex: `^-=`, handler: lexemeHandler(token.MinusEquals, 0, none)},

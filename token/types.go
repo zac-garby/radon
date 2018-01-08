@@ -40,6 +40,7 @@ const (
 	Declare        = "declare"
 	Comma          = "comma"
 	RightArrow     = "right-arrow"
+	LambdaArrow    = "lambda-arrow"
 	Colon          = "colon"
 	Dot            = "dot"
 	Bang           = "bang"
