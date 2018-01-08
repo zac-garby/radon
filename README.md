@@ -59,8 +59,8 @@ pos = vector(101, 38)
    - `a(x, y) = x + y` will be called `a`
    - Will be printed as `<function a>` instead of `<function>`
  - Ruby-like code blocks after functions
-   - `f(x) { print("hello") }` is the same as `f(x, -> print("hello"))`
-   - Doesn't have to be in braces -- just a normal expression
+   - `f(x) { print("hello") }` is the same as `f(x, => print("hello"))`
+   - `f(x) { |a, b| a + b }` is the same as `f(x, (a, b) => a + b)`
  - String interpolation
    - `x = "world"; "hello ${x}"` is the same as `"hello world"`
    - Only occurs in double-quoted strings
