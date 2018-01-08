@@ -633,7 +633,7 @@ func callModel(f *Frame, model *object.Model, argCount int) {
 			return
 		}
 
-		args[len(params)-i-1] = top
+		args[i] = top
 	}
 
 	obj, err := model.Instantiate(args...)

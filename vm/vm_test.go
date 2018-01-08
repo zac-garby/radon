@@ -71,7 +71,7 @@ func TestEvaluation(t *testing.T) {
 		}`: "12",
 
 		`f(x, y, z) = x * y - z;
-		f(1, 2, 3)`: "5",
+		f(1, 2, 3)`: "-1",
 
 		`f(x, y) = {
 			z = x + y
