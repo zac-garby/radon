@@ -90,7 +90,8 @@ func preprocessExpression(n ast.Expression) (ast.Expression, error) {
 		*ast.Number,
 		*ast.Boolean,
 		*ast.Nil,
-		*ast.String:
+		*ast.String,
+		*ast.Model:
 		return node, nil
 
 	case *ast.Tuple:
@@ -254,18 +255,6 @@ func preprocessExpression(n ast.Expression) (ast.Expression, error) {
 			branch.Condition = cp
 			branch.Body = bp
 			node.Branches[i] = branch
-		}
-
-		return node, nil
-
-	case *ast.Model:
-		for i, param := range node.Parameters {
-			pp, err := preprocessExpression(param)
-			if err != nil {
-				return nil, err
-			}
-
-			node.Parameters[i] = pp
 		}
 
 		return node, nil
