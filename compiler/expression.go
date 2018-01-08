@@ -538,7 +538,13 @@ func (c *Compiler) compileFnCall(node *ast.FunctionCall) error {
 
 	count := 0
 
-	for _, arg := range node.Arguments {
+	args := make([]ast.Expression, len(node.Arguments))
+
+	for i, arg := range node.Arguments {
+		args[len(node.Arguments)-i-1] = arg
+	}
+
+	for _, arg := range args {
 		count++
 
 		if err := c.CompileExpression(arg); err != nil {
