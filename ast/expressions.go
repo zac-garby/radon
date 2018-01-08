@@ -144,4 +144,13 @@ type (
 		Tok        token.Token
 		Parameters []Expression
 	}
+
+	// A Lambda expression is an anyonymous closure which can be written without
+	// having to assign it to a variable.
+	Lambda struct {
+		expr
+		Tok        token.Token
+		Parameters []Expression
+		Body       Expression
+	}
 )
