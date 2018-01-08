@@ -84,8 +84,9 @@ func New(text, file string) *Parser {
 		token.Declare:        p.parseInfix,
 		token.Dot:            p.parseInfix,
 
-		token.LeftSquare: p.parseIndex,
-		token.LeftParen:  p.parseFunctionCall,
+		token.LeftSquare:  p.parseIndex,
+		token.LeftParen:   p.parseFunctionCall,
+		token.LambdaArrow: p.parseLambdaInfix,
 	}
 
 	p.next()

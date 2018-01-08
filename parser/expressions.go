@@ -307,3 +307,26 @@ func (p *Parser) parseFunctionCall(left ast.Expression) ast.Expression {
 
 	return node
 }
+
+func (p *Parser) parseLambdaInfix(left ast.Expression) ast.Expression {
+	node := &ast.Lambda{
+		Tok: p.cur,
+	}
+
+	switch lp := left.(type) {
+	case *ast.Tuple:
+		node.Parameters = lp.Value
+
+	case *ast.Identifier:
+		node.Parameters = []ast.Expression{lp}
+
+	default:
+		p.defaultErr("expected a tuple or an identifier to the left of =>")
+		return nil
+	}
+
+	p.next()
+	node.Body = p.parseExpression(lowest)
+
+	return node
+}
