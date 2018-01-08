@@ -3,7 +3,7 @@
 }
 
 html {
-    font-family: sans-serif;
+    font-family: 'Open Sans', sans-serif;
 }
 
 div.wrapper {
@@ -33,6 +33,10 @@ h2 {
 pre {
     margin-top: 0;
     text-align: left;
+}
+
+pre, code {
+    font-family: 'Inconsolata', monospace;
 }
 
 p {
