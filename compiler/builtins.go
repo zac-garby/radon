@@ -3,7 +3,6 @@ package compiler
 import (
 	"github.com/Zac-Garby/radon/ast"
 	"github.com/Zac-Garby/radon/bytecode"
-	"github.com/Zac-Garby/radon/object"
 )
 
 type builtinFn struct {
@@ -31,12 +30,6 @@ var builtinFns = []*builtinFn{
 
 		compile: func(c *Compiler, args []ast.Expression) error {
 			c.push(bytecode.Println)
-			index, err := c.addConst(object.EmptyObj)
-			if err != nil {
-				return err
-			}
-
-			c.loadConst(index)
 			return nil
 		},
 	},
@@ -48,12 +41,6 @@ var builtinFns = []*builtinFn{
 
 		compile: func(c *Compiler, args []ast.Expression) error {
 			c.push(bytecode.Print)
-			index, err := c.addConst(object.EmptyObj)
-			if err != nil {
-				return err
-			}
-
-			c.loadConst(index)
 			return nil
 		},
 	},
