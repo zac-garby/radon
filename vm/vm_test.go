@@ -89,8 +89,8 @@ func TestEvaluation(t *testing.T) {
 			| 5 -> "baz"
 		`: "baz",
 
-		`print("print :)")`: "()",
-		`echo("echo'd")`:    "()",
+		`print("print :)")`: "",
+		`echo("echo'd")`:    "",
 		"len([1, 2, 3])":    "3",
 
 		`vec = model(x, y)
