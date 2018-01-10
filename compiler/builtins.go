@@ -26,6 +26,15 @@ var builtinFns = []*builtinFn{
 	normalBuiltin("print", bytecode.Println),
 	normalBuiltin("echo", bytecode.Print),
 	normalBuiltin("len", bytecode.Length),
+	normalBuiltin("typeof", bytecode.Typeof),
+	normalBuiltin("modelof", bytecode.Modelof),
+	normalBuiltin("str", bytecode.ToStr),
+	normalBuiltin("num", bytecode.ToNum),
+	normalBuiltin("list", bytecode.ToList),
+	normalBuiltin("tuple", bytecode.ToTuple),
+	normalBuiltin("round", bytecode.Round),
+	normalBuiltin("floor", bytecode.Floor),
+	normalBuiltin("ceil", bytecode.Ceil),
 }
 
 func normalBuiltin(name string, op byte) *builtinFn {
