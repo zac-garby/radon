@@ -23,38 +23,22 @@ type builtinFn struct {
 }
 
 var builtinFns = []*builtinFn{
-	&builtinFn{
-		name:       "print",
+	normalBuiltin("print", bytecode.Println),
+	normalBuiltin("echo", bytecode.Print),
+	normalBuiltin("len", bytecode.Length),
+}
+
+func normalBuiltin(name string, op byte) *builtinFn {
+	return &builtinFn{
+		name:       name,
 		parameters: 1,
 		autoPush:   true,
 
 		compile: func(c *Compiler, args []ast.Expression) error {
-			c.push(bytecode.Println)
+			c.push(op)
 			return nil
 		},
-	},
-
-	&builtinFn{
-		name:       "echo",
-		parameters: 1,
-		autoPush:   true,
-
-		compile: func(c *Compiler, args []ast.Expression) error {
-			c.push(bytecode.Print)
-			return nil
-		},
-	},
-
-	&builtinFn{
-		name:       "len",
-		parameters: 1,
-		autoPush:   true,
-
-		compile: func(c *Compiler, args []ast.Expression) error {
-			c.push(bytecode.Length)
-			return nil
-		},
-	},
+	}
 }
 
 func getBuiltin(name string) (*builtinFn, bool) {
