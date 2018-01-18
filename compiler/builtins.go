@@ -3,7 +3,6 @@ package compiler
 import (
 	"github.com/Zac-Garby/radon/ast"
 	"github.com/Zac-Garby/radon/bytecode"
-	"github.com/Zac-Garby/radon/object"
 )
 
 type builtinFn struct {
@@ -24,50 +23,31 @@ type builtinFn struct {
 }
 
 var builtinFns = []*builtinFn{
-	&builtinFn{
-		name:       "print",
+	normalBuiltin("print", bytecode.Println),
+	normalBuiltin("echo", bytecode.Print),
+	normalBuiltin("len", bytecode.Length),
+	normalBuiltin("typeof", bytecode.Typeof),
+	normalBuiltin("modelof", bytecode.Modelof),
+	normalBuiltin("str", bytecode.ToStr),
+	normalBuiltin("num", bytecode.ToNum),
+	normalBuiltin("list", bytecode.ToList),
+	normalBuiltin("tuple", bytecode.ToTuple),
+	normalBuiltin("round", bytecode.Round),
+	normalBuiltin("floor", bytecode.Floor),
+	normalBuiltin("ceil", bytecode.Ceil),
+}
+
+func normalBuiltin(name string, op byte) *builtinFn {
+	return &builtinFn{
+		name:       name,
 		parameters: 1,
 		autoPush:   true,
 
 		compile: func(c *Compiler, args []ast.Expression) error {
-			c.push(bytecode.Println)
-			index, err := c.addConst(object.EmptyObj)
-			if err != nil {
-				return err
-			}
-
-			c.loadConst(index)
+			c.push(op)
 			return nil
 		},
-	},
-
-	&builtinFn{
-		name:       "echo",
-		parameters: 1,
-		autoPush:   true,
-
-		compile: func(c *Compiler, args []ast.Expression) error {
-			c.push(bytecode.Print)
-			index, err := c.addConst(object.EmptyObj)
-			if err != nil {
-				return err
-			}
-
-			c.loadConst(index)
-			return nil
-		},
-	},
-
-	&builtinFn{
-		name:       "len",
-		parameters: 1,
-		autoPush:   true,
-
-		compile: func(c *Compiler, args []ast.Expression) error {
-			c.push(bytecode.Length)
-			return nil
-		},
-	},
+	}
 }
 
 func getBuiltin(name string) (*builtinFn, bool) {

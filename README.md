@@ -42,6 +42,17 @@ pos = vector(101, 38)
    - Look through Go std libraries
  - More builtins
    - Files, `open()`, `write()`, etc...
+   - `typeof(x)`
+   - `str(x)`
+   - `num(x)`
+   - `round(x)`
+   - `floor(x)`
+   - `ceil(x)`
+ - Builtin models
+   - `file`
+   - Networking stuff
+     - Sockets
+     - HTTP
  - Go interop
  - Remove `Token()` method from AST nodes
  - Add better stack memory management

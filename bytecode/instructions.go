@@ -93,6 +93,34 @@ const (
 	// Length pushes the length of the collection at
 	// the top of the stack
 	Length
+
+	// Typeof gets the type of an object, as a string.
+	// e.g. typeof(5) == "num"
+	Typeof
+
+	// Modelof gets the model of an object.
+	Modelof
+
+	// ToStr converts an object to a string.
+	ToStr
+
+	// ToNum converts an object to a number.
+	ToNum
+
+	// ToList converts an object to a list.
+	ToList
+
+	// ToTuple converts an object to a tuple.
+	ToTuple
+
+	// Round rounds a number.
+	Round
+
+	// Floor rounds a number down.
+	Floor
+
+	// Ceil rounds a number up.
+	Ceil
 )
 
 // 90-99: control flow
