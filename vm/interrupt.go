@@ -10,10 +10,4 @@ const (
 
 	// Halts execution
 	InterruptHalt
-
-	// Pauses execution, until Resume is sent
-	InterruptPause
-
-	// Resumes paused execution
-	InterruptResume
 )
