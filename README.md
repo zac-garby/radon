@@ -35,6 +35,14 @@ pos = vector(101, 38)
 # TODO
 
 **Improvements**
+ - Refactor virtual machine
+   - Have the actual fetch-execute cycle on the VM, not the frame
+   - Have a call stack in the VM
+   - Every cycle, execute an instruction from the top frame in the call stack
+   - Store names in the frame, not the store
+     - The store should just store variables
+   - Other minor things
+   - Maybe rewrite it entirely
  - Add more tests
  - Standard library
    - HTTP
