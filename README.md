@@ -43,6 +43,9 @@ pos = vector(101, 38)
      - The store should just store variables
    - Other minor things
    - Maybe rewrite it entirely
+ - Improve REPL
+   - Don't use `pseudo-terminal`, because it doesn't allow unicode input
+   - Enable multi-line input
  - Add more tests
  - Standard library
    - HTTP
