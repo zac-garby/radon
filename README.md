@@ -1,3 +1,5 @@
+<h1 align="center">Radon</h1>
+
 [![Join the chat at https://gitter.im/radon-lang/Lobby](https://badges.gitter.im/radon-lang/Lobby.svg)](https://gitter.im/radon-lang/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/Zac-Garby/radon.svg?branch=master)](https://travis-ci.org/Zac-Garby/radon)
 
 Radon is a dynamically typed, compiled scripting language which runs on a virtual
