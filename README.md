@@ -68,6 +68,10 @@ pos = vector(101, 38)
      the bytecode.
 
 **New language features**
+ - Make a Radon bytecode file format (maybe `.rex` for Radon executable)
+   - Contains bytecode, constants, names, etc...
+   - Either in an unreadable binary format, or a readable, editable (JSON?) format
+   - Can be executed directly using `radon -x <filename>`
  - Implement the operator-assignment operators (e.g. `+=`)
    - They already parse properly, they just need compilation
  - Allow models to be named
