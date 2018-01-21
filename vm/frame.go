@@ -1,6 +1,8 @@
 package vm
 
 import (
+	"fmt"
+
 	"github.com/Zac-Garby/radon/bytecode"
 	"github.com/Zac-Garby/radon/object"
 )
@@ -21,13 +23,36 @@ type Frame struct {
 func (f *Frame) execute() {
 	f.forwardDeclare()
 
-	for ; f.offset < len(f.code) && f.vm.err == nil; f.offset++ {
+	for ; f.offset < len(f.code) && f.vm.err == nil && !f.vm.halted; f.offset++ {
 		instruction := f.code[f.offset]
+		f.handleInterrupts()
 		f.do(instruction)
 	}
 }
 
+func (f *Frame) handleInterrupts() {
+	select {
+	case i, ok := <-f.vm.Interrupts:
+		if !ok {
+			break
+		}
+
+		switch i {
+		case InterruptHalt:
+			fmt.Fprintln(f.vm.Out, "vm halted")
+			f.vm.halted = true
+		}
+
+	default:
+		break
+	}
+}
+
 func (f *Frame) do(i bytecode.Instruction) {
+	if f.vm.halted {
+		return
+	}
+
 	eff, ok := effectors[i.Code]
 	if !ok {
 		f.vm.err = Errf("execution of instruction %s not implemented", ErrNoInstruction, i.Name)

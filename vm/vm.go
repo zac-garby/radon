@@ -14,6 +14,7 @@ type VM struct {
 	frame     *Frame
 	returnVal object.Object
 	err       error
+	halted    bool
 
 	Interrupts chan Interrupt
 	Out        io.Writer
@@ -22,11 +23,13 @@ type VM struct {
 // New creates a new virtual machine.
 func New() *VM {
 	return &VM{
-		frames:     make([]*Frame, 0),
-		frame:      nil,
-		returnVal:  nil,
-		err:        nil,
-		Interrupts: make(chan Interrupt),
+		frames:    make([]*Frame, 0),
+		frame:     nil,
+		returnVal: nil,
+		err:       nil,
+		halted:    false,
+
+		Interrupts: make(chan Interrupt, 64),
 		Out:        os.Stdout,
 	}
 }
