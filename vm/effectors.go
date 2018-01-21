@@ -61,6 +61,7 @@ func init() {
 		bytecode.Round:   byteRound,
 		bytecode.Floor:   byteFloor,
 		bytecode.Ceil:    byteCeil,
+		bytecode.Sleep:   byteSleep,
 
 		bytecode.Jump:        byteJump,
 		bytecode.JumpIfTrue:  byteJumpIfTrue,

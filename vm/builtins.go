@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"strconv"
+	"time"
 
 	"github.com/Zac-Garby/radon/bytecode"
 	"github.com/Zac-Garby/radon/object"
@@ -195,4 +196,16 @@ func byteCeil(f *Frame, i bytecode.Instruction) {
 	f.stack.push(&object.Number{
 		Value: math.Ceil(num.Value),
 	})
+}
+
+func byteSleep(f *Frame, i bytecode.Instruction) {
+	top, _ := f.stack.pop()
+
+	num, ok := top.(*object.Number)
+	if !ok {
+		f.vm.err = Errf("expected a number to sleep(). got %s", ErrWrongType, top.Type())
+		return
+	}
+
+	time.Sleep(time.Millisecond * time.Duration(num.Value))
 }

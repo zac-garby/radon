@@ -121,6 +121,9 @@ const (
 
 	// Ceil rounds a number up.
 	Ceil
+
+	// Sleep sleeps for n milliseconds, where n is the top item in the stack
+	Sleep
 )
 
 // 90-99: control flow

@@ -35,6 +35,7 @@ var builtinFns = []*builtinFn{
 	normalBuiltin("round", bytecode.Round),
 	normalBuiltin("floor", bytecode.Floor),
 	normalBuiltin("ceil", bytecode.Ceil),
+	normalBuiltin("sleep", bytecode.Sleep),
 }
 
 func normalBuiltin(name string, op byte) *builtinFn {

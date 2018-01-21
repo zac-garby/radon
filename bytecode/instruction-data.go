@@ -55,6 +55,7 @@ var Instructions = map[byte]data{
 	Round:   {Name: "ROUND"},
 	Floor:   {Name: "FLOOR"},
 	Ceil:    {Name: "CEIL"},
+	Sleep:   {Name: "SLEEP"},
 
 	Jump:        {Name: "JUMP", HasArg: true},
 	JumpIfTrue:  {Name: "JUMP_IF_TRUE", HasArg: true},
