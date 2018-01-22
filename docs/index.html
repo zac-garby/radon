@@ -38,7 +38,7 @@ print(v)
 
 a = (2 ^ v) - 1
 
-# hoisted
+# this function is "hoisted" up to the top
 fib(n) = match n where
     | 0 -> 1,
     | 1 -> 1,
@@ -106,6 +106,7 @@ loop {
 apply(i => i * 2, 5) == 10
 call(=>5) == 5
 
+# some helpers
 call(fn) = fn()
 apply(fn, n) = fn(n)</code></pre>
                     </td>
