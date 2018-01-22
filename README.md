@@ -66,6 +66,19 @@ pos = vector(101, 38)
    - Maybe clear the stack after every statement. However, that would probably
      mean an instruction would have to be added after each statement, bloating
      the bytecode.
+ - Handle scopes better
+   - A new scope is created for:
+     - `if`
+	 - `for`
+	 - `while`
+	 - `loop`
+	 - `{ ... }`
+	 - `match` branches
+	 - but not `do` or `then` (after loops and ifs)
+   - I'll probably have to add some new instructions for this:
+     - `NEW_SCOPE` creates a new scope
+	 - `CLOSE_SCOPE` deletes the current scope, goes up one level
+   - Scopes will be stored in a *scope stack* somewhere in the VM
 
 **New language features**
  - Make a Radon bytecode file format (maybe `.rex` for Radon executable)
