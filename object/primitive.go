@@ -20,7 +20,7 @@ type (
 		Value string
 	}
 
-	// Nil is the absense of a value
+	// Nil is the absence of a value
 	Nil struct{}
 )
 
