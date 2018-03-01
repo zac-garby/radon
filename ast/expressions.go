@@ -29,12 +29,6 @@ type (
 		expr
 	}
 
-	// A Tuple is an ordered group of items.
-	Tuple struct {
-		expr
-		Value []Expression
-	}
-
 	// A List is a linked list of items.
 	List struct {
 		expr
