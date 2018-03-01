@@ -74,4 +74,5 @@ const (
 	Map    = "map"
 	Where  = "where"
 	Import = "import"
+	In     = "in"
 )
