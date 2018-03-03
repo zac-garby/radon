@@ -71,7 +71,6 @@ const (
 	Break  = "break"
 	Match  = "match"
 	Model  = "model"
-	Map    = "map"
 	Where  = "where"
 	Import = "import"
 	In     = "in"

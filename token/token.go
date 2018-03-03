@@ -37,7 +37,6 @@ var Keywords = map[string]Type{
 	"break":  Break,
 	"match":  Match,
 	"model":  Model,
-	"map":    Map,
 	"where":  Where,
 	"import": Import,
 	"do":     Do,
