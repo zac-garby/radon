@@ -156,11 +156,11 @@ func (p *Parser) parseExpressionList(end, sep token.Type) []ast.Expression {
 func (p *Parser) parseExpressionPairs(end, sep token.Type) map[ast.Expression]ast.Expression {
 	pairs := make(map[ast.Expression]ast.Expression)
 
+	p.next()
+
 	if p.curIs(end) {
 		return pairs
 	}
-
-	p.next()
 
 	key, val := p.parsePair()
 	pairs[key] = val

@@ -38,11 +38,7 @@ func (p *Parser) parseIdentifier() ast.Expression {
 }
 
 func (p *Parser) parseNumber() ast.Expression {
-	val, err := strconv.ParseFloat(p.cur.Literal, 64)
-	if err != nil {
-		p.Errors = append(p.Errors, err)
-		return nil
-	}
+	val, _ := strconv.ParseFloat(p.cur.Literal, 64)
 
 	return &ast.Number{
 		Value: val,
