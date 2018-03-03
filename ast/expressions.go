@@ -24,6 +24,12 @@ type (
 		Value bool
 	}
 
+	// A String represents a unicode string literal.
+	String struct {
+		expr
+		Value string
+	}
+
 	// Nil is the nil literal; the absense of a value.
 	Nil struct {
 		expr
