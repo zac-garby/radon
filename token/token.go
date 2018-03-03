@@ -40,6 +40,7 @@ var Keywords = map[string]Type{
 	"where":  Where,
 	"import": Import,
 	"do":     Do,
+	"end":    End,
 	"in":     In,
 }
 
