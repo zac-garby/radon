@@ -40,7 +40,7 @@ func New(lex func() token.Token) *Parser {
 
 // Parse parses an entire program into an `ast.Program`. Also, returns the
 // first error encountered, if any.
-func (p *Parser) Parse() *ast.Program {
+func (p *Parser) Parse() (*ast.Program, error) {
 	prog := &ast.Program{
 		Statements: make([]ast.Statement, 0, 10),
 	}
@@ -55,5 +55,9 @@ func (p *Parser) Parse() *ast.Program {
 		p.next()
 	}
 
-	return prog
+	if len(p.Errors) > 0 {
+		return nil, p.Errors[0]
+	}
+
+	return prog, nil
 }
