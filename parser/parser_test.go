@@ -73,6 +73,8 @@ func TestNoErrors(t *testing.T) {
 		"model (a, b)",
 		"model (a, b) | parent",
 		"model (a, b) | parent ('hello', 5, a)",
+
+		"=> 10",
 	}
 
 	for i, test := range tests {
@@ -107,6 +109,8 @@ func TestErrors(t *testing.T) {
 		"match x where | a": "expected right-arrow but got semi",
 
 		"model": "expected left-paren but got semi",
+
+		"=>": "unexpected token: semi",
 	}
 
 	for test, expectedMessage := range tests {

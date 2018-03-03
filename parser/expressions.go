@@ -222,3 +222,11 @@ func (p *Parser) parseModel() ast.Expression {
 
 	return node
 }
+
+func (p *Parser) parseNudLambda() ast.Expression {
+	p.next()
+
+	return &ast.Lambda{
+		Body: p.parseExpression(lowest),
+	}
+}
