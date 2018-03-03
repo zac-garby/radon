@@ -109,7 +109,14 @@ func Lexer(str, file string) func() token.Token {
 							}
 						}
 
-						isEnd := str[index] == '\n' || (str[index] == 'e' && str[index+1] == 'n' && str[index+2] == 'd')
+						// HACK: This is a horrible piece of code, but it works.
+						var isEnd bool
+						if index < len(str) {
+							isEnd = str[index] == '\n'
+							if index+2 < len(str) {
+								isEnd = isEnd || str[index] == 'e' && str[index+1] == 'n' && str[index+2] == 'd'
+							}
+						}
 
 						if (isLineEnding && index < len(str) && isEnd) || index >= len(str) {
 							ch <- token.Token{
