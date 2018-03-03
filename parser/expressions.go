@@ -115,3 +115,33 @@ func (p *Parser) parsePrefix() ast.Expression {
 
 	return node
 }
+
+func (p *Parser) parseIf() ast.Expression {
+	p.next()
+
+	node := &ast.If{
+		Condition: p.parseExpression(lowest),
+	}
+
+	if p.peekIs(token.Do) {
+		p.next()
+		node.Consequence = p.parseBlock()
+	} else {
+		if !p.expect(token.Then) {
+			return nil
+		}
+
+		p.next()
+		node.Consequence = p.parseExpression(lowest)
+	}
+
+	if p.peekIs(token.Else) {
+		p.next()
+		p.next()
+		node.Alternative = p.parseExpression(lowest)
+	} else {
+		node.Alternative = &ast.Nil{}
+	}
+
+	return node
+}

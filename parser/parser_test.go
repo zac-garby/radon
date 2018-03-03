@@ -41,6 +41,21 @@ func TestNoErrors(t *testing.T) {
 		"-5",
 		"+do 1; 2; 3 end",
 		"!true",
+
+		"if true then 1",
+		"if true then 1 else 2",
+		`if true do
+           1
+           2
+         end`,
+		`if true do
+           1
+           2
+         end else do
+           3
+           4
+         end
+        `,
 	}
 
 	for i, test := range tests {
@@ -68,6 +83,8 @@ func TestErrors(t *testing.T) {
 		"{":     "unexpected token: semi",
 		"{1:":   "unexpected token: semi",
 		"{1:2,": "unexpected token: semi",
+
+		"if true": "expected then but got semi",
 	}
 
 	for test, expectedMessage := range tests {

@@ -40,6 +40,7 @@ func New(lex func() token.Token) *Parser {
 		token.Minus:      p.parsePrefix,
 		token.Plus:       p.parsePrefix,
 		token.Bang:       p.parsePrefix,
+		token.If:         p.parseIf,
 	}
 
 	p.leds = map[token.Type]led{}
