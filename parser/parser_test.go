@@ -75,6 +75,10 @@ func TestNoErrors(t *testing.T) {
 		"model (a, b) | parent ('hello', 5, a)",
 
 		"=> 10",
+
+		"1 + 1",
+		"1 + 2 * 3",
+		"a, b",
 	}
 
 	for i, test := range tests {

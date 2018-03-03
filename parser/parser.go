@@ -46,7 +46,40 @@ func New(lex func() token.Token) *Parser {
 		token.LambdaArrow: p.parseNudLambda,
 	}
 
-	p.leds = map[token.Type]led{}
+	p.leds = map[token.Type]led{
+		token.Plus:           p.parseInfix,
+		token.Minus:          p.parseInfix,
+		token.Star:           p.parseInfix,
+		token.Slash:          p.parseInfix,
+		token.Equal:          p.parseInfix,
+		token.NotEqual:       p.parseInfix,
+		token.LessThan:       p.parseInfix,
+		token.GreaterThan:    p.parseInfix,
+		token.Or:             p.parseInfix,
+		token.And:            p.parseInfix,
+		token.BitOr:          p.parseInfix,
+		token.BitAnd:         p.parseInfix,
+		token.Exp:            p.parseInfix,
+		token.FloorDiv:       p.parseInfix,
+		token.Mod:            p.parseInfix,
+		token.LessThanEq:     p.parseInfix,
+		token.GreaterThanEq:  p.parseInfix,
+		token.AndEquals:      p.parseInfix,
+		token.BitAndEquals:   p.parseInfix,
+		token.BitOrEquals:    p.parseInfix,
+		token.ExpEquals:      p.parseInfix,
+		token.FloorDivEquals: p.parseInfix,
+		token.MinusEquals:    p.parseInfix,
+		token.ModEquals:      p.parseInfix,
+		token.OrEquals:       p.parseInfix,
+		token.PlusEquals:     p.parseInfix,
+		token.SlashEquals:    p.parseInfix,
+		token.StarEquals:     p.parseInfix,
+		token.Assign:         p.parseInfix,
+		token.Declare:        p.parseInfix,
+		token.Dot:            p.parseInfix,
+		token.Comma:          p.parseInfix,
+	}
 
 	p.next()
 	p.next()

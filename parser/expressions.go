@@ -170,7 +170,7 @@ func (p *Parser) parseMatch() ast.Expression {
 
 		p.next()
 
-		pair.Body = p.parseExpression(lowest)
+		pair.Body = p.parseExpression(join)
 		node.Branches = append(node.Branches, pair)
 
 		if p.peekIs(token.Comma) {
@@ -229,4 +229,17 @@ func (p *Parser) parseNudLambda() ast.Expression {
 	return &ast.Lambda{
 		Body: p.parseExpression(lowest),
 	}
+}
+
+func (p *Parser) parseInfix(left ast.Expression) ast.Expression {
+	node := &ast.Infix{
+		Operator: p.cur.Literal,
+		Left:     left,
+	}
+
+	precedence := p.curPrecedence()
+	p.next()
+	node.Right = p.parseExpression(precedence)
+
+	return node
 }

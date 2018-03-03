@@ -9,6 +9,7 @@ import (
 // in the `precedences` variable.
 const (
 	lowest = iota
+	join
 	assign
 	lambda
 	or
@@ -61,6 +62,7 @@ var precedences = map[token.Type]int{
 	token.LeftSquare:     index,
 	token.LeftParen:      call,
 	token.LambdaArrow:    lambda,
+	token.Comma:          join,
 }
 
 func (p *Parser) peekPrecedence() int {
@@ -132,7 +134,7 @@ func (p *Parser) parseExpressionList(end, sep token.Type) []ast.Expression {
 	}
 
 	p.next()
-	exprs = append(exprs, p.parseExpression(lowest))
+	exprs = append(exprs, p.parseExpression(join))
 
 	for p.peekIs(sep) {
 		p.next()
@@ -143,7 +145,7 @@ func (p *Parser) parseExpressionList(end, sep token.Type) []ast.Expression {
 		}
 
 		p.next()
-		exprs = append(exprs, p.parseExpression(lowest))
+		exprs = append(exprs, p.parseExpression(join))
 	}
 
 	if !p.expect(end) {
@@ -194,7 +196,7 @@ func (p *Parser) parsePair() (ast.Expression, ast.Expression) {
 
 	p.next()
 
-	value := p.parseExpression(lowest)
+	value := p.parseExpression(join)
 
 	return key, value
 }
