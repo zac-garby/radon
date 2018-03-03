@@ -88,3 +88,23 @@ func (p *Parser) parseMap() ast.Expression {
 		Value: p.parseExpressionPairs(token.RightBrace, token.Comma),
 	}
 }
+
+func (p *Parser) parseBlock() ast.Expression {
+	node := &ast.Block{
+		Value: make([]ast.Statement, 0, 8),
+	}
+
+	p.next()
+
+	for !p.curIs(token.End) && !p.curIs(token.EOF) {
+		stmt := p.parseStatement()
+
+		if stmt != nil {
+			node.Value = append(node.Value, stmt)
+		}
+
+		p.next()
+	}
+
+	return node
+}
