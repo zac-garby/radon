@@ -160,6 +160,8 @@ func (p *Parser) parseExpressionPairs(end, sep token.Type) map[ast.Expression]as
 		return pairs
 	}
 
+	p.next()
+
 	key, val := p.parsePair()
 	pairs[key] = val
 

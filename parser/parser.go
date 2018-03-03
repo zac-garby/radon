@@ -27,7 +27,15 @@ func New(lex func() token.Token) *Parser {
 	}
 
 	p.nuds = map[token.Type]nud{
-		token.ID: p.parseIdentifier,
+		token.ID:         p.parseIdentifier,
+		token.Number:     p.parseNumber,
+		token.True:       p.parseBoolean,
+		token.False:      p.parseBoolean,
+		token.Nil:        p.parseNil,
+		token.String:     p.parseString,
+		token.LeftParen:  p.parseGroupedExpression,
+		token.LeftSquare: p.parseList,
+		token.LeftBrace:  p.parseMap,
 	}
 
 	p.leds = map[token.Type]led{}
