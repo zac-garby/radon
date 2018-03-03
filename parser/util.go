@@ -1,0 +1,251 @@
+package parser
+
+import (
+	"github.com/Zac-Garby/radon/ast"
+	"github.com/Zac-Garby/radon/token"
+)
+
+// The precedences of different operators. The actual operators are described
+// in the `precedences` variable.
+const (
+	lowest = iota
+	assign
+	lambda
+	or
+	and
+	bitOr
+	bitAnd
+	equals
+	compare
+	sum
+	product
+	exp
+	prefix
+	call
+	index
+)
+
+var precedences = map[token.Type]int{
+	token.Assign:         assign,
+	token.Declare:        assign,
+	token.AndEquals:      assign,
+	token.BitAndEquals:   assign,
+	token.BitOrEquals:    assign,
+	token.ExpEquals:      assign,
+	token.FloorDivEquals: assign,
+	token.MinusEquals:    assign,
+	token.ModEquals:      assign,
+	token.OrEquals:       assign,
+	token.PlusEquals:     assign,
+	token.SlashEquals:    assign,
+	token.StarEquals:     assign,
+	token.Or:             or,
+	token.And:            and,
+	token.BitOr:          bitOr,
+	token.BitAnd:         bitAnd,
+	token.Equal:          equals,
+	token.NotEqual:       equals,
+	token.LessThan:       compare,
+	token.GreaterThan:    compare,
+	token.LessThanEq:     compare,
+	token.GreaterThanEq:  compare,
+	token.Plus:           sum,
+	token.Minus:          sum,
+	token.Star:           product,
+	token.Slash:          product,
+	token.Mod:            product,
+	token.Exp:            exp,
+	token.FloorDiv:       exp,
+	token.Bang:           prefix,
+	token.Dot:            index,
+	token.LeftSquare:     index,
+	token.LeftParen:      call,
+	token.LambdaArrow:    lambda,
+}
+
+func (p *Parser) peekPrecedence() int {
+	if precedence, ok := precedences[p.peek.Type]; ok {
+		return precedence
+	}
+
+	return 0
+}
+
+func (p *Parser) curPrecedence() int {
+	if precedence, ok := precedences[p.peek.Type]; ok {
+		return precedence
+	}
+
+	return 0
+}
+
+func (p *Parser) next() {
+	p.cur = p.peek
+	p.peek = p.lex()
+
+	if p.peek.Type == token.Illegal {
+		p.err(
+			"illegal token encountered. literal: `%s`",
+			p.peek.Start,
+			p.peek.End,
+			p.peek.Literal,
+		)
+	}
+}
+
+func (p *Parser) curIs(ts ...token.Type) bool {
+	for _, t := range ts {
+		if p.cur.Type == t {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (p *Parser) peekIs(ts ...token.Type) bool {
+	for _, t := range ts {
+		if p.peek.Type == t {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (p *Parser) expect(t token.Type) bool {
+	if p.peekIs(t) {
+		p.next()
+		return true
+	}
+
+	p.peekErr(t)
+	return false
+}
+
+func (p *Parser) parseExpressionList(end, sep token.Type) []ast.Expression {
+	var exprs []ast.Expression
+
+	if p.peekIs(end) {
+		p.next()
+		return exprs
+	}
+
+	p.next()
+	exprs = append(exprs, p.parseExpression(lowest))
+
+	for p.peekIs(sep) {
+		p.next()
+
+		if p.peekIs(end) {
+			p.next()
+			return exprs
+		}
+
+		p.next()
+		exprs = append(exprs, p.parseExpression(lowest))
+	}
+
+	if !p.expect(end) {
+		return nil
+	}
+
+	return exprs
+}
+
+func (p *Parser) parseExpressionPairs(end, sep token.Type) map[ast.Expression]ast.Expression {
+	pairs := make(map[ast.Expression]ast.Expression)
+
+	if p.curIs(end) {
+		return pairs
+	}
+
+	key, val := p.parsePair()
+	pairs[key] = val
+
+	for p.peekIs(sep) {
+		p.next()
+
+		if p.peekIs(end) {
+			p.next()
+			return pairs
+		}
+
+		p.next()
+		key, val = p.parsePair()
+		pairs[key] = val
+	}
+
+	if !p.expect(end) {
+		return nil
+	}
+
+	return pairs
+}
+
+func (p *Parser) parsePair() (ast.Expression, ast.Expression) {
+	key := p.parseExpression(index)
+
+	if !p.expect(token.Colon) {
+		return nil, nil
+	}
+
+	p.next()
+
+	value := p.parseExpression(lowest)
+
+	return key, value
+}
+
+func (p *Parser) parseParams(end, sep token.Type) []ast.Expression {
+	params := make([]ast.Expression, 0)
+
+	if p.peekIs(end) {
+		p.next()
+		return params
+	}
+
+	if !p.expect(token.ID) {
+		return nil
+	}
+
+	params = append(params, p.parseID())
+
+	for p.peekIs(sep) {
+		p.next()
+
+		if p.peekIs(end) {
+			break
+		}
+
+		if !p.expect(token.ID) {
+			return nil
+		}
+
+		params = append(params, p.parseID())
+	}
+
+	if !p.expect(end) {
+		return nil
+	}
+
+	for i, ida := range params {
+		for j, idb := range params {
+			if i == j {
+				continue
+			}
+
+			var (
+				left  = ida.(*ast.Identifier).Value
+				right = idb.(*ast.Identifier).Value
+			)
+
+			if left == right {
+				p.defaultErr("identical parameter %s not allowed", left)
+				return nil
+			}
+		}
+	}
+
+	return params
+}
