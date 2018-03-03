@@ -145,3 +145,56 @@ func (p *Parser) parseIf() ast.Expression {
 
 	return node
 }
+
+func (p *Parser) parseMatch() ast.Expression {
+	p.next()
+	node := &ast.Match{
+		Input: p.parseExpression(lowest),
+	}
+
+	if !p.expect(token.Where) {
+		return nil
+	}
+
+	for p.peekIs(token.BitOr) {
+		pair := ast.MatchBranch{}
+
+		p.next()
+		p.next()
+
+		pair.Condition = p.parseExpression(lowest)
+
+		if !p.expect(token.RightArrow) {
+			return nil
+		}
+
+		p.next()
+
+		pair.Body = p.parseExpression(lowest)
+		node.Branches = append(node.Branches, pair)
+
+		if p.peekIs(token.Comma) {
+			p.next()
+		} else {
+			break
+		}
+	}
+
+	hasWildcard := false
+
+	for _, branch := range node.Branches {
+		if id, ok := branch.Condition.(*ast.Identifier); ok && id.Value == "_" {
+			hasWildcard = true
+			break
+		}
+	}
+
+	if !hasWildcard {
+		node.Branches = append(node.Branches, ast.MatchBranch{
+			Condition: &ast.Identifier{Value: "_"},
+			Body:      &ast.Nil{},
+		})
+	}
+
+	return node
+}

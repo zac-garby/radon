@@ -45,17 +45,28 @@ func TestNoErrors(t *testing.T) {
 		"if true then 1",
 		"if true then 1 else 2",
 		`if true do
-           1
-           2
+             1
+             2
          end`,
 		`if true do
-           1
-           2
+             1
+             2
          end else do
-           3
-           4
+             3
+             4
          end
         `,
+
+		"match n where",
+		`match n where
+             | a -> b`,
+		`match n where
+             | a -> b,
+             | b -> c`,
+		`match n where
+             | a -> b,
+             | b -> c,
+             | _ -> d`,
 	}
 
 	for i, test := range tests {
@@ -85,6 +96,9 @@ func TestErrors(t *testing.T) {
 		"{1:2,": "unexpected token: semi",
 
 		"if true": "expected then but got semi",
+
+		"match x":           "expected where but got semi",
+		"match x where | a": "expected right-arrow but got semi",
 	}
 
 	for test, expectedMessage := range tests {
