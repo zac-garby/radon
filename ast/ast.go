@@ -22,3 +22,14 @@ type Expression interface {
 type Program struct {
 	Statements []Statement
 }
+
+// Tree returns a nicely formatted tree representation of the program.
+func (p *Program) Tree() string {
+	str := ""
+
+	for _, stmt := range p.Statements {
+		str += Tree(stmt, 0, "") + "\n"
+	}
+
+	return str
+}

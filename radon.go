@@ -8,7 +8,6 @@ import (
 
 	"github.com/Zac-Garby/radon/lexer"
 	"github.com/Zac-Garby/radon/parser"
-	"github.com/davecgh/go-spew/spew"
 )
 
 func main() {
@@ -42,7 +41,7 @@ func run(code string) error {
 		return err
 	}
 
-	spew.Println(prog)
+	fmt.Println(prog.Tree())
 
 	return nil
 }
