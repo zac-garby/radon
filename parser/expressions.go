@@ -198,3 +198,27 @@ func (p *Parser) parseMatch() ast.Expression {
 
 	return node
 }
+
+func (p *Parser) parseModel() ast.Expression {
+	if !p.expect(token.LeftParen) {
+		return nil
+	}
+
+	node := &ast.Model{
+		Parameters: p.parseParams(token.RightParen, token.Comma),
+	}
+
+	if p.peekIs(token.BitOr) {
+		p.next()
+		p.next()
+
+		node.Parent = p.parseExpression(lowest)
+
+		if p.peekIs(token.LeftParen) {
+			p.next()
+			node.ParentParameters = p.parseExpressionList(token.RightParen, token.Comma)
+		}
+	}
+
+	return node
+}

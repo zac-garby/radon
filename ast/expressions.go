@@ -96,8 +96,9 @@ type (
 	// the syntax is `model dog (name) : animal (name, "dog")`.
 	Model struct {
 		expr
-		Parameters []Expression
-		Parent     Expression
+		Parameters       []Expression
+		Parent           Expression
+		ParentParameters []Expression
 	}
 
 	// A Lambda expression is an anonymous closure.
