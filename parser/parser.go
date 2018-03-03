@@ -26,7 +26,10 @@ func New(lex func() token.Token) *Parser {
 		Errors: make([]error, 0),
 	}
 
-	p.nuds = map[token.Type]nud{}
+	p.nuds = map[token.Type]nud{
+		token.ID: p.parseIdentifier,
+	}
+
 	p.leds = map[token.Type]led{}
 
 	p.next()

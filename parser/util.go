@@ -209,7 +209,7 @@ func (p *Parser) parseParams(end, sep token.Type) []ast.Expression {
 		return nil
 	}
 
-	params = append(params, p.parseID())
+	params = append(params, p.parseIdentifier())
 
 	for p.peekIs(sep) {
 		p.next()
@@ -222,7 +222,7 @@ func (p *Parser) parseParams(end, sep token.Type) []ast.Expression {
 			return nil
 		}
 
-		params = append(params, p.parseID())
+		params = append(params, p.parseIdentifier())
 	}
 
 	if !p.expect(end) {
