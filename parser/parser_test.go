@@ -37,6 +37,10 @@ func TestNoErrors(t *testing.T) {
 		"do 1; 2; 3 end",
 		"do end",
 		"do do 5 end end",
+
+		"-5",
+		"+do 1; 2; 3 end",
+		"!true",
 	}
 
 	for i, test := range tests {

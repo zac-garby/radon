@@ -104,3 +104,14 @@ func (p *Parser) parseBlock() ast.Expression {
 
 	return node
 }
+
+func (p *Parser) parsePrefix() ast.Expression {
+	node := &ast.Prefix{
+		Operator: p.cur.Literal,
+	}
+
+	p.next()
+	node.Right = p.parseExpression(prefix)
+
+	return node
+}
