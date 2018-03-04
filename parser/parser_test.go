@@ -90,6 +90,9 @@ func TestNoErrors(t *testing.T) {
 
 		"while true, x",
 		"while true do a; b; c end",
+
+		"for a in b, c",
+		"for a in b do c; d; e end",
 	}
 
 	for i, test := range tests {
@@ -128,6 +131,8 @@ func TestErrors(t *testing.T) {
 		"=>": "unexpected token: semi",
 
 		"while true 5": "expected comma but got number",
+		"for a do b":   "expected in but got do",
+		"for a in b c": "expected comma but got identifier",
 	}
 
 	for test, expectedMessage := range tests {
