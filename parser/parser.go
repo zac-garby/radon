@@ -41,6 +41,7 @@ func New(lex func() token.Token) *Parser {
 		token.Plus:        p.parsePrefix,
 		token.Bang:        p.parsePrefix,
 		token.LambdaArrow: p.parsePrefix,
+		token.Comma:       p.parsePrefix,
 		token.If:          p.parseIf,
 		token.Match:       p.parseMatch,
 		token.Model:       p.parseModel,
