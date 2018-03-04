@@ -65,6 +65,25 @@ var precedences = map[token.Type]int{
 	token.Comma:          join,
 }
 
+var argTokens = []token.Type{
+	token.Number,
+	token.String,
+	token.ID,
+	token.LeftParen,
+	token.LeftSquare,
+	token.LeftBrace,
+	token.Bang,
+	token.True,
+	token.False,
+	token.Nil,
+	token.If,
+	token.While,
+	token.For,
+	token.Do,
+	token.Match,
+	token.Model,
+}
+
 func (p *Parser) peekPrecedence() int {
 	if precedence, ok := precedences[p.peek.Type]; ok {
 		return precedence
