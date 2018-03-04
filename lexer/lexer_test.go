@@ -16,7 +16,7 @@ func TestLexing(t *testing.T) {
 
 	# keywords now :)
 	return true false nil if then else
-	while for loop next break match model in
+	while for next break match model in
 
 	$
 	`
@@ -35,7 +35,7 @@ func TestLexing(t *testing.T) {
 		AndEquals, BitOrEquals, BitAndEquals,
 
 		Return, True, False, Nil, If, Then, Else, While,
-		For, Loop, Next, Break, Match, Model, In,
+		For, Next, Break, Match, Model, In,
 
 		Illegal,
 	}

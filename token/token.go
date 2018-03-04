@@ -32,7 +32,6 @@ var Keywords = map[string]Type{
 	"else":   Else,
 	"while":  While,
 	"for":    For,
-	"loop":   Loop,
 	"next":   Next,
 	"break":  Break,
 	"match":  Match,

@@ -65,7 +65,6 @@ const (
 	Else   = "else"
 	While  = "while"
 	For    = "for"
-	Loop   = "loop"
 	Do     = "do"
 	End    = "end"
 	Next   = "next"
