@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/Zac-Garby/radon/ast"
 	"github.com/Zac-Garby/radon/lexer"
 	. "github.com/Zac-Garby/radon/parser"
 )
@@ -82,11 +83,7 @@ func TestNoErrors(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		var (
-			l      = lexer.Lexer(test, fmt.Sprintf("test %d: %s", i, test))
-			p      = New(l)
-			_, err = p.Parse()
-		)
+		_, err := parse(test, fmt.Sprintf("test %d: %s", i, test))
 
 		if err != nil {
 			fmt.Println(err.Error())
@@ -118,11 +115,7 @@ func TestErrors(t *testing.T) {
 	}
 
 	for test, expectedMessage := range tests {
-		var (
-			l      = lexer.Lexer(test, fmt.Sprintf("test %s", test))
-			p      = New(l)
-			_, err = p.Parse()
-		)
+		_, err := parse(test, fmt.Sprintf("test %s", test))
 
 		if err == nil {
 			t.Fail()
@@ -135,4 +128,39 @@ func TestErrors(t *testing.T) {
 			t.Fail()
 		}
 	}
+}
+
+func TestPrecedence(t *testing.T) {
+	tests := map[string]string{
+		"1 + 2 * 3": "1 + (2 * 3)",
+		"1 * 2 + 3": "(1 * 2) + 3",
+		"1 + 2, 3":  "(1 + 2), 3",
+		"1, 2 + 3":  "1, (2 + 3)",
+	}
+
+	for test, expected := range tests {
+		testAST, err := parse(test, "test")
+		if err != nil {
+			t.Fail()
+		}
+
+		expectedAST, err := parse(expected, "test")
+		if err != nil {
+			t.Fail()
+		}
+
+		if testAST.Tree() != expectedAST.Tree() {
+			fmt.Println(test, "doesn't parse the same as", expected)
+			t.Fail()
+		}
+	}
+}
+
+func parse(str, file string) (*ast.Program, error) {
+	var (
+		l = lexer.Lexer(str, file)
+		p = New(l)
+	)
+
+	return p.Parse()
 }

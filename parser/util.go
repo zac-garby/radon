@@ -70,15 +70,15 @@ func (p *Parser) peekPrecedence() int {
 		return precedence
 	}
 
-	return 0
+	return lowest
 }
 
 func (p *Parser) curPrecedence() int {
-	if precedence, ok := precedences[p.peek.Type]; ok {
+	if precedence, ok := precedences[p.cur.Type]; ok {
 		return precedence
 	}
 
-	return 0
+	return lowest
 }
 
 func (p *Parser) next() {
