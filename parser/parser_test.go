@@ -109,7 +109,11 @@ func TestErrors(t *testing.T) {
 		"match x":           "expected where but got semi",
 		"match x where | a": "expected right-arrow but got semi",
 
-		"model": "expected left-paren but got semi",
+		"model":           "expected left-paren but got semi",
+		"model (5)":       "expected identifier but got number",
+		"model (a, true)": "expected identifier but got true",
+		"model (x":        "expected right-paren but got semi",
+		"model (a, b, a)": "identical parameter a not allowed",
 
 		"=>": "unexpected token: semi",
 	}
