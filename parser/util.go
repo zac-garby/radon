@@ -9,9 +9,9 @@ import (
 // in the `precedences` variable.
 const (
 	lowest = iota
-	join
 	assign
 	lambda
+	join
 	or
 	and
 	bitOr
