@@ -12,6 +12,9 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.Semi:
 		return nil
 
+	case token.Return:
+		return p.parseReturn()
+
 	default:
 		node = p.parseExpressionStatement()
 	}
@@ -26,5 +29,19 @@ func (p *Parser) parseStatement() ast.Statement {
 func (p *Parser) parseExpressionStatement() ast.Statement {
 	return &ast.ExpressionStatement{
 		Expr: p.parseExpression(lowest),
+	}
+}
+
+func (p *Parser) parseReturn() ast.Statement {
+	if p.peekIs(token.Semi) {
+		return &ast.Return{
+			Value: &ast.Nil{},
+		}
+	}
+
+	p.next()
+
+	return &ast.Return{
+		Value: p.parseExpression(lowest),
 	}
 }
