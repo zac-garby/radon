@@ -37,9 +37,17 @@ func (p *Parser) defaultErr(msg string, args ...interface{}) {
 }
 
 func (p *Parser) peekErr(t token.Type) {
-	p.err("expected %s but got %s", p.peek.Start, p.peek.End, t, p.peek.Type)
+	if p.peek.Type == token.Semi {
+		p.err("unexpected end of line, wanted '%s'", p.peek.Start, p.peek.End, t)
+	} else {
+		p.err("expected '%s' but got '%s'", p.peek.Start, p.peek.End, t, p.peek.Type)
+	}
 }
 
 func (p *Parser) unexpected(t token.Type) {
-	p.defaultErr("unexpected token: %s", t)
+	if t == token.Semi {
+		p.defaultErr("unexpected end of line")
+	} else {
+		p.defaultErr("unexpected token: %s", t)
+	}
 }

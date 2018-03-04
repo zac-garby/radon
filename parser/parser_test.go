@@ -112,32 +112,32 @@ func TestErrors(t *testing.T) {
 		")": "unexpected token: right-paren",
 		"$": "illegal token encountered. literal: `$`",
 
-		"(":     "unexpected token: semi",
-		"[":     "unexpected token: semi",
-		"[1,":   "unexpected token: semi",
-		"{":     "unexpected token: semi",
-		"{1:":   "unexpected token: semi",
-		"{1:2,": "unexpected token: semi",
+		"(":     "unexpected end of line",
+		"[":     "unexpected end of line",
+		"[1,":   "unexpected end of line",
+		"{":     "unexpected end of line",
+		"{1:":   "unexpected end of line",
+		"{1:2,": "unexpected end of line",
 
-		"if true": "expected then but got semi",
+		"if true": "unexpected end of line, wanted 'then'",
 
-		"match x":           "expected where but got semi",
-		"match x where | a": "expected right-arrow but got semi",
+		"match x":           "unexpected end of line, wanted 'where'",
+		"match x where | a": "unexpected end of line, wanted 'right-arrow'",
 
-		"model":           "expected left-paren but got semi",
-		"model (5)":       "expected identifier but got number",
-		"model (a, true)": "expected identifier but got true",
-		"model (x":        "expected right-paren but got semi",
+		"model":           "unexpected end of line, wanted 'left-paren'",
+		"model (5)":       "expected 'identifier' but got 'number'",
+		"model (a, true)": "expected 'identifier' but got 'true'",
+		"model (x":        "unexpected end of line, wanted 'right-paren'",
 		"model (a, b, a)": "identical parameter a not allowed",
 
-		"=>": "unexpected token: semi",
+		"=>": "unexpected end of line",
 
-		"while true 5": "expected comma but got number",
-		"for a do b":   "expected in but got do",
-		"for a in b c": "expected comma but got identifier",
+		"while true 5": "expected 'comma' but got 'number'",
+		"for a do b":   "expected 'in' but got 'do'",
+		"for a in b c": "expected 'comma' but got 'identifier'",
 
-		"import":   "expected string but got semi",
-		"import 5": "expected string but got number",
+		"import":   "unexpected end of line, wanted 'string'",
+		"import 5": "expected 'string' but got 'number'",
 	}
 
 	for test, expectedMessage := range tests {
