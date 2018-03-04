@@ -3,8 +3,8 @@ animal = model (name, species)
 dog = model (name) : animal (name, "dog")
 cat = model (name) : animal (name, "cat")
 
-a = dog("dog a")
-b = cat("cat b")
+a = dog "dog a"
+b = cat "cat b"
 
 assert a == {
     __model: dog,

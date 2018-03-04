@@ -8,4 +8,4 @@ calc(input) = {
         | "/" -> result = result / 2
 }
 
-print(calc("++*++/"))
+print calc "++*++/"
