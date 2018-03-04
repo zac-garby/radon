@@ -87,6 +87,9 @@ func TestNoErrors(t *testing.T) {
 
 		"next",
 		"break",
+
+		"while true, x",
+		"while true do a; b; c end",
 	}
 
 	for i, test := range tests {
@@ -123,6 +126,8 @@ func TestErrors(t *testing.T) {
 		"model (a, b, a)": "identical parameter a not allowed",
 
 		"=>": "unexpected token: semi",
+
+		"while true 5": "expected comma but got number",
 	}
 
 	for test, expectedMessage := range tests {

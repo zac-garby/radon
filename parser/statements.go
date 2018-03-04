@@ -21,6 +21,9 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.Next:
 		return new(ast.Next)
 
+	case token.While:
+		return p.parseWhile()
+
 	default:
 		node = p.parseExpressionStatement()
 	}
@@ -50,4 +53,26 @@ func (p *Parser) parseReturn() ast.Statement {
 	return &ast.Return{
 		Value: p.parseExpression(lowest),
 	}
+}
+
+func (p *Parser) parseWhile() ast.Statement {
+	p.next()
+
+	node := &ast.While{
+		Condition: p.parseExpression(join),
+	}
+
+	if p.peekIs(token.Do) {
+		p.next()
+		node.Body = p.parseBlock()
+	} else {
+		if !p.expect(token.Comma) {
+			return nil
+		}
+
+		p.next()
+		node.Body = p.parseExpression(lowest)
+	}
+
+	return node
 }
