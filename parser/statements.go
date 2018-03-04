@@ -27,6 +27,9 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.For:
 		return p.parseFor()
 
+	case token.Import:
+		return p.parseImport()
+
 	default:
 		node = p.parseExpressionStatement()
 	}
@@ -108,4 +111,16 @@ func (p *Parser) parseFor() ast.Statement {
 	}
 
 	return node
+}
+
+func (p *Parser) parseImport() ast.Statement {
+	if !p.expect(token.String) {
+		return nil
+	}
+
+	str := p.parseExpression(lowest).(*ast.String)
+
+	return &ast.Import{
+		Path: str.Value,
+	}
 }

@@ -93,6 +93,8 @@ func TestNoErrors(t *testing.T) {
 
 		"for a in b, c",
 		"for a in b do c; d; e end",
+
+		"import 'foo'",
 	}
 
 	for i, test := range tests {
@@ -133,6 +135,9 @@ func TestErrors(t *testing.T) {
 		"while true 5": "expected comma but got number",
 		"for a do b":   "expected in but got do",
 		"for a in b c": "expected comma but got identifier",
+
+		"import":   "expected string but got semi",
+		"import 5": "expected string but got number",
 	}
 
 	for test, expectedMessage := range tests {
