@@ -150,7 +150,7 @@ func TestErrors(t *testing.T) {
 		message := err.(*Error).Message
 
 		if message != expectedMessage {
-			fmt.Printf("expected %s, got %s\n", expectedMessage, message)
+			fmt.Printf("expected `%s`, got `%s`\n", expectedMessage, message)
 			t.Fail()
 		}
 	}
