@@ -223,14 +223,6 @@ func (p *Parser) parseModel() ast.Expression {
 	return node
 }
 
-func (p *Parser) parseNudLambda() ast.Expression {
-	p.next()
-
-	return &ast.Lambda{
-		Body: p.parseExpression(lowest),
-	}
-}
-
 func (p *Parser) parseInfix(left ast.Expression) ast.Expression {
 	node := &ast.Infix{
 		Operator: p.cur.Literal,

@@ -107,11 +107,4 @@ type (
 		Parent           Expression
 		ParentParameters []Expression
 	}
-
-	// A Lambda expression is an anonymous closure.
-	Lambda struct {
-		expr
-		Parameters []Expression
-		Body       Expression
-	}
 )
