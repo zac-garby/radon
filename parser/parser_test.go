@@ -19,7 +19,7 @@ func TestNoErrors(t *testing.T) {
 		"nil",
 		`"hello"`,
 		"'hello'",
-		"`hello`",
+		"`hello`;;",
 
 		"(5)",
 
