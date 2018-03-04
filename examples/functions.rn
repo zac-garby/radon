@@ -1,3 +1,4 @@
-print(add(2, 3))
+print add 2, 3
 
-add(x, y) = x + y
+# hoisted
+add x, y = x + y
