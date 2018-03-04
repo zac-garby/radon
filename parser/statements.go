@@ -15,6 +15,12 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.Return:
 		return p.parseReturn()
 
+	case token.Break:
+		return new(ast.Break)
+
+	case token.Next:
+		return new(ast.Next)
+
 	default:
 		node = p.parseExpressionStatement()
 	}

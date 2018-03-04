@@ -84,6 +84,9 @@ func TestNoErrors(t *testing.T) {
 		"return",
 		"return 5",
 		"return 1, 2, 3",
+
+		"next",
+		"break",
 	}
 
 	for i, test := range tests {
