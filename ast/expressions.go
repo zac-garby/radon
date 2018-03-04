@@ -73,6 +73,13 @@ type (
 		Left, Right Expression
 	}
 
+	// A Call calls a function with the argument. If the argument is a tuple,
+	// each element of the tuple is passed as a separate argument.
+	Call struct {
+		expr
+		Function, Argument Expression
+	}
+
 	// An If expression executes Consequence or Alternative based on Condition.
 	If struct {
 		expr
