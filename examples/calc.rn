@@ -1,11 +1,11 @@
 calc(input) = {
     result = 0
 
-    for character in input, match character where
-        | "+" -> result = result + 1,
-        | "-" -> result = result - 1,
-        | "*" -> result = result * 2,
-        | "/" -> result = result / 2
+    for character in input, result = match character where
+        | "+" -> result + 1,
+        | "-" -> result - 1,
+        | "*" -> result * 2,
+        | "/" -> result / 2
 }
 
 print calc "++*++/"
