@@ -243,3 +243,18 @@ func (p *Parser) parseInfix(left ast.Expression) ast.Expression {
 
 	return node
 }
+
+func (p *Parser) parseIndex(left ast.Expression) ast.Expression {
+	p.next()
+
+	node := &ast.Index{
+		Left:  left,
+		Right: p.parseExpression(lowest),
+	}
+
+	if !p.expect(token.RightSquare) {
+		return nil
+	}
+
+	return node
+}

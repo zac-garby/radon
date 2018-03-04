@@ -81,6 +81,9 @@ func TestNoErrors(t *testing.T) {
 		"1 + 2 * 3",
 		"a, b",
 
+		"a[b]",
+		"a[b, c]",
+
 		"return",
 		"return 5",
 		"return 1, 2, 3",
@@ -138,6 +141,8 @@ func TestErrors(t *testing.T) {
 
 		"import":   "unexpected end of line, wanted 'string'",
 		"import 5": "expected 'string' but got 'number'",
+
+		"a[b": "unexpected end of line, wanted 'right-square'",
 	}
 
 	for test, expectedMessage := range tests {
