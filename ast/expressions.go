@@ -67,12 +67,6 @@ type (
 		Left, Right Expression
 	}
 
-	// An Index is an index expression, such as a[b]
-	Index struct {
-		expr
-		Left, Right Expression
-	}
-
 	// A Call calls a function with the argument. If the argument is a tuple,
 	// each element of the tuple is passed as a separate argument.
 	Call struct {
@@ -103,8 +97,7 @@ type (
 	// the syntax is `model dog (name) : animal (name, "dog")`.
 	Model struct {
 		expr
-		Parameters       []Expression
-		Parent           Expression
-		ParentParameters []Expression
+		Parameters []Expression
+		Parent     Expression
 	}
 )

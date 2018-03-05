@@ -18,6 +18,10 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 
 	left := nud()
 
+	if p.peekIs(argTokens...) {
+		left = p.parseFunctionCall(left)
+	}
+
 	for !p.peekIs(token.Semi) && precedence < p.peekPrecedence() {
 		led, ok := p.leds[p.peek.Type]
 		if !ok {
@@ -208,16 +212,11 @@ func (p *Parser) parseModel() ast.Expression {
 		Parameters: p.parseParams(token.RightParen, token.Comma),
 	}
 
-	if p.peekIs(token.BitOr) {
+	if p.peekIs(token.Colon) {
 		p.next()
 		p.next()
 
 		node.Parent = p.parseExpression(lowest)
-
-		if p.peekIs(token.LeftParen) {
-			p.next()
-			node.ParentParameters = p.parseExpressionList(token.RightParen, token.Comma)
-		}
 	}
 
 	return node
@@ -236,17 +235,11 @@ func (p *Parser) parseInfix(left ast.Expression) ast.Expression {
 	return node
 }
 
-func (p *Parser) parseIndex(left ast.Expression) ast.Expression {
+func (p *Parser) parseFunctionCall(left ast.Expression) ast.Expression {
 	p.next()
 
-	node := &ast.Index{
-		Left:  left,
-		Right: p.parseExpression(lowest),
+	return &ast.Call{
+		Function: left,
+		Argument: p.parseExpression(assign),
 	}
-
-	if !p.expect(token.RightSquare) {
-		return nil
-	}
-
-	return node
 }

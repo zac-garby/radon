@@ -72,8 +72,8 @@ func TestNoErrors(t *testing.T) {
 		"model ()",
 		"model (a,)",
 		"model (a, b)",
-		"model (a, b) | parent",
-		"model (a, b) | parent ('hello', 5, a)",
+		"model (a, b) : parent",
+		"model (a, b) : parent ('hello', 5, a)",
 
 		"=> 10",
 
@@ -135,9 +135,9 @@ func TestErrors(t *testing.T) {
 
 		"=>": "unexpected end of line",
 
-		"while true 5": "expected 'comma' but got 'number'",
+		"while true 5": "unexpected end of line, wanted 'comma'",
 		"for a do b":   "expected 'in' but got 'do'",
-		"for a in b c": "expected 'comma' but got 'identifier'",
+		"for a in b c": "unexpected end of line, wanted 'comma'",
 
 		"import":   "unexpected end of line, wanted 'string'",
 		"import 5": "expected 'string' but got 'number'",

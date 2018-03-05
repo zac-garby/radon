@@ -81,7 +81,6 @@ func New(lex func() token.Token) *Parser {
 		token.Dot:            p.parseInfix,
 		token.Comma:          p.parseInfix,
 		token.LambdaArrow:    p.parseInfix,
-		token.LeftSquare:     p.parseIndex,
 	}
 
 	p.next()

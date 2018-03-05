@@ -22,7 +22,6 @@ const (
 	product
 	exp
 	prefix
-	call
 	index
 )
 
@@ -59,8 +58,6 @@ var precedences = map[token.Type]int{
 	token.FloorDiv:       exp,
 	token.Bang:           prefix,
 	token.Dot:            index,
-	token.LeftSquare:     index,
-	token.LeftParen:      call,
 	token.LambdaArrow:    lambda,
 	token.Comma:          join,
 }
@@ -79,7 +76,6 @@ var argTokens = []token.Type{
 	token.If,
 	token.While,
 	token.For,
-	token.Do,
 	token.Match,
 	token.Model,
 }
