@@ -97,7 +97,6 @@ type (
 	// the syntax is `model dog (name) : animal (name, "dog")`.
 	Model struct {
 		expr
-		Parameters []Expression
-		Parent     Expression
+		Parameters, Parent Expression
 	}
 )

@@ -204,12 +204,10 @@ func (p *Parser) parseMatch() ast.Expression {
 }
 
 func (p *Parser) parseModel() ast.Expression {
-	if !p.expect(token.LeftParen) {
-		return nil
-	}
+	p.next()
 
 	node := &ast.Model{
-		Parameters: p.parseParams(token.RightParen, token.Comma),
+		Parameters: p.parseExpression(lowest),
 	}
 
 	if p.peekIs(token.Colon) {

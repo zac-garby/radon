@@ -69,11 +69,10 @@ func TestNoErrors(t *testing.T) {
              | b -> c,
              | _ -> d`,
 
-		"model ()",
-		"model (a,)",
-		"model (a, b)",
+		"model a",
+		"model a, b",
 		"model (a, b) : parent",
-		"model (a, b) : parent ('hello', 5, a)",
+		"model a, b : parent ('hello', 5, a)",
 
 		"=> 10",
 
@@ -127,11 +126,7 @@ func TestErrors(t *testing.T) {
 		"match x":           "unexpected end of line, wanted 'where'",
 		"match x where | a": "unexpected end of line, wanted 'right-arrow'",
 
-		"model":           "unexpected end of line, wanted 'left-paren'",
-		"model (5)":       "expected 'identifier' but got 'number'",
-		"model (a, true)": "expected 'identifier' but got 'true'",
-		"model (x":        "unexpected end of line, wanted 'right-paren'",
-		"model (a, b, a)": "identical parameter a not allowed",
+		"model": "unexpected end of line",
 
 		"=>": "unexpected end of line",
 
