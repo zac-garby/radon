@@ -1,4 +1,4 @@
-calc(input) = {
+calc(input) = do
     result = 0
 
     for character in input, result = match character where
@@ -6,6 +6,6 @@ calc(input) = {
         | "-" -> result - 1,
         | "*" -> result * 2,
         | "/" -> result / 2
-}
+do
 
 print calc "++*++/"

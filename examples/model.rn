@@ -1,7 +1,7 @@
-animal = model (name, species)
+animal = model name, species
 
-dog = model (name) : animal (name, "dog")
-cat = model (name) : animal (name, "cat")
+dog = model name : animal name, "dog"
+cat = model name : animal name, "cat"
 
 a = dog "dog a"
 b = cat "cat b"
