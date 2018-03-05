@@ -1,0 +1,63 @@
+package object
+
+// The Type of an Object indicates what type of object it is.
+type Type string
+
+const (
+	_ Type = ""
+
+	NumberType   = "number"
+	BooleanType  = "boolean"
+	StringType   = "string"
+	ListType     = "list"
+	TupleType    = "tuple"
+	MapType      = "map"
+	NilType      = "nil"
+	FunctionType = "function"
+	BuiltinType  = "builtin"
+	ModelType    = "model"
+)
+
+// An Object is the interface which every Radon object implements.
+type Object interface {
+	String() string
+	Equals(Object) bool
+	Type() Type
+
+	// Prefix performs a prefix operation on an Object.
+	// operator can be one of:
+	// + - ! ,
+	// If the 2nd return value is false, an error is raised.
+	Prefix(operator string) (Object, bool)
+
+	// Infix performs an infix operation on an Object.
+	// operator can be one of:
+	// + - * / == != < > || && | & ^ // % <= >= . ,
+	// If the 2nd return value is false, an error is raised.
+	Infix(operator string, right Object) (Object, bool)
+
+	// Numeric returns the numeric value of an Object.
+	// If the 2nd return value is false, an error is raised.
+	Numeric() (float64, bool)
+
+	// Items returns a slice of Objects representing an Object.
+	// If the 2nd return value is false, an error is raised.
+	Items() ([]Object, bool)
+
+	// Call calls an Object with the given arguments, returning the return value.
+	// If the 2nd return value is false, an error is raised.
+	Call(args []Object) (Object, bool)
+}
+
+// defaults supplies default implementations so other Object types automatically
+// implement the methods.
+type defaults struct{}
+
+func (d *defaults) String() string                      { panic("not implemented") }
+func (d *defaults) Type() Type                          { panic("not implemented") }
+func (d *defaults) Equals(Object) bool                  { return false }
+func (d *defaults) Prefix(string) (Object, bool)        { return nil, false }
+func (d *defaults) Infix(string, Object) (Object, bool) { return nil, false }
+func (d *defaults) Numeric() (float64, bool)            { return -1, false }
+func (d *defaults) Items() ([]Object, bool)             { return nil, false }
+func (d *defaults) Call([]Object) (Object, bool)        { return nil, false }
