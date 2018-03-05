@@ -79,6 +79,7 @@ func TestNoErrors(t *testing.T) {
 		"1 + 1",
 		"1 + 2 * 3",
 		"a, b",
+		"()",
 
 		"a[b]",
 		"a[b, c]",

@@ -66,6 +66,14 @@ func (p *Parser) parseString() ast.Expression {
 }
 
 func (p *Parser) parseGroupedExpression() ast.Expression {
+	if p.peekIs(token.RightParen) {
+		p.next()
+
+		return &ast.Infix{
+			Operator: ",",
+		}
+	}
+
 	p.next()
 
 	expr := p.parseExpression(lowest)
