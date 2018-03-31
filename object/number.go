@@ -90,4 +90,6 @@ func (n *Number) Infix(op string, right Object) (Object, bool) {
 	case bool:
 		panic("bool")
 	}
+
+	return nil, false
 }
