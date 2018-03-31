@@ -19,14 +19,19 @@ func s(val string) *String {
 	return &String{Value: val}
 }
 
+func l(vals ...Object) *List {
+	return &List{Value: vals}
+}
+
 func TestStringify(t *testing.T) {
 	cases := map[Object]string{
-		n(5):     "5",
-		n(3.7):   "3.7",
-		b(true):  "true",
-		b(false): "false",
-		s("foo"): `"foo"`,
-		&Nil{}:   "nil",
+		n(5):                "5",
+		n(3.7):              "3.7",
+		b(true):             "true",
+		b(false):            "false",
+		s("foo"):            `"foo"`,
+		&Nil{}:              "nil",
+		l(n(1), n(2), n(3)): "[1, 2, 3]",
 	}
 
 	for o, s := range cases {
@@ -56,6 +61,12 @@ func TestEquals(t *testing.T) {
 
 		{&Nil{}, &Nil{}, true},
 		{&Nil{}, n(5), false},
+
+		{l(n(1), n(2)), l(n(1), n(2)), true},
+		{l(n(1)), l(n(2)), false},
+		{l(), l(), true},
+		{l(n(1)), l(), false},
+		{l(n(1)), l(n(1), n(2), n(3)), false},
 	}
 
 	for _, c := range cases {
@@ -121,6 +132,9 @@ func TestInfix(t *testing.T) {
 		{s("foo"), ">", s("bar"), b(true)},
 		{s("foo"), "<=", s("foo"), b(true)},
 		{s("foo"), ">=", s("foo"), b(true)},
+
+		{l(n(1), n(2)), "+", l(n(3), n(4)), l(n(1), n(2), n(3), n(4))},
+		{l(n(1), n(2), n(3)), "[]", n(1), n(2)},
 	}
 
 	for _, c := range cases {

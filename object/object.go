@@ -32,7 +32,7 @@ type Object interface {
 
 	// Infix performs an infix operation on an Object.
 	// operator can be one of:
-	// + - * / == != < > || && | & ^ // % <= >= . ,
+	// + - * / == != < > || && | & ^ // % <= >= . , []
 	// If the 2nd return value is false, an error is raised.
 	Infix(operator string, right Object) (Object, bool)
 
