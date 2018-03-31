@@ -76,6 +76,10 @@ func (n *Number) Infix(op string, right Object) (Object, bool) {
 		val = math.Pow(l, r)
 	case "//":
 		val = math.Floor(l / r)
+	case "|":
+		val = float64(int64(l) | int64(r))
+	case "&":
+		val = float64(int64(l) & int64(r))
 	case "%":
 		val = float64(int64(l) % int64(r))
 	case ",":
