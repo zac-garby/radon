@@ -16,10 +16,10 @@ func (b *Boolean) Type() Type {
 	return BooleanType
 }
 
-func (n *Boolean) Equals(other Object) bool {
+func (b *Boolean) Equals(other Object) bool {
 	switch o := other.(type) {
 	case *Boolean:
-		return n.Value == o.Value
+		return b.Value == o.Value
 
 	default:
 		return false

@@ -18,10 +18,10 @@ func (s *String) Type() Type {
 	return StringType
 }
 
-func (n *String) Equals(other Object) bool {
+func (s *String) Equals(other Object) bool {
 	switch o := other.(type) {
 	case *String:
-		return n.Value == o.Value
+		return s.Value == o.Value
 
 	default:
 		return false
