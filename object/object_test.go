@@ -93,6 +93,10 @@ func TestInfix(t *testing.T) {
 		{n(1), "^", n(2), n(1)},
 		{n(1), "//", n(2), n(0)},
 		{n(1), "%", n(2), n(1)},
+		{n(5), ">", n(1), b(true)},
+		{n(5), ">=", n(5), b(true)},
+		{n(1), "<", n(5), b(true)},
+		{n(1), "<=", n(1), b(true)},
 
 		{b(true), "&&", b(false), b(false)},
 		{b(false), "||", b(true), b(true)},

@@ -88,7 +88,7 @@ func (n *Number) Infix(op string, right Object) (Object, bool) {
 	case float64:
 		return &Number{Value: v}, true
 	case bool:
-		panic("bool")
+		return &Boolean{Value: v}, true
 	}
 
 	return nil, false
