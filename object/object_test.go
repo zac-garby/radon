@@ -11,10 +11,16 @@ func n(val float64) *Number {
 	return &Number{Value: val}
 }
 
+func b(val bool) *Boolean {
+	return &Boolean{Value: val}
+}
+
 func TestStringify(t *testing.T) {
 	cases := map[Object]string{
-		n(5):   "5",
-		n(3.7): "3.7",
+		n(5):     "5",
+		n(3.7):   "3.7",
+		b(true):  "true",
+		b(false): "false",
 	}
 
 	for o, s := range cases {
@@ -32,6 +38,11 @@ func TestEquals(t *testing.T) {
 	}{
 		{n(5), n(5), true},
 		{n(10), n(11), false},
+		{n(1), b(true), false},
+
+		{b(true), b(true), true},
+		{b(true), b(false), false},
+		{b(false), n(5), false},
 	}
 
 	for _, c := range cases {
@@ -49,6 +60,9 @@ func TestPrefix(t *testing.T) {
 	}{
 		{"-", n(5), n(-5)},
 		{"+", n(5), n(5)},
+
+		{"!", b(true), b(false)},
+		{"!", b(false), b(true)},
 	}
 
 	for _, c := range cases {
@@ -79,6 +93,11 @@ func TestInfix(t *testing.T) {
 		{n(1), "^", n(2), n(1)},
 		{n(1), "//", n(2), n(0)},
 		{n(1), "%", n(2), n(1)},
+
+		{b(true), "&&", b(false), b(false)},
+		{b(false), "||", b(true), b(true)},
+		{b(true), "&", b(false), b(false)},
+		{b(false), "|", b(true), b(true)},
 	}
 
 	for _, c := range cases {
@@ -99,6 +118,9 @@ func TestInfix(t *testing.T) {
 func TestNumeric(t *testing.T) {
 	cases := map[Object]float64{
 		n(5): 5,
+
+		b(true):  1,
+		b(false): 0,
 	}
 
 	for in, out := range cases {
