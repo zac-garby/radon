@@ -46,7 +46,7 @@ type Object interface {
 
 	// Call calls an Object with the given arguments, returning the return value.
 	// If the 2nd return value is false, an error is raised.
-	Call(args []Object) (Object, bool)
+	Call(args ...Object) (Object, bool)
 }
 
 // defaults supplies default implementations so other Object types automatically
@@ -60,4 +60,4 @@ func (d *defaults) Prefix(string) (Object, bool)        { return nil, false }
 func (d *defaults) Infix(string, Object) (Object, bool) { return nil, false }
 func (d *defaults) Numeric() (float64, bool)            { return -1, false }
 func (d *defaults) Items() ([]Object, bool)             { return nil, false }
-func (d *defaults) Call([]Object) (Object, bool)        { return nil, false }
+func (d *defaults) Call(...Object) (Object, bool)       { return nil, false }
