@@ -23,15 +23,20 @@ func l(vals ...Object) *List {
 	return &List{Value: vals}
 }
 
+func tu(vals ...Object) *Tuple {
+	return &Tuple{Value: vals}
+}
+
 func TestStringify(t *testing.T) {
 	cases := map[Object]string{
-		n(5):                "5",
-		n(3.7):              "3.7",
-		b(true):             "true",
-		b(false):            "false",
-		s("foo"):            `"foo"`,
-		&Nil{}:              "nil",
-		l(n(1), n(2), n(3)): "[1, 2, 3]",
+		n(5):                 "5",
+		n(3.7):               "3.7",
+		b(true):              "true",
+		b(false):             "false",
+		s("foo"):             `"foo"`,
+		&Nil{}:               "nil",
+		l(n(1), n(2), n(3)):  "[1, 2, 3]",
+		tu(n(1), n(2), n(3)): "(1, 2, 3)",
 	}
 
 	for o, s := range cases {
@@ -67,6 +72,12 @@ func TestEquals(t *testing.T) {
 		{l(), l(), true},
 		{l(n(1)), l(), false},
 		{l(n(1)), l(n(1), n(2), n(3)), false},
+
+		{tu(n(1), n(2)), tu(n(1), n(2)), true},
+		{tu(n(1)), tu(n(2)), false},
+		{tu(), tu(), true},
+		{tu(n(1)), tu(), false},
+		{tu(n(1)), tu(n(1), n(2), n(3)), false},
 	}
 
 	for _, c := range cases {
@@ -135,6 +146,9 @@ func TestInfix(t *testing.T) {
 
 		{l(n(1), n(2)), "+", l(n(3), n(4)), l(n(1), n(2), n(3), n(4))},
 		{l(n(1), n(2), n(3)), "[]", n(1), n(2)},
+
+		{tu(n(1), n(2), n(3)), "[]", n(1), n(2)},
+		{tu(n(1), n(2), n(3)), ".", n(2), n(3)},
 	}
 
 	for _, c := range cases {
