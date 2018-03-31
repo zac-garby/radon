@@ -34,6 +34,12 @@ func (b *Boolean) Prefix(op string) (Object, bool) {
 }
 
 func (b *Boolean) Infix(op string, right Object) (Object, bool) {
+	if op == "," {
+		return &Tuple{
+			Value: []Object{b, right},
+		}, true
+	}
+
 	switch r := right.(type) {
 	case *Boolean:
 		switch op {

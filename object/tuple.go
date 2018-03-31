@@ -47,6 +47,12 @@ func (t *Tuple) Equals(other Object) bool {
 }
 
 func (t *Tuple) Infix(op string, right Object) (Object, bool) {
+	if op == "," {
+		return &Tuple{
+			Value: append(t.Value, right),
+		}, true
+	}
+
 	if op == "[]" || op == "." {
 		num, ok := right.(*Number)
 		if !ok {

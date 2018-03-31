@@ -47,6 +47,12 @@ func (n *Number) Prefix(op string) (Object, bool) {
 }
 
 func (n *Number) Infix(op string, right Object) (Object, bool) {
+	if op == "," {
+		return &Tuple{
+			Value: []Object{n, right},
+		}, true
+	}
+
 	l := n.Value
 
 	r, ok := right.Numeric()
@@ -82,8 +88,6 @@ func (n *Number) Infix(op string, right Object) (Object, bool) {
 		val = float64(int64(l) & int64(r))
 	case "%":
 		val = float64(int64(l) % int64(r))
-	case ",":
-		panic("make a tuple")
 	default:
 		return nil, false
 	}

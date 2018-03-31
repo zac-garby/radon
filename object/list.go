@@ -47,6 +47,12 @@ func (l *List) Equals(other Object) bool {
 }
 
 func (l *List) Infix(op string, right Object) (Object, bool) {
+	if op == "," {
+		return &Tuple{
+			Value: []Object{l, right},
+		}, true
+	}
+
 	if op == "+" {
 		other, ok := right.(*List)
 		if !ok {

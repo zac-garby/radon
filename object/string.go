@@ -29,6 +29,12 @@ func (s *String) Equals(other Object) bool {
 }
 
 func (s *String) Infix(op string, right Object) (Object, bool) {
+	if op == "," {
+		return &Tuple{
+			Value: []Object{s, right},
+		}, true
+	}
+
 	switch r := right.(type) {
 	case *String:
 		switch op {

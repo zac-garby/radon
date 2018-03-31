@@ -134,23 +134,31 @@ func TestInfix(t *testing.T) {
 		{n(1), "<=", n(1), b(true)},
 		{n(1), "|", n(2), n(3)},
 		{n(1), "&", n(2), n(0)},
+		{n(1), ",", n(2), tu(n(1), n(2))},
 
 		{b(true), "&&", b(false), b(false)},
 		{b(false), "||", b(true), b(true)},
 		{b(true), "&", b(false), b(false)},
 		{b(false), "|", b(true), b(true)},
+		{b(true), ",", b(false), tu(b(true), b(false))},
 
 		{s("foo"), "+", s("bar"), s("foobar")},
 		{s("foo"), "<", s("bar"), b(false)},
 		{s("foo"), ">", s("bar"), b(true)},
 		{s("foo"), "<=", s("foo"), b(true)},
 		{s("foo"), ">=", s("foo"), b(true)},
+		{s("foo"), ",", s("bar"), tu(s("foo"), s("bar"))},
+
+		{&Nil{}, ",", n(8), tu(&Nil{}, n(8))},
 
 		{l(n(1), n(2)), "+", l(n(3), n(4)), l(n(1), n(2), n(3), n(4))},
 		{l(n(1), n(2), n(3)), "[]", n(1), n(2)},
+		{l(n(1), n(2)), ",", l(n(3), n(4)), tu(l(n(1), n(2)), l(n(3), n(4)))},
 
 		{tu(n(1), n(2), n(3)), "[]", n(1), n(2)},
 		{tu(n(1), n(2), n(3)), ".", n(2), n(3)},
+		{tu(n(1)), ",", n(2), tu(n(1), n(2))},
+		{tu(n(1)), ",", tu(n(2)), tu(n(1), tu(n(2)))},
 	}
 
 	for _, c := range cases {

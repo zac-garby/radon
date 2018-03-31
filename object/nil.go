@@ -17,6 +17,16 @@ func (n *Nil) Equals(other Object) bool {
 	return other.Type() == NilType
 }
 
+func (n *Nil) Infix(op string, right Object) (Object, bool) {
+	if op == "," {
+		return &Tuple{
+			Value: []Object{n, right},
+		}, true
+	}
+
+	return nil, false
+}
+
 func (n *Nil) Numeric() (float64, bool) {
 	return 0, true
 }
