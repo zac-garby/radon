@@ -15,12 +15,17 @@ func b(val bool) *Boolean {
 	return &Boolean{Value: val}
 }
 
+func s(val string) *String {
+	return &String{Value: val}
+}
+
 func TestStringify(t *testing.T) {
 	cases := map[Object]string{
 		n(5):     "5",
 		n(3.7):   "3.7",
 		b(true):  "true",
 		b(false): "false",
+		s("foo"): `"foo"`,
 	}
 
 	for o, s := range cases {
@@ -43,6 +48,10 @@ func TestEquals(t *testing.T) {
 		{b(true), b(true), true},
 		{b(true), b(false), false},
 		{b(false), n(5), false},
+
+		{s("foo"), s("foo"), true},
+		{s("foo"), s("bar"), false},
+		{s("foo"), n(5), false},
 	}
 
 	for _, c := range cases {
@@ -102,6 +111,12 @@ func TestInfix(t *testing.T) {
 		{b(false), "||", b(true), b(true)},
 		{b(true), "&", b(false), b(false)},
 		{b(false), "|", b(true), b(true)},
+
+		{s("foo"), "+", s("bar"), s("foobar")},
+		{s("foo"), "<", s("bar"), b(false)},
+		{s("foo"), ">", s("bar"), b(true)},
+		{s("foo"), "<=", s("foo"), b(true)},
+		{s("foo"), ">=", s("foo"), b(true)},
 	}
 
 	for _, c := range cases {
