@@ -69,3 +69,7 @@ func (l *List) Infix(op string, right Object) (Object, bool) {
 		return nil, false
 	}
 }
+
+func (l *List) Items() ([]Object, bool) {
+	return l.Value, true
+}

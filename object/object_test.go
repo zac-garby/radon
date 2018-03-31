@@ -190,3 +190,33 @@ func TestNumeric(t *testing.T) {
 		}
 	}
 }
+
+func TestItems(t *testing.T) {
+	cases := map[Object][]Object{
+		l(n(1), n(2), n(3)):  []Object{n(1), n(2), n(3)},
+		tu(n(1), n(2), n(3)): []Object{n(1), n(2), n(3)},
+	}
+
+	for in, out := range cases {
+		items, ok := in.Items()
+		if !ok {
+			fmt.Printf("%v should be able to get items\n", in)
+			t.Fail()
+			continue
+		}
+
+		if len(items) != len(out) {
+			fmt.Printf("got %v, expected %v\n", items, out)
+			t.Fail()
+			continue
+		}
+
+		for i, it := range items {
+			if !it.Equals(out[i]) {
+				fmt.Printf("%v != %v\n", it, out[i])
+				t.Fail()
+				continue
+			}
+		}
+	}
+}

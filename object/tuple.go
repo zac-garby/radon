@@ -62,3 +62,7 @@ func (t *Tuple) Infix(op string, right Object) (Object, bool) {
 		return nil, false
 	}
 }
+
+func (t *Tuple) Items() ([]Object, bool) {
+	return t.Value, true
+}
