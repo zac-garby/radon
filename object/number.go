@@ -12,7 +12,7 @@ type Number struct {
 }
 
 func (n *Number) String() string {
-	return fmt.Sprintf("%f", n.Value)
+	return fmt.Sprintf("%v", n.Value)
 }
 
 func (n *Number) Type() Type {
@@ -92,4 +92,8 @@ func (n *Number) Infix(op string, right Object) (Object, bool) {
 	}
 
 	return nil, false
+}
+
+func (n *Number) Numeric() (float64, bool) {
+	return n.Value, true
 }
