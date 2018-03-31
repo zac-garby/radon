@@ -26,6 +26,7 @@ func TestStringify(t *testing.T) {
 		b(true):  "true",
 		b(false): "false",
 		s("foo"): `"foo"`,
+		&Nil{}:   "nil",
 	}
 
 	for o, s := range cases {
@@ -52,6 +53,9 @@ func TestEquals(t *testing.T) {
 		{s("foo"), s("foo"), true},
 		{s("foo"), s("bar"), false},
 		{s("foo"), n(5), false},
+
+		{&Nil{}, &Nil{}, true},
+		{&Nil{}, n(5), false},
 	}
 
 	for _, c := range cases {
@@ -140,6 +144,8 @@ func TestNumeric(t *testing.T) {
 
 		b(true):  1,
 		b(false): 0,
+
+		&Nil{}: 0,
 	}
 
 	for in, out := range cases {
