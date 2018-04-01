@@ -53,22 +53,39 @@ func (t *Tuple) Infix(op string, right Object) (Object, bool) {
 		}, true
 	}
 
-	if op == "[]" || op == "." {
-		num, ok := right.(*Number)
-		if !ok {
-			return nil, false
-		}
-
-		i := int(num.Value)
-		if i < 0 || i >= len(t.Value) {
-			return nil, false
-		}
-		return t.Value[i], true
-	} else {
-		return nil, false
-	}
+	return nil, false
 }
 
 func (t *Tuple) Items() ([]Object, bool) {
 	return t.Value, true
+}
+
+func (t *Tuple) Subscript(index Object) (Object, bool) {
+	num, ok := index.(*Number)
+	if !ok {
+		return nil, false
+	}
+
+	i := int(num.Value)
+	if i < 0 || i >= len(t.Value) {
+		return nil, false
+	}
+
+	return t.Value[i], true
+}
+
+func (t *Tuple) SetSubscript(index Object, to Object) bool {
+	num, ok := index.(*Number)
+	if !ok {
+		return false
+	}
+
+	i := int(num.Value)
+	if i < 0 || i >= len(t.Value) {
+		return false
+	}
+
+	t.Value[i] = to
+
+	return true
 }

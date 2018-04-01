@@ -152,11 +152,8 @@ func TestInfix(t *testing.T) {
 		{&Nil{}, ",", n(8), tu(&Nil{}, n(8))},
 
 		{l(n(1), n(2)), "+", l(n(3), n(4)), l(n(1), n(2), n(3), n(4))},
-		{l(n(1), n(2), n(3)), "[]", n(1), n(2)},
 		{l(n(1), n(2)), ",", l(n(3), n(4)), tu(l(n(1), n(2)), l(n(3), n(4)))},
 
-		{tu(n(1), n(2), n(3)), "[]", n(1), n(2)},
-		{tu(n(1), n(2), n(3)), ".", n(2), n(3)},
 		{tu(n(1)), ",", n(2), tu(n(1), n(2))},
 		{tu(n(1)), ",", tu(n(2)), tu(n(1), tu(n(2)))},
 	}
@@ -227,6 +224,37 @@ func TestItems(t *testing.T) {
 				t.Fail()
 				continue
 			}
+		}
+	}
+}
+
+func TestSubscript(t *testing.T) {
+	cases := []struct {
+		in, index, out Object
+		ok             bool
+	}{
+		{l(n(1), n(2), n(3)), n(1), n(2), true},
+		{tu(n(1), n(2), n(3)), n(1), n(2), true},
+
+		{l(n(1), n(2), n(3)), n(3), n(2), false},
+		{tu(n(1), n(2), n(3)), n(-1), n(2), false},
+	}
+
+	for _, c := range cases {
+		val, ok := c.in.Subscript(c.index)
+		if ok != c.ok {
+			fmt.Printf("%v should be able to use subscript %v\n", c.in, c.index)
+			t.Fail()
+			continue
+		}
+
+		if !ok {
+			continue
+		}
+
+		if !val.Equals(c.out) {
+			fmt.Printf("%v should equal %v", val, c.out)
+			t.Fail()
 		}
 	}
 }

@@ -60,22 +60,41 @@ func (l *List) Infix(op string, right Object) (Object, bool) {
 		}
 
 		return &List{Value: append(l.Value, other.Value...)}, true
-	} else if op == "[]" {
-		num, ok := right.(*Number)
-		if !ok {
-			return nil, false
-		}
-
-		i := int(num.Value)
-		if i < 0 || i >= len(l.Value) {
-			return nil, false
-		}
-		return l.Value[i], true
-	} else {
-		return nil, false
 	}
+
+	return nil, false
 }
 
 func (l *List) Items() ([]Object, bool) {
 	return l.Value, true
+}
+
+func (l *List) Subscript(index Object) (Object, bool) {
+	num, ok := index.(*Number)
+	if !ok {
+		return nil, false
+	}
+
+	i := int(num.Value)
+	if i < 0 || i >= len(l.Value) {
+		return nil, false
+	}
+
+	return l.Value[i], true
+}
+
+func (l *List) SetSubscript(index Object, to Object) bool {
+	num, ok := index.(*Number)
+	if !ok {
+		return false
+	}
+
+	i := int(num.Value)
+	if i < 0 || i >= len(l.Value) {
+		return false
+	}
+
+	l.Value[i] = to
+
+	return true
 }
