@@ -237,6 +237,8 @@ func TestSubscript(t *testing.T) {
 		{tu(n(1), n(2), n(3)), n(1), n(2), true},
 
 		{l(n(1), n(2), n(3)), n(3), n(2), false},
+		{l(n(1), n(2), n(3)), n(-1), n(2), false},
+		{tu(n(1), n(2), n(3)), n(3), n(2), false},
 		{tu(n(1), n(2), n(3)), n(-1), n(2), false},
 	}
 
@@ -254,6 +256,28 @@ func TestSubscript(t *testing.T) {
 
 		if !val.Equals(c.out) {
 			fmt.Printf("%v should equal %v", val, c.out)
+			t.Fail()
+		}
+	}
+}
+
+func TestSetSubscript(t *testing.T) {
+	// Tests if subscript values can be set. Doesn't check that they were set properly
+	cases := []struct {
+		in, index, to Object
+		ok            bool
+	}{
+		{l(n(1), n(2), n(3)), n(1), n(2), true},
+		{l(n(1), n(2), n(3)), n(3), n(2), false},
+		{l(n(1), n(2), n(3)), n(-1), n(2), false},
+		{tu(n(1), n(2), n(3)), n(1), n(2), true},
+		{tu(n(1), n(2), n(3)), n(3), n(2), false},
+		{tu(n(1), n(2), n(3)), n(-1), n(2), false},
+	}
+
+	for _, c := range cases {
+		if c.in.SetSubscript(c.index, c.to) != c.ok {
+			fmt.Printf("should %v be able to set subscript %v to %v? %t\n", c.in, c.index, c.to, c.ok)
 			t.Fail()
 		}
 	}
