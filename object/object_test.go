@@ -27,16 +27,34 @@ func tu(vals ...Object) *Tuple {
 	return &Tuple{Value: vals}
 }
 
+func m(kvs ...Object) *Map {
+	m := &Map{
+		Keys:   make(map[string]Object),
+		Values: make(map[string]Object),
+	}
+
+	if len(kvs)%2 != 0 {
+		panic("expected even amount of key-values")
+	}
+
+	for i := 0; i+1 < len(kvs); i += 2 {
+		m.SetSubscript(kvs[i], kvs[i+1])
+	}
+
+	return m
+}
+
 func TestStringify(t *testing.T) {
 	cases := map[Object]string{
-		n(5):                 "5",
-		n(3.7):               "3.7",
-		b(true):              "true",
-		b(false):             "false",
-		s("foo"):             `"foo"`,
-		&Nil{}:               "nil",
-		l(n(1), n(2), n(3)):  "[1, 2, 3]",
-		tu(n(1), n(2), n(3)): "(1, 2, 3)",
+		n(5):                           "5",
+		n(3.7):                         "3.7",
+		b(true):                        "true",
+		b(false):                       "false",
+		s("foo"):                       `"foo"`,
+		&Nil{}:                         "nil",
+		l(n(1), n(2), n(3)):            "[1, 2, 3]",
+		tu(n(1), n(2), n(3)):           "(1, 2, 3)",
+		m(s("a"), n(5), s("b"), n(10)): `{"a": 5, "b": 10}`,
 	}
 
 	for o, s := range cases {
@@ -78,6 +96,12 @@ func TestEquals(t *testing.T) {
 		{tu(), tu(), true},
 		{tu(n(1)), tu(), false},
 		{tu(n(1)), tu(n(1), n(2), n(3)), false},
+
+		{m(n(1), n(2), n(3), n(4)), m(n(1), n(2), n(3), n(4)), true},
+		{m(n(1), n(2), n(3), n(4)), m(n(3), n(4), n(1), n(2)), true},
+		{m(n(1), n(2), n(3), n(4)), m(n(1), n(2), n(3), n(5)), false},
+		{m(n(1), n(2)), m(n(1), n(2), n(3), n(5)), false},
+		{m(n(1), n(2), n(3), n(4)), m(n(1), n(2)), false},
 	}
 
 	for _, c := range cases {
@@ -200,8 +224,9 @@ func TestNumeric(t *testing.T) {
 
 func TestItems(t *testing.T) {
 	cases := map[Object][]Object{
-		l(n(1), n(2), n(3)):  []Object{n(1), n(2), n(3)},
-		tu(n(1), n(2), n(3)): []Object{n(1), n(2), n(3)},
+		l(n(1), n(2), n(3)):       []Object{n(1), n(2), n(3)},
+		tu(n(1), n(2), n(3)):      []Object{n(1), n(2), n(3)},
+		m(n(1), n(2), n(3), n(4)): []Object{tu(n(1), n(2)), tu(n(3), n(4))},
 	}
 
 	for in, out := range cases {
@@ -235,11 +260,15 @@ func TestSubscript(t *testing.T) {
 	}{
 		{l(n(1), n(2), n(3)), n(1), n(2), true},
 		{tu(n(1), n(2), n(3)), n(1), n(2), true},
+		{m(n(1), n(2), n(3), n(4)), n(1), n(2), true},
+		{m(n(1), n(2), n(3), n(4)), n(3), n(4), true},
 
 		{l(n(1), n(2), n(3)), n(3), n(2), false},
 		{l(n(1), n(2), n(3)), n(-1), n(2), false},
 		{tu(n(1), n(2), n(3)), n(3), n(2), false},
 		{tu(n(1), n(2), n(3)), n(-1), n(2), false},
+		{m(n(1), n(2), n(3), n(4)), n(4), n(2), false},
+		{m(n(1), n(2), n(3), n(4)), n(2), n(4), false},
 	}
 
 	for _, c := range cases {
@@ -273,6 +302,7 @@ func TestSetSubscript(t *testing.T) {
 		{tu(n(1), n(2), n(3)), n(1), n(2), true},
 		{tu(n(1), n(2), n(3)), n(3), n(2), false},
 		{tu(n(1), n(2), n(3)), n(-1), n(2), false},
+		// None for map -- already tested in the m() function
 	}
 
 	for _, c := range cases {
