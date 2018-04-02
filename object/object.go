@@ -14,6 +14,7 @@ const (
 	MapType      = "map"
 	NilType      = "nil"
 	FunctionType = "function"
+	MethodType   = "method"
 	BuiltinType  = "builtin"
 	ModelType    = "model"
 )
