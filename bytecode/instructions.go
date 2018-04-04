@@ -6,6 +6,7 @@ package bytecode
 // [arg] denotes the instruction's argument.
 const (
 	Nop byte = iota
+	NopArg
 
 	/* Storage & constants */
 	// LoadConst loads a constant by index: [arg]
@@ -61,7 +62,7 @@ const (
 	CloseScope
 
 	/* Control flow */
-	// The virtual machine stores jump in a list, allowing a jump
+	// The virtual machine stores jumps in a list, allowing a jump
 	// argument of 8 bits to jump to a 64-bit code offset
 
 	// Jump jumps to target [arg]
