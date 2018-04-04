@@ -224,9 +224,9 @@ func TestNumeric(t *testing.T) {
 
 func TestItems(t *testing.T) {
 	cases := map[Object][]Object{
-		l(n(1), n(2), n(3)):       []Object{n(1), n(2), n(3)},
-		tu(n(1), n(2), n(3)):      []Object{n(1), n(2), n(3)},
-		m(n(1), n(2), n(3), n(4)): []Object{tu(n(1), n(2)), tu(n(3), n(4))},
+		l(n(1), n(2), n(3)):  []Object{n(1), n(2), n(3)},
+		tu(n(1), n(2), n(3)): []Object{n(1), n(2), n(3)},
+		m(n(1), n(2)):        []Object{tu(n(1), n(2))},
 	}
 
 	for in, out := range cases {
