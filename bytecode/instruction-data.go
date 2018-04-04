@@ -8,7 +8,7 @@ type Data struct {
 }
 
 // Instructions stores data about different instruction types.
-var Instructions = map[byte]data{
+var Instructions = map[byte]Data{
 	Nop:    {Name: "NO_OP"},
 	NopArg: {Name: "NO_OP_ARG", HasArg: true},
 
