@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/signal"
 	"strings"
 
 	"github.com/Zac-Garby/radon/lexer"
@@ -11,6 +12,14 @@ import (
 )
 
 func main() {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+
+	go func(c chan os.Signal) {
+		<-c
+		quit()
+	}(c)
+
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
@@ -44,4 +53,9 @@ func run(code string) error {
 	fmt.Println(prog.Tree())
 
 	return nil
+}
+
+func quit() {
+	fmt.Println("quit")
+	os.Exit(0)
 }
