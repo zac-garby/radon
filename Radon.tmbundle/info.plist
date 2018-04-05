@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>contactEmailRot13</key>
+	<string>zr@mnptneol.pb.hx</string>
+	<key>contactName</key>
+	<string>Zac Garby</string>
+	<key>description</key>
+	<string>Syntax highlighting and snippets for the Radon language.</string>
+	<key>name</key>
+	<string>Radon</string>
+	<key>uuid</key>
+	<string>7ED95BB2-4896-4DD5-A64C-61523F35710D</string>
+</dict>
+</plist>

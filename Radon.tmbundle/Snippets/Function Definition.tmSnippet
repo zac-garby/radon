@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>content</key>
+	<string>${1:my_function} ${2:x, y} = $3</string>
+	<key>name</key>
+	<string>Function Definition</string>
+	<key>scope</key>
+	<string>source.radon</string>
+	<key>tabTrigger</key>
+	<string>fun</string>
+	<key>uuid</key>
+	<string>3FB50B28-031A-4E29-BC60-07C0B7B14002</string>
+</dict>
+</plist>
