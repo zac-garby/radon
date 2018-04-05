@@ -8,9 +8,9 @@ Here's a nice example of some of the features:
 
 ```
 calc input = do
-    result = 0
+	result = 0
 
-    for character in input do
+	for character in input do
 		result = match character where
         	| "+" -> result + 1,
         	| "-" -> result - 1,
