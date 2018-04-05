@@ -22,7 +22,7 @@ func none(t token.Type, literal, whole string) (token.Type, string, string) {
 func stringTransformer(t token.Type, literal, whole string) (token.Type, string, string) {
 	escapes := map[string]string{
 		`\n`: "\n",
-		`"`:  "\"",
+		`\"`: "\"",
 		`\a`: "\a",
 		`\b`: "\b",
 		`\f`: "\f",
