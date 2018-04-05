@@ -12,10 +12,10 @@ calc input = do
 
 	for character in input do
 		result = match character where
-        	| "+" -> result + 1,
-        	| "-" -> result - 1,
-        	| "*" -> result * 2,
-        	| "/" -> result / 2
+			| "+" -> result + 1,
+			| "-" -> result - 1,
+			| "*" -> result * 2,
+			| "/" -> result / 2
 	end
 end
 ```
