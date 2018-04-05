@@ -10,4 +10,5 @@ calc input = do
 	end
 end
 
+# prints 3
 print calc "++*++/"
