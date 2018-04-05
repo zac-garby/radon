@@ -1,8 +1,21 @@
 <h1 align="center">Radon</h1>
 
-This is a total rewrite of Radon. Read the [blog post](https://zacgarby.co.uk/#p-rewriting-radon) for details.
+This is a total rewrite of Radon, with more focus on code quality, testing, and some slight improvements to the actual language.
 
-## TODO
+For syntax highlighting and snippets in [TextMate](http://macromates.com), install [Radon.tmbundle](Radon.tmbundle) from this repository.
 
- - A proper parser for tuples, so multidimensional tuples can be written:
-    - `(1, 2, (3, 4))` currently evaluates to `(1, 2, 3, 4)`
+Here's a nice example of some of the features:
+
+```
+calc input = do
+    result = 0
+
+    for character in input do
+		result = match character where
+        	| "+" -> result + 1,
+        	| "-" -> result - 1,
+        	| "*" -> result * 2,
+        	| "/" -> result / 2
+	end
+end
+```
