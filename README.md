@@ -6,16 +6,4 @@ For syntax highlighting and snippets in [TextMate](http://macromates.com), insta
 
 Here's a nice example of some of the features:
 
-```
-calc input = do
-	result = 0
-
-	for character in input do
-		result = match character where
-			| "+" -> result + 1,
-			| "-" -> result - 1,
-			| "*" -> result * 2,
-			| "/" -> result / 2
-	end
-end
-```
+![](img/screenshot.png)
