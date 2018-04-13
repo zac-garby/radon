@@ -43,7 +43,7 @@ func (s *Store) Get(name string) (*Variable, bool) {
 func (s *Store) Set(name string, val object.Object, declare bool) {
 	if !declare && s.Enclosing != nil {
 		if _, ok := s.Enclosing.Get(name); ok {
-			s.Enclosing.Set(name, val)
+			s.Enclosing.Set(name, val, false)
 			return
 		}
 	}
