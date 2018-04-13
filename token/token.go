@@ -32,15 +32,15 @@ var Keywords = map[string]Type{
 	"else":   Else,
 	"while":  While,
 	"for":    For,
-	"loop":   Loop,
 	"next":   Next,
 	"break":  Break,
 	"match":  Match,
 	"model":  Model,
-	"map":    Map,
 	"where":  Where,
 	"import": Import,
 	"do":     Do,
+	"end":    End,
+	"in":     In,
 }
 
 // IsKeyword checks if a token type is a keyword type.

@@ -20,6 +20,7 @@ var lineEndings = []token.Type{
 	token.RightParen,
 	token.RightSquare,
 	token.RightBrace,
+	token.End,
 }
 
 // Lexer takes a string and returns a stream of tokens
@@ -108,7 +109,16 @@ func Lexer(str, file string) func() token.Token {
 							}
 						}
 
-						if (isLineEnding && index < len(str) && (str[index] == '\n' || str[index] == '}')) || index >= len(str) {
+						// HACK: This is a horrible piece of code, but it works.
+						var isEnd bool
+						if index < len(str) {
+							isEnd = str[index] == '\n'
+							if index+2 < len(str) {
+								isEnd = isEnd || str[index] == 'e' && str[index+1] == 'n' && str[index+2] == 'd'
+							}
+						}
+
+						if (isLineEnding && index < len(str) && isEnd) || index >= len(str) {
 							ch <- token.Token{
 								Type:    token.Semi,
 								Literal: ";",

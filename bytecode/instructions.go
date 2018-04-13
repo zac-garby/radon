@@ -1,164 +1,91 @@
 package bytecode
 
-// 0-9: stack operations
+// The set of available bytecode instructions.
+// $0 denotes the 0th (top) item in the stack.
+// using $0 pops it from the stack
+// [arg] denotes the instruction's argument.
 const (
-	// Dummy does absolutely nothing
-	Dummy byte = iota
+	Nop byte = iota
+	NopArg
 
-	// Pop pops the stack
-	Pop
+	/* Storage & constants */
+	// LoadConst loads a constant by index: [arg]
+	LoadConst
 
-	// Dup duplicates the top item, so [x, y, z] -> [x, y, z, z]
-	Dup
-
-	// Rot rotates the top two items, so [x, y, z] -> [x, z, y]
-	Rot
-)
-
-// 10-19: load/store
-const (
-	// LoadConst loads a constant by index
-	LoadConst byte = iota + 10
-
-	// LoadName loads a name by name index
+	// LoadName loads a name by index: [arg]
 	LoadName
 
-	// StoreName stores the top item
+	// StoreName stores $0 in the name indexed by [arg]
 	StoreName
 
-	// DeclareName is the same as StoreName, but only
-	// operates in the single enclosing scope, not the
-	// parent ones
+	// Declarename is the same as StoreName, but only operates in
+	// the single enclosing scope, not the parent ones
 	DeclareName
 
-	// LoadField pops two items, essentially does second[top]
-	LoadField
+	// LoadSubscript pushes $1[$0]
+	LoadSubscript
 
-	// StoreField pops three items, essentially does second[top] = third
-	StoreField
-)
+	// StoreSubscript sets $1[$0] to $2
+	StoreSubscript
 
-// 20-39: operators
-const (
-	// Unary operators pop one item and do something with it
-	UnaryInvert byte = iota + 20
+	/* Operators */
+	UnaryInvert
 	UnaryNegate
-	PushTop
-
-	// Binary operators pop two items and do something with them
-	BinaryAdd byte = iota + 25
-	BinarySubtract
-	BinaryMultiply
-	BinaryDivide
-	BinaryExponent
+	BinaryAdd
+	BinarySub
+	BinaryMul
+	BinaryDiv
+	BinaryExp
 	BinaryFloorDiv
 	BinaryMod
-	BinaryOr
-	BinaryAnd
+	BinaryLogicOr
+	BinaryLogicAnd
 	BinaryBitOr
 	BinaryBitAnd
-	BinaryEquals
+	BinaryEqual
 	BinaryNotEqual
-	BinaryLessThan
-	BinaryMoreThan
+	BinaryLess
+	BinaryMore
 	BinaryLessEq
 	BinaryMoreEq
-)
 
-// 50-59: using functions/blocks
-const (
-	// CallFn calls the function at the top of the stack,
-	// popping arguments as necessary
-	CallFn byte = iota + 50
+	/* Functions & scopes */
+	// CallFunctions calls $0 and pops an item for each argument
+	CallFunction
 
-	// CallMethod calls the function at the top of the stack.
-	// The second item in the stack is assumed to be the
-	// caller (map) and the next n items are the arguments,
-	// where n is the instructions' argument.
+	// CallMethod calls $0 (a method) on $1 (a map), popping an item
+	// for each argument
 	CallMethod
 
-	// Return skips to the end of the context
 	Return
-)
+	OpenScope
+	CloseScope
 
-// 60-89: builtin functions
-const (
-	// Print prints the item at the top of the stack
-	Print byte = iota + 60
+	/* Control flow */
+	// The virtual machine stores jumps in a list, allowing a jump
+	// argument of 8 bits to jump to a 64-bit code offset
 
-	// Println prints the item at the top of the stack,
-	// with a trailing new line
-	Println
+	// Jump jumps to target [arg]
+	Jump
 
-	// Length pushes the length of the collection at
-	// the top of the stack
-	Length
+	// JumpIf jumps to target [arg] if $0 is truthy
+	JumpIf
 
-	// Typeof gets the type of an object, as a string.
-	// e.g. typeof(5) == "num"
-	Typeof
+	// JumpUnless jumps to target [arg] unless $0 is truthy
+	JumpUnless
 
-	// Modelof gets the model of an object.
-	Modelof
-
-	// ToStr converts an object to a string.
-	ToStr
-
-	// ToNum converts an object to a number.
-	ToNum
-
-	// ToList converts an object to a list.
-	ToList
-
-	// ToTuple converts an object to a tuple.
-	ToTuple
-
-	// Round rounds a number.
-	Round
-
-	// Floor rounds a number down.
-	Floor
-
-	// Ceil rounds a number up.
-	Ceil
-
-	// Sleep sleeps for n milliseconds, where n is the top item in the stack
-	Sleep
-)
-
-// 90-99: control flow
-const (
-	// Jump unconditionally jumps to the given offset
-	Jump byte = iota + 90
-
-	// JumpIfTrue jumps to the given offset if the top item is truthy
-	JumpIfTrue
-
-	// JumpIfFalse jumps to the given offset if the top item is falsey
-	JumpIfFalse
-
-	// Break jumps to the LoopEnd instruction of the innermost loop
 	Break
-
-	// Next jumps to the LoopStart instruction of the innermost loop
 	Next
+	StartLoop
+	EndLoop
 
-	// LoopStart pushes the start and end positions for the loop
-	LoopStart
+	/* Data */
+	// MakeList pushes a list containing $0, $1, ..., $[arg]
+	MakeList
 
-	// LoopEnd pops the start and end positions
-	LoopEnd
-)
-
-// 100-109: data constructors
-const (
-	// MakeList makes an array object from the top n items
-	MakeList byte = iota + 100
-
-	// MakeTuple makes a tuple from the top n items
+	// MakeTuple pushes a tuple containing $0, $1, ..., $[arg]
 	MakeTuple
 
-	// MakeMap makes a map from the top n * 2 items.
-	// The top n*2 items should be in key, val, ..., key, val order
+	// MakeMap pushes a map from the top [arg]*2 items, in key, val order
 	MakeMap
 )

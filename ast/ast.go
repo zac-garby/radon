@@ -1,35 +1,29 @@
 package ast
 
-import "github.com/Zac-Garby/radon/token"
+// A Node is the interface from which all AST nodes implement.
+type Node interface{}
 
-// A Node is the interface from which all syntax
-// tree nodes extend from.
-type Node interface {
-	Token() token.Token
-}
-
-// A Statement is a piece of code which doesn't
-// evaluate to a value, e.g. a return statement.
+// A Statement is a node which doesn't evaluate to a value, for example
+// a loop.
 type Statement interface {
 	Node
 	Stmt()
 }
 
-// An Expression is a piece of code which *does*
-// evaluate to a value, such as an infix expression.
+// An Expression is a node which evaluates to a value, for example a
+// number literal.
 type Expression interface {
 	Node
 	Expr()
 }
 
-// A Program is a sequence of statements (keep in
-// mind, though, that an expression can be abstracted
-// into a statement.)
+// A Program is a list of statements which, usually, represents an entire
+// file.
 type Program struct {
 	Statements []Statement
 }
 
-// Tree returns the tree representation of a program.
+// Tree returns a nicely formatted tree representation of the program.
 func (p *Program) Tree() string {
 	str := ""
 

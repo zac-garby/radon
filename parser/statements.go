@@ -13,28 +13,25 @@ func (p *Parser) parseStatement() ast.Statement {
 		return nil
 
 	case token.Return:
-		node = p.parseReturn()
+		return p.parseReturn()
 
 	case token.Break:
-		node = p.parseBreak()
+		return new(ast.Break)
 
 	case token.Next:
-		node = p.parseNext()
-
-	case token.Loop:
-		node = p.parseLoop()
+		return new(ast.Next)
 
 	case token.While:
-		node = p.parseWhile()
+		return p.parseWhile()
 
 	case token.For:
-		node = p.parseFor()
+		return p.parseFor()
 
 	case token.Import:
-		node = p.parseImport()
+		return p.parseImport()
 
 	default:
-		node = p.parseExpressionStmt()
+		node = p.parseExpressionStatement()
 	}
 
 	if !p.expect(token.Semi) {
@@ -44,68 +41,38 @@ func (p *Parser) parseStatement() ast.Statement {
 	return node
 }
 
-func (p *Parser) parseExpressionStmt() ast.Statement {
+func (p *Parser) parseExpressionStatement() ast.Statement {
 	return &ast.ExpressionStatement{
-		Tok:  p.cur,
 		Expr: p.parseExpression(lowest),
 	}
 }
 
 func (p *Parser) parseReturn() ast.Statement {
 	if p.peekIs(token.Semi) {
-		return &ast.ReturnStatement{
-			Tok:   p.cur,
-			Value: &ast.Tuple{},
+		return &ast.Return{
+			Value: &ast.Nil{},
 		}
 	}
 
-	node := &ast.ReturnStatement{
-		Tok: p.cur,
-	}
-
-	p.next()
-	node.Value = p.parseExpression(lowest)
-
-	return node
-}
-
-func (p *Parser) parseBreak() ast.Statement {
-	return &ast.BreakStatement{
-		Tok: p.cur,
-	}
-}
-
-func (p *Parser) parseNext() ast.Statement {
-	return &ast.NextStatement{
-		Tok: p.cur,
-	}
-}
-
-func (p *Parser) parseLoop() ast.Statement {
-	node := &ast.Loop{
-		Tok: p.cur,
-	}
-
 	p.next()
 
-	node.Body = p.parseExpression(lowest)
-
-	return node
+	return &ast.Return{
+		Value: p.parseExpression(lowest),
+	}
 }
 
 func (p *Parser) parseWhile() ast.Statement {
-	node := &ast.WhileLoop{
-		Tok: p.cur,
+	p.next()
+
+	node := &ast.While{
+		Condition: p.parseExpression(join),
 	}
 
-	p.next()
-	node.Condition = p.parseExpression(lowest)
-
-	if p.peekIs(token.LeftBrace) {
+	if p.peekIs(token.Do) {
 		p.next()
 		node.Body = p.parseBlock()
 	} else {
-		if !p.expect(token.Do) {
+		if !p.expect(token.Comma) {
 			return nil
 		}
 
@@ -117,32 +84,25 @@ func (p *Parser) parseWhile() ast.Statement {
 }
 
 func (p *Parser) parseFor() ast.Statement {
-	node := &ast.ForLoop{
-		Tok: p.cur,
+	p.next()
+
+	node := &ast.For{
+		Var: p.parseExpression(lowest),
 	}
 
-	p.next()
-	node.Init = p.parseExpression(lowest)
-
-	if !p.expect(token.Semi) {
+	if !p.expect(token.In) {
 		return nil
 	}
 
 	p.next()
-	node.Condition = p.parseExpression(lowest)
 
-	if !p.expect(token.Semi) {
-		return nil
-	}
+	node.Collection = p.parseExpression(join)
 
-	p.next()
-	node.Increment = p.parseExpression(lowest)
-
-	if p.peekIs(token.LeftBrace) {
+	if p.peekIs(token.Do) {
 		p.next()
 		node.Body = p.parseBlock()
 	} else {
-		if !p.expect(token.Do) {
+		if !p.expect(token.Comma) {
 			return nil
 		}
 
@@ -154,19 +114,13 @@ func (p *Parser) parseFor() ast.Statement {
 }
 
 func (p *Parser) parseImport() ast.Statement {
-	node := &ast.Import{
-		Tok: p.cur,
-	}
-
-	p.next()
-
-	expr, ok := p.parseExpression(lowest).(*ast.String)
-	if !ok {
-		p.defaultErr("expected a string literal")
+	if !p.expect(token.String) {
 		return nil
 	}
 
-	node.Path = expr.Value
+	str := p.parseExpression(lowest).(*ast.String)
 
-	return node
+	return &ast.Import{
+		Path: str.Value,
+	}
 }

@@ -1,58 +1,53 @@
 package parser
 
 import (
-	"fmt"
-
 	"github.com/Zac-Garby/radon/ast"
-	"github.com/Zac-Garby/radon/lexer"
 	"github.com/Zac-Garby/radon/token"
 )
 
-type prefixParser func() ast.Expression
-type infixParser func(ast.Expression) ast.Expression
+type nud func() ast.Expression
+type led func(ast.Expression) ast.Expression
 
-// Parser parses a string into an
-// abstract syntax tree
+// A Parser takes a token generator function and parses it into an AST.
 type Parser struct {
+	// Errors contains any errors encountered during parsing.
 	Errors []error
 
 	lex       func() token.Token
-	text      string
 	cur, peek token.Token
-	prefixes  map[token.Type]prefixParser
-	infixes   map[token.Type]infixParser
+	nuds      map[token.Type]nud
+	leds      map[token.Type]led
 }
 
-// New returns a new parser for the
-// given string
-func New(text, file string) *Parser {
+// New creates a new parser for the given token generator function.
+func New(lex func() token.Token) *Parser {
 	p := &Parser{
-		lex:    lexer.Lexer(text, file),
-		text:   text,
-		Errors: []error{},
+		lex:    lex,
+		Errors: make([]error, 0),
 	}
 
-	p.prefixes = map[token.Type]prefixParser{
-		token.ID:          p.parseID,
-		token.Number:      p.parseNum,
-		token.True:        p.parseBool,
-		token.False:       p.parseBool,
+	p.nuds = map[token.Type]nud{
+		token.ID:          p.parseIdentifier,
+		token.Number:      p.parseNumber,
+		token.True:        p.parseBoolean,
+		token.False:       p.parseBoolean,
 		token.Nil:         p.parseNil,
 		token.String:      p.parseString,
+		token.LeftParen:   p.parseGroupedExpression,
 		token.LeftSquare:  p.parseList,
-		token.Map:         p.parseMap,
+		token.LeftBrace:   p.parseMap,
+		token.Do:          p.parseBlock,
 		token.Minus:       p.parsePrefix,
 		token.Plus:        p.parsePrefix,
 		token.Bang:        p.parsePrefix,
-		token.LeftParen:   p.parseGroupedExpression,
-		token.If:          p.parseIfExpression,
-		token.Match:       p.parseMatchExpression,
-		token.LeftBrace:   p.parseBlock,
+		token.LambdaArrow: p.parsePrefix,
+		token.Comma:       p.parsePrefix,
+		token.If:          p.parseIf,
+		token.Match:       p.parseMatch,
 		token.Model:       p.parseModel,
-		token.LambdaArrow: p.parseLambdaPrefix,
 	}
 
-	p.infixes = map[token.Type]infixParser{
+	p.leds = map[token.Type]led{
 		token.Plus:           p.parseInfix,
 		token.Minus:          p.parseInfix,
 		token.Star:           p.parseInfix,
@@ -84,10 +79,8 @@ func New(text, file string) *Parser {
 		token.Assign:         p.parseInfix,
 		token.Declare:        p.parseInfix,
 		token.Dot:            p.parseInfix,
-
-		token.LeftSquare:  p.parseIndex,
-		token.LeftParen:   p.parseFunctionCall,
-		token.LambdaArrow: p.parseLambdaInfix,
+		token.Comma:          p.parseInfix,
+		token.LambdaArrow:    p.parseInfix,
 	}
 
 	p.next()
@@ -96,39 +89,11 @@ func New(text, file string) *Parser {
 	return p
 }
 
-func (p *Parser) peekPrecedence() int {
-	if precedence, ok := precedences[p.peek.Type]; ok {
-		return precedence
-	}
-
-	return lowest
-}
-
-func (p *Parser) curPrecedence() int {
-	if precedence, ok := precedences[p.cur.Type]; ok {
-		return precedence
-	}
-
-	return lowest
-}
-
-func (p *Parser) next() {
-	p.cur = p.peek
-	p.peek = p.lex()
-
-	if p.peek.Type == token.Illegal {
-		p.Err(
-			fmt.Sprintf("illegal token found: `%s`", p.peek.Literal),
-			p.peek.Start,
-			p.peek.End,
-		)
-	}
-}
-
-// Parse parses an entire program
-func (p *Parser) Parse() ast.Program {
-	prog := ast.Program{
-		Statements: []ast.Statement{},
+// Parse parses an entire program into an `ast.Program`. Also, returns the
+// first error encountered, if any.
+func (p *Parser) Parse() (*ast.Program, error) {
+	prog := &ast.Program{
+		Statements: make([]ast.Statement, 0, 10),
 	}
 
 	for !p.curIs(token.EOF) {
@@ -141,5 +106,9 @@ func (p *Parser) Parse() ast.Program {
 		p.next()
 	}
 
-	return prog
+	if len(p.Errors) > 0 {
+		return nil, p.Errors[0]
+	}
+
+	return prog, nil
 }

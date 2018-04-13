@@ -1,144 +1,61 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
+	"os/signal"
 	"strings"
 
-	"github.com/Zac-Garby/radon/bytecode"
-	"github.com/Zac-Garby/radon/compiler"
 	"github.com/Zac-Garby/radon/lexer"
-	"github.com/Zac-Garby/radon/object"
 	"github.com/Zac-Garby/radon/parser"
-	"github.com/Zac-Garby/radon/token"
-	"github.com/Zac-Garby/radon/vm"
-	"github.com/carmark/pseudo-terminal-go/terminal"
-	"github.com/fatih/color"
 )
 
-type command func(arg string)
-
-const prompt = "rn> "
-
-var (
-	store     = vm.NewStore()
-	printToks = false
-	printTree = false
-	printCode = false
-	execCode  = true
-
-	commands = map[string]command{
-		"toks": func(arg string) { printToks = arg == "on" },
-		"tree": func(arg string) { printTree = arg == "on" },
-		"code": func(arg string) { printCode = arg == "on" },
-		"exec": func(arg string) { execCode = arg == "on" },
-		"quit": func(_ string) { os.Exit(0) },
-	}
-)
-
-// The REPL
 func main() {
-	term, err := terminal.NewWithStdInOut()
-	if err != nil {
-		panic(err)
-	}
-	defer term.ReleaseFromStdInOut()
-	term.SetPrompt(prompt)
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
 
-outer:
+	go func(c chan os.Signal) {
+		<-c
+		quit()
+	}(c)
+
+	reader := bufio.NewReader(os.Stdin)
+
 	for {
-		text, err := term.ReadLine()
+		fmt.Print(">> ")
+
+		line, err := reader.ReadString('\n')
 		if err != nil {
-			break
+			fmt.Println("io error:", err)
+			os.Exit(1)
 		}
 
-		for name, fn := range commands {
-			if !strings.HasPrefix(text, ":"+name) {
-				continue
-			}
+		line = strings.TrimSpace(line)
 
-			arg := strings.TrimSpace(strings.TrimLeft(text, ":"+name))
-			fn(arg)
-			continue outer
-		}
-
-		if err := execute(text, "repl", true, store); err != nil {
-			os.Stderr.WriteString(err.Error() + "\n")
+		if err := run(line); err != nil {
+			fmt.Println(err)
 		}
 	}
 }
 
-func loadFile(name string) error {
-	file, err := os.Open(name)
+func run(code string) error {
+	var (
+		l         = lexer.Lexer(code, "repl")
+		p         = parser.New(l)
+		prog, err = p.Parse()
+	)
+
 	if err != nil {
 		return err
 	}
 
-	text, err := ioutil.ReadAll(file)
-	if err != nil {
-		return err
-	}
-
-	return execute(string(text), name, false, store)
-}
-
-func execute(input, filename string, print bool, sto *vm.Store) error {
-	if printToks && print {
-		lex := lexer.Lexer(input, filename)
-
-		for tok := lex(); tok.Type != token.EOF; tok = lex() {
-			fmt.Println(tok.String())
-		}
-	}
-
-	parse := parser.New(input, filename)
-	prog := parse.Parse()
-
-	if len(parse.Errors) > 0 {
-		parse.PrintErrors(os.Stderr)
-		return nil
-	}
-
-	if printTree && print {
-		fmt.Println(prog.Tree())
-	}
-
-	cmp := compiler.New()
-	if err := cmp.Compile(prog); err != nil {
-		return err
-	}
-
-	code, err := bytecode.Read(cmp.Bytes)
-	if err != nil {
-		return err
-	}
-
-	if printCode && print {
-		for _, instr := range code {
-			fmt.Printf("%20s (%d)\n", instr.Name, instr.Arg)
-		}
-	}
-
-	if !execCode {
-		return nil
-	}
-
-	sto.Names = cmp.Names
-
-	v := vm.New()
-	v.Run(code, sto, cmp.Constants)
-
-	if err := v.Error(); err != nil {
-		os.Stderr.WriteString(err.Error() + "\n")
-	} else {
-		val, err := v.ExtractValue()
-		if err != nil {
-			os.Stderr.WriteString(err.Error() + "\n")
-		} else if val != nil && !(val.Type() == object.TupleType && len(val.(*object.Tuple).Value) == 0) && print {
-			color.Cyan(" %s", val.String())
-		}
-	}
+	fmt.Println(prog.Tree())
 
 	return nil
+}
+
+func quit() {
+	fmt.Println("quit")
+	os.Exit(0)
 }

@@ -2,192 +2,192 @@ package parser_test
 
 import (
 	"fmt"
-	"os"
 	"testing"
 
-	"github.com/Zac-Garby/radon/parser"
+	"github.com/Zac-Garby/radon/ast"
+	"github.com/Zac-Garby/radon/lexer"
+	. "github.com/Zac-Garby/radon/parser"
 )
 
-// Test if errors are thrown where they should be. Assume that any error is the
-// correct one.
-func TestErrors(t *testing.T) {
+func TestNoErrors(t *testing.T) {
 	tests := []string{
-		"a a",
-		"(5 + 3",
-		"a[b",
+		"hello",
+		"100",
+		"2.3",
+		"true",
+		"false",
+		"nil",
+		`"hello"`,
+		"'hello'",
+		"`hello`;;",
 
-		"[a",
-		"map[",
-		"map",
+		"(5)",
 
-		"if true",
-		"match a",
-		"match a where | b = c",
+		"[]",
+		"[1, 2, 3]",
+		"[1]",
+		"[1,]",
+		"[1, 2, 3,]",
 
-		"model",
-		"model(5)",
-		"model(a, 5)",
-		"model(a",
-		"model(a, a)",
+		"{}",
+		"{a: b}",
+		"{a: b,}",
+		"{a: b, c: d}",
+		"{a: b, c: d,}",
 
-		"while a",
-		"while (a",
+		"do 1; 2; 3 end",
+		"do end",
+		"do do 5 end end",
 
-		"for a",
-		"for a",
-		"for a; b",
-		"for a; b; c",
+		"-5",
+		"+do 1; 2; 3 end",
+		"!true",
 
-		"import",
-		"import 5",
+		"if true then 1",
+		"if true then 1 else 2",
+		`if true do
+             1
+             2
+         end`,
+		`if true do
+             1
+             2
+         end else do
+             3
+             4
+         end
+        `,
 
-		"5 => a",
-		"=>",
+		"match n where",
+		`match n where
+             | a -> b`,
+		`match n where
+             | a -> b,
+             | b -> c`,
+		`match n where
+             | a -> b,
+             | b -> c,
+             | _ -> d`,
+
+		"model a",
+		"model a, b",
+		"model (a, b) : parent",
+		"model a, b : parent ('hello', 5, a)",
+
+		"=> 10",
+
+		"1 + 1",
+		"1 + 2 * 3",
+		"a, b",
+		"()",
+
+		"a[b]",
+		"a[b, c]",
+
+		"return",
+		"return 5",
+		"return 1, 2, 3",
+
+		"next",
+		"break",
+
+		"while true, x",
+		"while true do a; b; c end",
+
+		"for a in b, c",
+		"for a in b do c; d; e end",
+
+		"import 'foo'",
 	}
 
-	for _, test := range tests {
-		p := parser.New(test, "test")
-		p.Parse()
+	for i, test := range tests {
+		_, err := parse(test, fmt.Sprintf("test %d: %s", i, test))
 
-		if len(p.Errors) == 0 {
-			fmt.Println("expected error on input:", test)
-			p.PrintErrors(os.Stdout)
-
+		if err != nil {
+			fmt.Println(err.Error())
 			t.Fail()
 		}
 	}
 }
 
-// Assume that, if a string parses with no errors, it has parsed successfully.
-func TestNoErrors(t *testing.T) {
-	tests := []string{
-		"a",
-		"hellΩ",
+func TestErrors(t *testing.T) {
+	tests := map[string]string{
+		")": "unexpected token: right-paren",
+		"$": "illegal token encountered. literal: `$`",
 
-		"5",
-		"10",
-		"5.33",
+		"(":     "unexpected end of line",
+		"[":     "unexpected end of line",
+		"[1,":   "unexpected end of line",
+		"{":     "unexpected end of line",
+		"{1:":   "unexpected end of line",
+		"{1:2,": "unexpected end of line",
 
-		"true",
-		"false",
+		"if true": "unexpected end of line, wanted 'then'",
 
-		"nil",
+		"match x":           "unexpected end of line, wanted 'where'",
+		"match x where | a": "unexpected end of line, wanted 'right-arrow'",
 
-		`'hello "world"'`,
-		`"hello 'world'"`,
-		"`'hello' \"world\"`",
+		"model": "unexpected end of line",
 
-		"()",
-		"(1,)",
-		"(1, 2)",
-		"(1, 2,)",
+		"=>": "unexpected end of line",
 
-		"[]",
-		"[1]",
-		"[1, 2]",
-		"[1, 2,]",
+		"while true 5": "unexpected end of line, wanted 'comma'",
+		"for a do b":   "expected 'in' but got 'do'",
+		"for a in b c": "unexpected end of line, wanted 'comma'",
 
-		";",
-		"break",
-		"next",
-		"loop a",
-		"while a < b do c",
-		"while a < b { c }",
-		"for a; b; c do d",
-		"for a; b; c { d }",
-		"import 'path/to/file'",
-		"return a",
+		"import":   "unexpected end of line, wanted 'string'",
+		"import 5": "expected 'string' but got 'number'",
 
-		"map[]",
-		"map[1:2]",
-		"map[1:2, 'a': 'A']",
-		"map[a: b,]",
-
-		"{}",
-		"{ return }",
-		"{ a + b }",
-		"{{}}",
-
-		"-10",
-		"+10",
-		"!true",
-
-		"a = b",
-		"a := b",
-		"a &&= b",
-		"a &= b",
-		"a |= b",
-		"a ^= b",
-		"a //= b",
-		"a -= b",
-		"a %= b",
-		"a ||= b",
-		"a += b",
-		"a /= b",
-		"a *= b",
-		"a || b",
-		"a && b",
-		"a | b",
-		"a & b",
-		"a == b",
-		"a != b",
-		"a < b",
-		"a > b",
-		"a <= b",
-		"a >= b",
-		"a + b",
-		"a - b",
-		"a * b",
-		"a / b",
-		"a % b",
-		"a ^ b",
-		"a // b",
-		"a.b",
-		"a * b + c",
-		"a + b * c",
-		"a * (b + c)",
-
-		"a[b]",
-
-		"a()",
-		"a(b)",
-		"a(b, c)",
-		"a(b, c,)",
-
-		"if a then b",
-		"if a { b }",
-		"if a then b else c",
-		"if a then b else if c then d else e",
-
-		"match a where",
-		"match a where | b -> c",
-		"match a where | b -> c, | d -> e",
-		"match a where | _ -> b",
-
-		"model()",
-		"model(x)",
-		"model(x, y)",
-		"model(x, y,)",
-
-		"import 'hello'",
-
-		"a => b",
-		"() => b",
-		"(a) => b",
-		"(a, b) => c",
-		"=> a",
-		"=> a => b => c",
+		"a[b": "unexpected end of line, wanted 'right-square'",
 	}
 
-	for _, test := range tests {
-		p := parser.New(test, "test")
-		p.Parse()
+	for test, expectedMessage := range tests {
+		_, err := parse(test, fmt.Sprintf("test %s", test))
 
-		if len(p.Errors) > 0 {
-			fmt.Println("failed on input:", test)
-			p.PrintErrors(os.Stdout)
+		if err == nil {
+			t.Fail()
+		}
 
+		message := err.(*Error).Message
+
+		if message != expectedMessage {
+			fmt.Printf("expected `%s`, got `%s`\n", expectedMessage, message)
 			t.Fail()
 		}
 	}
+}
+
+func TestPrecedence(t *testing.T) {
+	tests := map[string]string{
+		"1 + 2 * 3": "1 + (2 * 3)",
+		"1 * 2 + 3": "(1 * 2) + 3",
+		"1 + 2, 3":  "(1 + 2), 3",
+		"1, 2 + 3":  "1, (2 + 3)",
+	}
+
+	for test, expected := range tests {
+		testAST, err := parse(test, "test")
+		if err != nil {
+			t.Fail()
+		}
+
+		expectedAST, err := parse(expected, "test")
+		if err != nil {
+			t.Fail()
+		}
+
+		if testAST.Tree() != expectedAST.Tree() {
+			fmt.Println(test, "doesn't parse the same as", expected)
+			t.Fail()
+		}
+	}
+}
+
+func parse(str, file string) (*ast.Program, error) {
+	var (
+		l = lexer.Lexer(str, file)
+		p = New(l)
+	)
+
+	return p.Parse()
 }

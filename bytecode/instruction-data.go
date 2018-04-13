@@ -1,69 +1,57 @@
 package bytecode
 
-type data struct {
+// Data specifies the name of an instruction, and whether or not it takes
+// an argument.
+type Data struct {
 	Name   string
 	HasArg bool
 }
 
-// Instructions stores data about the different instruction types
-var Instructions = map[byte]data{
-	Dummy: {Name: "DUMMY", HasArg: true},
-	Pop:   {Name: "POP"},
-	Dup:   {Name: "DUP"},
-	Rot:   {Name: "ROT"},
+// Instructions stores data about different instruction types.
+var Instructions = map[byte]Data{
+	Nop:    {Name: "NO_OP"},
+	NopArg: {Name: "NO_OP_ARG", HasArg: true},
 
-	LoadConst:   {Name: "LOAD_CONST", HasArg: true},
-	LoadName:    {Name: "LOAD_NAME", HasArg: true},
-	StoreName:   {Name: "STORE_NAME", HasArg: true},
-	DeclareName: {Name: "DECLARE_NAME", HasArg: true},
-	LoadField:   {Name: "LOAD_FIELD"},
-	StoreField:  {Name: "STORE_FIELD"},
+	LoadConst:      {Name: "LOAD_CONST", HasArg: true},
+	LoadName:       {Name: "LOAD_NAME", HasArg: true},
+	StoreName:      {Name: "STORE_NAME", HasArg: true},
+	DeclareName:    {Name: "DECLARE_NAME", HasArg: true},
+	LoadSubscript:  {Name: "LOAD_SUBSCRIPT"},
+	StoreSubscript: {Name: "STORE_SUBSCRIPT"},
 
-	UnaryInvert: {Name: "UNARY_INVERT"},
-	UnaryNegate: {Name: "UNARY_NEGATE"},
-
+	UnaryInvert:    {Name: "UNARY_INVERT"},
+	UnaryNegate:    {Name: "UNARY_NEGATE"},
 	BinaryAdd:      {Name: "BINARY_ADD"},
-	BinarySubtract: {Name: "BINARY_SUBTRACT"},
-	BinaryMultiply: {Name: "BINARY_MULTIPLY"},
-	BinaryDivide:   {Name: "BINARY_DIVIDE"},
-	BinaryExponent: {Name: "BINARY_EXPONENT"},
+	BinarySub:      {Name: "BINARY_SUB"},
+	BinaryMul:      {Name: "BINARY_MUL"},
+	BinaryDiv:      {Name: "BINARY_DIV"},
+	BinaryExp:      {Name: "BINARY_EXP"},
 	BinaryFloorDiv: {Name: "BINARY_FLOOR_DIV"},
-	BinaryMod:      {Name: "BINARY_MOD"},
-	BinaryOr:       {Name: "BINARY_OR"},
-	BinaryAnd:      {Name: "BINARY_AND"},
+	BinaryMod:      {Name: "BINARY_MODULO"},
+	BinaryLogicOr:  {Name: "BINARY_LOGIC_OR"},
+	BinaryLogicAnd: {Name: "BINARY_LOGIC_AND"},
 	BinaryBitOr:    {Name: "BINARY_BIT_OR"},
 	BinaryBitAnd:   {Name: "BINARY_BIT_AND"},
-	BinaryEquals:   {Name: "BINARY_EQUALS"},
+	BinaryEqual:    {Name: "BINARY_EQUAL"},
 	BinaryNotEqual: {Name: "BINARY_NOT_EQUAL"},
-	BinaryLessThan: {Name: "BINARY_LESS_THAN"},
-	BinaryMoreThan: {Name: "BINARY_MORE_THAN"},
+	BinaryLess:     {Name: "BINARY_LESS_THAN"},
+	BinaryMore:     {Name: "BINARY_MORE_THAN"},
 	BinaryLessEq:   {Name: "BINARY_LESS_EQ"},
 	BinaryMoreEq:   {Name: "BINARY_MORE_EQ"},
 
-	CallFn: {Name: "CALL_FN", HasArg: true},
-	Return: {Name: "RETURN_FN"},
+	CallFunction: {Name: "CALL_FUNCTION"},
+	CallMethod:   {Name: "CALL_METHOD"},
+	Return:       {Name: "RETURN"},
+	OpenScope:    {Name: "OPEN_SCOPE"},
+	CloseScope:   {Name: "CLOSE_SCOPE"},
 
-	Print:   {Name: "PRINT"},
-	Println: {Name: "PRINT_LINE"},
-	Length:  {Name: "LENGTH"},
-	Typeof:  {Name: "TYPEOF"},
-	Modelof: {Name: "MODELOF"},
-	ToStr:   {Name: "TO_STR"},
-	ToNum:   {Name: "TO_NUM"},
-	ToList:  {Name: "TO_LIST"},
-	ToTuple: {Name: "TO_TUPLE"},
-	Round:   {Name: "ROUND"},
-	Floor:   {Name: "FLOOR"},
-	Ceil:    {Name: "CEIL"},
-	Sleep:   {Name: "SLEEP"},
-
-	Jump:        {Name: "JUMP", HasArg: true},
-	JumpIfTrue:  {Name: "JUMP_IF_TRUE", HasArg: true},
-	JumpIfFalse: {Name: "JUMP_IF_FALSE", HasArg: true},
-	Break:       {Name: "BREAK"},
-	Next:        {Name: "NEXT"},
-	LoopStart:   {Name: "START_LOOP"},
-	LoopEnd:     {Name: "END_LOOP"},
+	Jump:       {Name: "JUMP", HasArg: true},
+	JumpIf:     {Name: "JUMP_IF", HasArg: true},
+	JumpUnless: {Name: "JUMP_UNLESS", HasArg: true},
+	Break:      {Name: "BREAK"},
+	Next:       {Name: "NEXT"},
+	StartLoop:  {Name: "START_LOOP"},
+	EndLoop:    {Name: "END_LOOP"},
 
 	MakeList:  {Name: "MAKE_LIST", HasArg: true},
 	MakeTuple: {Name: "MAKE_TUPLE", HasArg: true},

@@ -1,35 +1,72 @@
 package object
 
-// An Object is the interface which every object
-// type implements.
+// The Type of an Object indicates what type of object it is.
+type Type string
+
+const (
+	_ Type = ""
+
+	NumberType   = "number"
+	BooleanType  = "boolean"
+	StringType   = "string"
+	ListType     = "list"
+	TupleType    = "tuple"
+	MapType      = "map"
+	NilType      = "nil"
+	FunctionType = "function"
+	MethodType   = "method"
+	BuiltinType  = "builtin"
+	ModelType    = "model"
+)
+
+// An Object is the interface which every Radon object implements.
 type Object interface {
 	String() string
-	Debug() string
 	Equals(Object) bool
 	Type() Type
+
+	// Prefix performs a prefix operation on an Object.
+	// operator can be one of:
+	// + - ! ,
+	// If the 2nd return value is false, an error is raised.
+	Prefix(operator string) (Object, bool)
+
+	// Infix performs an infix operation on an Object.
+	// operator can be one of:
+	// + - * / == != < > || && | & ^ // % <= >= . ,
+	// If the 2nd return value is false, an error is raised.
+	Infix(operator string, right Object) (Object, bool)
+
+	// Numeric returns the numeric value of an Object.
+	// If the 2nd return value is false, an error is raised.
+	Numeric() (float64, bool)
+
+	// Items returns a slice of Objects representing an Object.
+	// If the 2nd return value is false, an error is raised.
+	Items() ([]Object, bool)
+
+	// Call calls an Object with the given arguments, returning the return value.
+	// If the 2nd return value is false, an error is raised.
+	Call(args ...Object) (Object, bool)
+
+	// Subscript implements the [] operator, e.g. list[5]
+	Subscript(Object) (Object, bool)
+
+	// SetSubscript implements assigning to the [] operator, e.g. list[5] = "foo"
+	SetSubscript(index Object, to Object) bool
 }
 
-// Collection is a child interface of Object,
-// which represents an object which can be
-// thought of as a list of items
-type Collection interface {
-	Object
-	Elements() []Object
-	GetIndex(int) Object
-	SetIndex(int, Object)
-}
+// defaults supplies default implementations so other Object types automatically
+// implement the methods.
+type defaults struct{}
 
-// Container is a child interface of Object,
-// which can be accessed by keys - like a map
-type Container interface {
-	Object
-	GetKey(Object) Object
-	SetKey(Object, Object)
-}
-
-// Methoder is any object which has methods.
-// Methods are accesses using the dot operator.
-type Methoder interface {
-	Object
-	GetMethod(name string) (*Builtin, bool)
-}
+func (d *defaults) String() string                      { panic("not implemented") }
+func (d *defaults) Type() Type                          { panic("not implemented") }
+func (d *defaults) Equals(Object) bool                  { return false }
+func (d *defaults) Prefix(string) (Object, bool)        { return nil, false }
+func (d *defaults) Infix(string, Object) (Object, bool) { return nil, false }
+func (d *defaults) Numeric() (float64, bool)            { return -1, false }
+func (d *defaults) Items() ([]Object, bool)             { return nil, false }
+func (d *defaults) Call(...Object) (Object, bool)       { return nil, false }
+func (d *defaults) Subscript(Object) (Object, bool)     { return nil, false }
+func (d *defaults) SetSubscript(Object, Object) bool    { return false }

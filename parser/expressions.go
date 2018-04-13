@@ -7,102 +7,78 @@ import (
 	"github.com/Zac-Garby/radon/token"
 )
 
-// parseExpression parses an expression starting at the current
-// token, and finishing just after the end of the node.
+// parseExpression parses an expression starting at the current token. It leaves
+// cur on the last token of the expression.
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	prefix, ok := p.prefixes[p.cur.Type]
+	nud, ok := p.nuds[p.cur.Type]
 	if !ok {
-		p.unexpectedTokenErr(p.cur.Type)
+		p.unexpected(p.cur.Type)
 		return nil
 	}
 
-	left := prefix()
+	left := nud()
+
+	if p.peekIs(argTokens...) {
+		left = p.parseFunctionCall(left)
+	}
 
 	for !p.peekIs(token.Semi) && precedence < p.peekPrecedence() {
-		infix, ok := p.infixes[p.peek.Type]
+		led, ok := p.leds[p.peek.Type]
 		if !ok {
 			return left
 		}
 
 		p.next()
-		left = infix(left)
+		left = led(left)
 	}
 
 	return left
 }
 
-// Prefix Expression Parsers
-
-func (p *Parser) parseID() ast.Expression {
+func (p *Parser) parseIdentifier() ast.Expression {
 	return &ast.Identifier{
-		Tok:   p.cur,
 		Value: p.cur.Literal,
 	}
 }
 
-func (p *Parser) parseNum() ast.Expression {
-	node := &ast.Number{
-		Tok: p.cur,
+func (p *Parser) parseNumber() ast.Expression {
+	val, _ := strconv.ParseFloat(p.cur.Literal, 64)
+
+	return &ast.Number{
+		Value: val,
 	}
-
-	val, err := strconv.ParseFloat(p.cur.Literal, 64)
-	if err != nil {
-		p.Errors = append(p.Errors, err)
-		return nil
-	}
-
-	node.Value = val
-
-	return node
 }
 
-func (p *Parser) parseBool() ast.Expression {
+func (p *Parser) parseBoolean() ast.Expression {
 	return &ast.Boolean{
-		Tok:   p.cur,
 		Value: p.cur.Type == token.True,
 	}
 }
 
 func (p *Parser) parseNil() ast.Expression {
-	return &ast.Nil{
-		Tok: p.cur,
-	}
+	return &ast.Nil{}
 }
 
 func (p *Parser) parseString() ast.Expression {
 	return &ast.String{
-		Tok:   p.cur,
 		Value: p.cur.Literal,
 	}
 }
 
 func (p *Parser) parseGroupedExpression() ast.Expression {
-	p.next()
-
-	if p.curIs(token.RightParen) {
-		return &ast.Tuple{
-			Tok: p.cur,
-		}
-	}
-
-	expr := p.parseExpression(lowest)
-	isTuple := false
-
-	if p.peekIs(token.Comma) {
-		isTuple = true
-
+	if p.peekIs(token.RightParen) {
 		p.next()
 
-		expr = &ast.Tuple{
-			Tok: expr.Token(),
-			Value: append(
-				[]ast.Expression{expr},
-				p.parseExpressionList(token.RightParen)...,
-			),
+		return &ast.Infix{
+			Operator: ",",
 		}
 	}
 
-	if !isTuple && !p.expect(token.RightParen) {
+	p.next()
+
+	expr := p.parseExpression(lowest)
+
+	if !p.expect(token.RightParen) {
 		return nil
 	}
 
@@ -111,39 +87,28 @@ func (p *Parser) parseGroupedExpression() ast.Expression {
 
 func (p *Parser) parseList() ast.Expression {
 	return &ast.List{
-		Tok:      p.cur,
-		Elements: p.parseExpressionList(token.RightSquare),
+		Value: p.parseExpressionList(token.RightSquare, token.Comma),
 	}
 }
 
 func (p *Parser) parseMap() ast.Expression {
-	node := &ast.Map{
-		Tok: p.cur,
+	return &ast.Map{
+		Value: p.parseExpressionPairs(token.RightBrace, token.Comma),
 	}
-
-	if !p.expect(token.LeftSquare) {
-		return nil
-	}
-
-	p.next()
-	node.Pairs = p.parseExpressionPairs(token.RightSquare)
-
-	return node
 }
 
 func (p *Parser) parseBlock() ast.Expression {
 	node := &ast.Block{
-		Tok:        p.cur,
-		Statements: make([]ast.Statement, 0, 8),
+		Value: make([]ast.Statement, 0, 8),
 	}
 
 	p.next()
 
-	for !p.curIs(token.RightBrace) && !p.curIs(token.EOF) {
+	for !p.curIs(token.End) && !p.curIs(token.EOF) {
 		stmt := p.parseStatement()
 
 		if stmt != nil {
-			node.Statements = append(node.Statements, stmt)
+			node.Value = append(node.Value, stmt)
 		}
 
 		p.next()
@@ -153,8 +118,7 @@ func (p *Parser) parseBlock() ast.Expression {
 }
 
 func (p *Parser) parsePrefix() ast.Expression {
-	node := &ast.PrefixExpression{
-		Tok:      p.cur,
+	node := &ast.Prefix{
 		Operator: p.cur.Literal,
 	}
 
@@ -164,15 +128,14 @@ func (p *Parser) parsePrefix() ast.Expression {
 	return node
 }
 
-func (p *Parser) parseIfExpression() ast.Expression {
-	node := &ast.IfExpression{
-		Tok: p.cur,
+func (p *Parser) parseIf() ast.Expression {
+	p.next()
+
+	node := &ast.If{
+		Condition: p.parseExpression(lowest),
 	}
 
-	p.next()
-	node.Condition = p.parseExpression(lowest)
-
-	if p.peekIs(token.LeftBrace) {
+	if p.peekIs(token.Do) {
 		p.next()
 		node.Consequence = p.parseBlock()
 	} else {
@@ -187,7 +150,6 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	if p.peekIs(token.Else) {
 		p.next()
 		p.next()
-
 		node.Alternative = p.parseExpression(lowest)
 	} else {
 		node.Alternative = &ast.Nil{}
@@ -196,13 +158,11 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	return node
 }
 
-func (p *Parser) parseMatchExpression() ast.Expression {
-	node := &ast.Match{
-		Tok: p.cur,
-	}
-
+func (p *Parser) parseMatch() ast.Expression {
 	p.next()
-	node.Input = p.parseExpression(lowest)
+	node := &ast.Match{
+		Input: p.parseExpression(lowest),
+	}
 
 	if !p.expect(token.Where) {
 		return nil
@@ -222,7 +182,7 @@ func (p *Parser) parseMatchExpression() ast.Expression {
 
 		p.next()
 
-		pair.Body = p.parseExpression(lowest)
+		pair.Body = p.parseExpression(join)
 		node.Branches = append(node.Branches, pair)
 
 		if p.peekIs(token.Comma) {
@@ -252,36 +212,24 @@ func (p *Parser) parseMatchExpression() ast.Expression {
 }
 
 func (p *Parser) parseModel() ast.Expression {
-	node := &ast.Model{
-		Tok: p.cur,
-	}
-
-	if !p.expect(token.LeftParen) {
-		return nil
-	}
-
-	node.Parameters = p.parseParams(token.RightParen)
-
-	return node
-}
-
-func (p *Parser) parseLambdaPrefix() ast.Expression {
-	node := &ast.Lambda{
-		Tok: p.cur,
-	}
-
 	p.next()
 
-	node.Body = p.parseExpression(lowest)
+	node := &ast.Model{
+		Parameters: p.parseExpression(lowest),
+	}
+
+	if p.peekIs(token.Colon) {
+		p.next()
+		p.next()
+
+		node.Parent = p.parseExpression(lowest)
+	}
 
 	return node
 }
 
-// Infix Expression Parsers
-
 func (p *Parser) parseInfix(left ast.Expression) ast.Expression {
-	node := &ast.InfixExpression{
-		Tok:      p.cur,
+	node := &ast.Infix{
 		Operator: p.cur.Literal,
 		Left:     left,
 	}
@@ -293,52 +241,11 @@ func (p *Parser) parseInfix(left ast.Expression) ast.Expression {
 	return node
 }
 
-func (p *Parser) parseIndex(left ast.Expression) ast.Expression {
-	node := &ast.IndexExpression{
-		Tok:        p.cur,
-		Collection: left,
-	}
-
-	p.next()
-	node.Index = p.parseExpression(lowest)
-
-	if !p.expect(token.RightSquare) {
-		return nil
-	}
-
-	return node
-}
-
 func (p *Parser) parseFunctionCall(left ast.Expression) ast.Expression {
-	node := &ast.FunctionCall{
-		Tok:      p.cur,
-		Function: left,
-	}
-
-	node.Arguments = p.parseExpressionList(token.RightParen)
-
-	return node
-}
-
-func (p *Parser) parseLambdaInfix(left ast.Expression) ast.Expression {
-	node := &ast.Lambda{
-		Tok: p.cur,
-	}
-
-	switch lp := left.(type) {
-	case *ast.Tuple:
-		node.Parameters = lp.Value
-
-	case *ast.Identifier:
-		node.Parameters = []ast.Expression{lp}
-
-	default:
-		p.defaultErr("expected a tuple or an identifier to the left of =>")
-		return nil
-	}
-
 	p.next()
-	node.Body = p.parseExpression(lowest)
 
-	return node
+	return &ast.Call{
+		Function: left,
+		Argument: p.parseExpression(assign),
+	}
 }

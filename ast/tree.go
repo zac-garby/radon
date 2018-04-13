@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
-
-	"github.com/Zac-Garby/radon/token"
 )
 
 const treeIndent = 2
@@ -61,8 +59,7 @@ func Tree(node Node, indent int, name string) string {
 		}
 
 		switch n := field.(type) {
-		case token.Token:
-		case Node:
+		case Statement, Expression:
 			str += "\n" + Tree(n, indent+1, label)
 
 		case map[Statement]Statement:

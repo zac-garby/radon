@@ -1,11 +1,13 @@
-vec = model(x, y)
-a = vec(3, -2)
+animal = model name, species
 
-vec.scale (x, y) = {
-    self.x = self.x * x
-    self.y = self.y * y
+dog = model name : animal name, "dog"
+cat = model name : animal name, "cat"
+
+a = dog "dog a"
+b = cat "cat b"
+
+assert a == {
+    __model: dog,
+    name: "dog a",
+    species: "dog",
 }
-
-print(a) # [x: 3, y: -2]
-
-a == map['x': 3, 'y': -2] # true
