@@ -30,7 +30,7 @@ type (
 		Value string
 	}
 
-	// Nil is the nil literal; the absense of a value.
+	// Nil is the nil literal; the absence of a value.
 	Nil struct {
 		expr
 	}

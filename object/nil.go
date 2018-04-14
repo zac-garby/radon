@@ -1,6 +1,6 @@
 package object
 
-// Nil represents the absense of any useful value.
+// Nil represents the absence of any useful value.
 type Nil struct {
 	defaults
 }
