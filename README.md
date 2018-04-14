@@ -7,3 +7,18 @@ For syntax highlighting and snippets in [TextMate](http://macromates.com), insta
 Here's a nice example of some of the features:
 
 ![](img/screenshot.png)
+
+##### What's implemented so far?
+
+ - The AST
+   - Tested
+ - The lexer
+   - Tested
+ - The parser
+   - Tested
+ - All objects (except functions)
+   - Tested
+ - Bytecode
+   - Defined all instructions
+   - Parsing instructions
+   - Tested
