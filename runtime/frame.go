@@ -13,7 +13,7 @@ type Frame struct {
 	offset        int
 	vm            *VM
 	store         *Store
-	stack         *stack
+	stack         *Stack
 	breaks, nexts []int
 	constants     []object.Object
 	names         []string
