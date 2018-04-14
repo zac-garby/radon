@@ -1,4 +1,4 @@
-package vm
+package runtime
 
 import (
 	"errors"
@@ -26,20 +26,30 @@ var (
 
 // A Stack is created for each frame in the virtual machine, and stores a stack of
 // objects which can be popped or pushed.
-type Stack []object.Object
+type Stack struct {
+	Objects []object.Object
+}
 
 // NewStack makes a new empty Stack, with capacity equal to DefaultStackCapacity.
 func NewStack() *Stack {
-	return make(Stack, 0, DefaultStackCapacity)
+	return &Stack{
+		Objects: make([]object.Object, 0, DefaultDataStackCapacity),
+	}
+}
+
+// Len gets the length of the stack.
+func (s *Stack) Len() int {
+	return len(s.Objects)
 }
 
 // Push pushes an Object to the top of a Stack. If it returns an error, it will be
 // ErrDataStackOverflow.
 func (s *Stack) Push(obj object.Object) error {
-	if len(s) >= MaxObjectStackSize {
-
+	if s.Len() >= MaxDataStackSize {
+		return ErrDataStackOverflow
 	}
-	s = append(s, obj)
+	s.Objects = append(s.Objects, obj)
+	return nil
 }
 
 // Pop pops an Object from the Stack, returning it. If it returns an error, it will
@@ -50,7 +60,7 @@ func (s *Stack) Pop() (object.Object, error) {
 		return nil, err
 	}
 
-	s = s[:len(s)-1]
+	s.Objects = s.Objects[:s.Len()-1]
 	return top, nil
 }
 
@@ -58,9 +68,9 @@ func (s *Stack) Pop() (object.Object, error) {
 // an ErrDataStackUnderflow. It is equivalent to popping, but without removing
 // the item from the stack.
 func (s *Stack) Top() (object.Object, error) {
-	if len(s) == 0 {
+	if s.Len() == 0 {
 		return nil, ErrDataStackUnderflow
 	}
 
-	return s[len(s)-1], nil
+	return s.Objects[s.Len()-1], nil
 }
