@@ -10,7 +10,7 @@ Here's a nice example of some of the features:
 
 ![](img/screenshot.png)
 
-##### What's implemented so far?
+### What's implemented so far?
 
  - The AST
    - Tested
@@ -24,3 +24,21 @@ Here's a nice example of some of the features:
    - Defined all instructions
    - Parsing instructions
    - Tested
+
+### Building
+
+To use Radon, you'll have to build it yourself for now, since there's no point in my putting a new version on GitHub every time it changes. First, download the project and `cd` to it:
+
+```
+go get github.com/zac-garby/radon
+cd $GOPATH/src/github.com/zac-garby/radon
+```
+
+Then, install the dependencies and install the `radon` command:
+
+```
+dep ensure
+go install
+```
+
+If `$GOPATH/bin` is in your `$PATH` variable, you can start the REPL using the `radon` command. Otherwise, you'll have to use the actual path to the binary: `$GOPATH/bin/radon`, although I do recommend adding `$GOPATH/bin` to `$PATH`. You also might want to `mv $GOPATH/bin/radon /usr/local/bin`.
