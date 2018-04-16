@@ -4,6 +4,7 @@ type expr struct{}
 
 func (e expr) Expr() {}
 
+// The different AST nodes available to parse.
 type (
 	// An identifier represents a name in the variable store; evaluates to the
 	// value of that variable.
