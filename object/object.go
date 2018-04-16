@@ -3,6 +3,7 @@ package object
 // The Type of an Object indicates what type of object it is.
 type Type string
 
+// The set of available types in Radon.
 const (
 	_ Type = ""
 
