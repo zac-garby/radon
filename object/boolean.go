@@ -12,10 +12,12 @@ func (b *Boolean) String() string {
 	return fmt.Sprintf("%t", b.Value)
 }
 
+// Type returns the type of an Object.
 func (b *Boolean) Type() Type {
 	return BooleanType
 }
 
+// Equals checks whether or not two objects are equal to each other.
 func (b *Boolean) Equals(other Object) bool {
 	switch o := other.(type) {
 	case *Boolean:
@@ -26,6 +28,8 @@ func (b *Boolean) Equals(other Object) bool {
 	}
 }
 
+// Prefix applies a prefix operator to an object, returning the result. If the operation
+// cannot be performed, (nil, false) is returned.
 func (b *Boolean) Prefix(op string) (Object, bool) {
 	if op == "!" {
 		return &Boolean{Value: !b.Value}, true
@@ -33,6 +37,8 @@ func (b *Boolean) Prefix(op string) (Object, bool) {
 	return nil, false
 }
 
+// Infix applies a infix operator to an object, returning the result. If the operation
+// cannot be performed, (nil, false) is returned.
 func (b *Boolean) Infix(op string, right Object) (Object, bool) {
 	if op == "," {
 		return &Tuple{
@@ -55,6 +61,7 @@ func (b *Boolean) Infix(op string, right Object) (Object, bool) {
 	}
 }
 
+// Numeric returns the numeric value of an object, or false if it can't be a number.
 func (b *Boolean) Numeric() (float64, bool) {
 	if b.Value {
 		return 1, true

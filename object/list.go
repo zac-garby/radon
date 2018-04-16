@@ -21,10 +21,12 @@ func (l *List) String() string {
 	return fmt.Sprintf("[%s]", strings.Join(strs, ", "))
 }
 
+// Type returns the type of an Object.
 func (l *List) Type() Type {
 	return ListType
 }
 
+// Equals checks whether or not two objects are equal to each other.
 func (l *List) Equals(other Object) bool {
 	switch o := other.(type) {
 	case *List:
@@ -46,6 +48,8 @@ func (l *List) Equals(other Object) bool {
 	}
 }
 
+// Infix applies a infix operator to an object, returning the result. If the operation
+// cannot be performed, (nil, false) is returned.
 func (l *List) Infix(op string, right Object) (Object, bool) {
 	if op == "," {
 		return &Tuple{
@@ -65,10 +69,13 @@ func (l *List) Infix(op string, right Object) (Object, bool) {
 	return nil, false
 }
 
+// Items returns a slice containing all objects in an Object, or false otherwise.
 func (l *List) Items() ([]Object, bool) {
 	return l.Value, true
 }
 
+// Subscript subscrips an Object, e.g. foo[bar], or returns false if it can't be
+// done.
 func (l *List) Subscript(index Object) (Object, bool) {
 	num, ok := index.(*Number)
 	if !ok {
@@ -83,6 +90,8 @@ func (l *List) Subscript(index Object) (Object, bool) {
 	return l.Value[i], true
 }
 
+// SetSubscript sets the value of a subscript of an Object, e.g. foo[bar] = baz.
+// Returns false if it can't be done.
 func (l *List) SetSubscript(index Object, to Object) bool {
 	num, ok := index.(*Number)
 	if !ok {

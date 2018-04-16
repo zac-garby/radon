@@ -39,10 +39,12 @@ func (m *Map) String() string {
 	return fmt.Sprintf("{%s}", strings.Join(stringArr, ", "))
 }
 
+// Type returns the type of an Object.
 func (m *Map) Type() Type {
 	return MapType
 }
 
+// Equals checks whether or not two objects are equal to each other.
 func (m *Map) Equals(o Object) bool {
 	if other, ok := o.(*Map); ok {
 		if len(other.Values) != len(m.Values) {
@@ -65,6 +67,7 @@ func (m *Map) Equals(o Object) bool {
 	return false
 }
 
+// Items returns a slice containing all objects in an Object, or false otherwise.
 func (m *Map) Items() ([]Object, bool) {
 	var pairs []Object
 
@@ -80,6 +83,8 @@ func (m *Map) Items() ([]Object, bool) {
 	return pairs, true
 }
 
+// Subscript subscrips an Object, e.g. foo[bar], or returns false if it can't be
+// done.
 func (m *Map) Subscript(key Object) (Object, bool) {
 	if hash, err := structhash.Hash(key, 1); err == nil {
 		if val, ok := m.Values[hash]; ok {
@@ -92,6 +97,8 @@ func (m *Map) Subscript(key Object) (Object, bool) {
 	return nil, false
 }
 
+// SetSubscript sets the value of a subscript of an Object, e.g. foo[bar] = baz.
+// Returns false if it can't be done.
 func (m *Map) SetSubscript(key Object, val Object) bool {
 	if hash, err := structhash.Hash(key, 1); err == nil {
 		m.Values[hash] = val

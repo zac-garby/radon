@@ -14,10 +14,12 @@ func (s *String) String() string {
 	return fmt.Sprintf("\"%s\"", s.Value)
 }
 
+// Type returns the type of an Object.
 func (s *String) Type() Type {
 	return StringType
 }
 
+// Equals checks whether or not two objects are equal to each other.
 func (s *String) Equals(other Object) bool {
 	switch o := other.(type) {
 	case *String:
@@ -28,6 +30,8 @@ func (s *String) Equals(other Object) bool {
 	}
 }
 
+// Infix applies a infix operator to an object, returning the result. If the operation
+// cannot be performed, (nil, false) is returned.
 func (s *String) Infix(op string, right Object) (Object, bool) {
 	if op == "," {
 		return &Tuple{

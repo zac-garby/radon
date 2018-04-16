@@ -15,10 +15,12 @@ func (n *Number) String() string {
 	return fmt.Sprintf("%v", n.Value)
 }
 
+// Type returns the type of an Object.
 func (n *Number) Type() Type {
 	return NumberType
 }
 
+// Equals checks whether or not two objects are equal to each other.
 func (n *Number) Equals(other Object) bool {
 	switch o := other.(type) {
 	case *Number:
@@ -29,6 +31,8 @@ func (n *Number) Equals(other Object) bool {
 	}
 }
 
+// Prefix applies a prefix operator to an object, returning the result. If the operation
+// cannot be performed, (nil, false) is returned.
 func (n *Number) Prefix(op string) (Object, bool) {
 	var val float64
 
@@ -46,6 +50,8 @@ func (n *Number) Prefix(op string) (Object, bool) {
 	return &Number{Value: val}, true
 }
 
+// Infix applies a infix operator to an object, returning the result. If the operation
+// cannot be performed, (nil, false) is returned.
 func (n *Number) Infix(op string, right Object) (Object, bool) {
 	if op == "," {
 		return &Tuple{
@@ -102,6 +108,7 @@ func (n *Number) Infix(op string, right Object) (Object, bool) {
 	return nil, false
 }
 
+// Numeric returns the numeric value of an object, or false if it can't be a number.
 func (n *Number) Numeric() (float64, bool) {
 	return n.Value, true
 }
