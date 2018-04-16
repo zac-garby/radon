@@ -6,7 +6,7 @@ func (e expr) Expr() {}
 
 // The different AST nodes available to parse.
 type (
-	// An identifier represents a name in the variable store; evaluates to the
+	// An Identifier represents a name in the variable store; evaluates to the
 	// value of that variable.
 	Identifier struct {
 		expr
@@ -19,7 +19,7 @@ type (
 		Value float64
 	}
 
-	// A boolean represents a boolean literal.
+	// A Boolean represents a boolean literal.
 	Boolean struct {
 		expr
 		Value bool
