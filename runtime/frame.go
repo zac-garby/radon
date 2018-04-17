@@ -18,3 +18,40 @@ type Frame struct {
 	constants     []object.Object
 	names         []string
 }
+
+func (f *Frame) offsetToInstructionIndex(offset int) int {
+	var index, counter int
+
+	for _, instr := range f.code {
+		if bytecode.Instructions[instr.Code].HasArg {
+			counter += 3
+		} else {
+			counter++
+		}
+
+		if counter >= offset {
+			return index
+		}
+
+		index++
+	}
+
+	return index
+}
+
+func (f *Frame) getName(arg rune) (string, bool) {
+	index := int(arg)
+	if index < len(f.names) {
+		return f.names[index], true
+	}
+
+	return "", false
+}
+
+func (f *Frame) searchName(name string) (object.Object, bool) {
+	if val, ok := f.store.Get(name); ok {
+		return val, true
+	}
+
+	return nil, false
+}
