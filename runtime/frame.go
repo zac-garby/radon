@@ -50,7 +50,7 @@ func (f *Frame) getName(arg rune) (string, bool) {
 
 func (f *Frame) searchName(name string) (object.Object, bool) {
 	if val, ok := f.store.Get(name); ok {
-		return val, true
+		return val.Value, true
 	}
 
 	return nil, false
