@@ -110,6 +110,9 @@ func TestEquals(t *testing.T) {
 		{m(n(1), n(2), n(3), n(4)), m(n(1), n(2), n(3), n(5)), false},
 		{m(n(1), n(2)), m(n(1), n(2), n(3), n(5)), false},
 		{m(n(1), n(2), n(3), n(4)), m(n(1), n(2)), false},
+
+		{f(nil), f(nil), false},
+		{f(nil), n(5), false},
 	}
 
 	for _, c := range cases {
