@@ -46,10 +46,6 @@ type Object interface {
 	// If the 2nd return value is false, an error is raised.
 	Items() ([]Object, bool)
 
-	// Call calls an Object with the given arguments, returning the return value.
-	// If the 2nd return value is false, an error is raised.
-	Call(args ...Object) (Object, bool)
-
 	// Subscript implements the [] operator, e.g. list[5]
 	Subscript(Object) (Object, bool)
 
@@ -68,6 +64,5 @@ func (d *defaults) Prefix(string) (Object, bool)        { return nil, false }
 func (d *defaults) Infix(string, Object) (Object, bool) { return nil, false }
 func (d *defaults) Numeric() (float64, bool)            { return -1, false }
 func (d *defaults) Items() ([]Object, bool)             { return nil, false }
-func (d *defaults) Call(...Object) (Object, bool)       { return nil, false }
 func (d *defaults) Subscript(Object) (Object, bool)     { return nil, false }
 func (d *defaults) SetSubscript(Object, Object) bool    { return false }
