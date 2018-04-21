@@ -10,6 +10,7 @@ import (
 // pushing a frame to the VM's frame stack. A Function is usually referred
 // to as a Method if .Self != nil.
 type Function struct {
+	defaults
 	Parameters []string
 	Code       bytecode.Code
 	Constants  []Object
@@ -33,6 +34,18 @@ func (f *Function) Type() Type {
 // Equals checks whether or not two objects are equal to each other.
 func (f *Function) Equals(other Object) bool {
 	return false
+}
+
+// Infix applies a infix operator to an object, returning the result. If the operation
+// cannot be performed, (nil, false) is returned.
+func (f *Function) Infix(op string, right Object) (Object, bool) {
+	if op == "," {
+		return &Tuple{
+			Value: []Object{f, right},
+		}, true
+	}
+
+	return nil, false
 }
 
 // IsMethod checks whether on not a function is a method - i.e., a
