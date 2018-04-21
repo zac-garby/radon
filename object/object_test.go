@@ -44,17 +44,25 @@ func m(kvs ...Object) *Map {
 	return m
 }
 
+func f(self *Map, params ...string) *Function {
+	return &Function{
+		Parameters: params,
+		Self:       self,
+	}
+}
+
 func TestStringify(t *testing.T) {
 	cases := map[Object]string{
-		n(5):                 "5",
-		n(3.7):               "3.7",
-		b(true):              "true",
-		b(false):             "false",
-		s("foo"):             `"foo"`,
-		&Nil{}:               "nil",
-		l(n(1), n(2), n(3)):  "[1, 2, 3]",
-		tu(n(1), n(2), n(3)): "(1, 2, 3)",
-		m(s("a"), n(5)):      `{"a": 5}`,
+		n(5):                        "5",
+		n(3.7):                      "3.7",
+		b(true):                     "true",
+		b(false):                    "false",
+		s("foo"):                    `"foo"`,
+		&Nil{}:                      "nil",
+		l(n(1), n(2), n(3)):         "[1, 2, 3]",
+		tu(n(1), n(2), n(3)):        "(1, 2, 3)",
+		m(s("a"), n(5)):             `{"a": 5}`,
+		f(nil, "foo", "bar", "baz"): "<function (3)>",
 	}
 
 	for o, s := range cases {
