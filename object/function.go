@@ -18,7 +18,7 @@ type Function struct {
 }
 
 func (f *Function) String() string {
-	if f.isMethod() {
+	if f.IsMethod() {
 		return fmt.Sprintf("<method (%d) %p>", len(f.Parameters), f.Self)
 	} else {
 		return fmt.Sprintf("<function (%d)>", len(f.Parameters))
