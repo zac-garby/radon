@@ -52,6 +52,8 @@ var Instructions = map[byte]Data{
 	Next:       {Name: "NEXT"},
 	StartLoop:  {Name: "START_LOOP"},
 	EndLoop:    {Name: "END_LOOP"},
+	StartFor:   {Name: "START_FOR", HasArg: true},
+	EndFor:     {Name: "END_FOR", HasArg: true},
 
 	MakeList:  {Name: "MAKE_LIST", HasArg: true},
 	MakeTuple: {Name: "MAKE_TUPLE", HasArg: true},
