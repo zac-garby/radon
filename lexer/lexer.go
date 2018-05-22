@@ -131,7 +131,7 @@ func Lexer(str, file string) func() token.Token {
 					}
 				}
 
-				if !found {
+				if !found && index < len(str) {
 					ch <- token.Token{
 						Type:    token.Illegal,
 						Literal: string(str[index]),
