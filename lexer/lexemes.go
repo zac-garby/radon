@@ -57,7 +57,7 @@ var lexicalDictionary = []lexicalPair{
 	{regex: `^"((\\"|[^"])*)"`, handler: lexemeHandler(token.String, 1, stringTransformer)},
 	{regex: `^'((\\'|[^'])*)'`, handler: lexemeHandler(token.String, 1, stringTransformer)},
 	{regex: "^`([^`]*)`", handler: lexemeHandler(token.String, 1, none)},
-	{regex: `^[\p{L}\p{M}_][\p{L}\p{M}\d_!?]*`, handler: lexemeHandler(token.ID, 0, idTransformer)},
+	{regex: `^[\p{L}\p{M}_@][\p{L}\p{M}\d_\-!?@]*`, handler: lexemeHandler(token.ID, 0, idTransformer)},
 
 	// Punctuation
 	{regex: `^->`, handler: lexemeHandler(token.RightArrow, 0, none)},
