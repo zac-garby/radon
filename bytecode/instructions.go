@@ -78,6 +78,8 @@ const (
 	Next
 	StartLoop
 	EndLoop
+	StartFor
+	EndFor
 
 	/* Data */
 	// MakeList pushes a list containing $0, $1, ..., $[arg]
