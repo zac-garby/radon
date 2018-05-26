@@ -2,11 +2,14 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"os"
 	"os/signal"
 	"strings"
 
+	"github.com/Zac-Garby/radon/bytecode"
+	"github.com/Zac-Garby/radon/compiler"
 	"github.com/Zac-Garby/radon/lexer"
 	"github.com/Zac-Garby/radon/parser"
 )
@@ -50,7 +53,22 @@ func run(code string) error {
 		return err
 	}
 
-	fmt.Println(prog.Tree())
+	c := compiler.New()
+	if err := c.Compile(prog); err != nil {
+		return err
+	}
+
+	parsedCode, err := bytecode.Read(bytes.NewReader(c.Bytes))
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("const:", c.Constants)
+	fmt.Println("names:", c.Names)
+
+	for _, instr := range parsedCode {
+		fmt.Println(instr)
+	}
 
 	return nil
 }

@@ -26,6 +26,12 @@ func New() *Compiler {
 // Compile compiles an ast.Program into bytecode, returning
 // any errors. The bytecode, constants, and names, are stored
 // in the Compiler instance in the respective fields.
-func (c *Compiler) Compile(p ast.Program) error {
+func (c *Compiler) Compile(p *ast.Program) error {
+	for _, stmt := range p.Statements {
+		if err := c.CompileStatement(stmt); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
