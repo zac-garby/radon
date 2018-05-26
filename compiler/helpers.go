@@ -22,7 +22,7 @@ func bytesToRune(low, high byte) rune {
 	return (rune(high) << 8) | rune(low)
 }
 
-func (c *Compiler) addConst(val object.Objec) (rune, error) {
+func (c *Compiler) addConst(val object.Object) (rune, error) {
 	for i, cst := range c.Constants {
 		if val.Equals(cst) {
 			return rune(i), nil
@@ -42,6 +42,17 @@ func (c *Compiler) addConst(val object.Objec) (rune, error) {
 func (c *Compiler) loadConst(index rune) {
 	low, high := runeToBytes(index)
 	c.push(bytecode.LoadConst, high, low)
+}
+
+func (c *Compiler) addAndLoad(obj object.Object) (rune, error) {
+	index, err := c.addConst(obj)
+	if err != nil {
+		return 0, err
+	}
+
+	c.loadConst(index)
+
+	return index, nil
 }
 
 func (c *Compiler) loadName(index rune) {
