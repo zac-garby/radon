@@ -1,0 +1,58 @@
+html {
+	font-family: sans-serif;
+}
+
+div.wrapper {
+	width: 100%;
+	max-width: 600px;
+	margin: auto;
+	padding: 15px;
+	left: 0;
+	right: 0;
+	position: absolute;
+}
+
+h1:first-child {
+	margin-bottom: 2px;
+	font-size: 40pt;
+	background: linear-gradient(red, orange);
+	background-clip: text;
+	color: transparent;
+}
+
+h3 {
+	margin-top: 0;
+	color: grey;
+	font-weight: normal;
+}
+
+p {
+	line-height: 1.2em;
+}
+
+pre {
+	background-color: #efefef;
+	padding: 8px;
+	font-size: 11pt;
+}
+
+code {
+	background-color: #efefef;
+	color: black;
+	font-weight: normal;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+pre > code {
+	padding: 0;
+	background-color: transparent;
+}
+
+p.nav a {
+	font-size: 10pt;
+}
+
+span.str {
+	color: darkred;
+}

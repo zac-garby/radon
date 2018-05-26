@@ -1,1 +1,68 @@
-Nothing here yet :/
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="index.css">
+	<title>Radon</title>
+  </head>
+  <body>
+	<div class="wrapper">
+	  <h1>Radon</h1>
+
+	  <p class="nav">
+		<a href="https://github.com/zac-garby/radon">GitHub</a>
+	  </p>
+	  
+	  <p>
+		Radon is a modern programming language with a nice syntax and a decent execution speed. What more could you want?
+	  </p>
+
+	  <p>
+		Here's a nice example of the syntax:
+	  </p>
+
+	  <pre><code>new-position = move <strong>match</strong> key <strong>where</strong>
+  | <span class="str">"w"</span> -> 0, -1,
+  | <span class="str">"a"</span> -> -1, 0,
+  | <span class="str">"s"</span> -> 0, 1,
+  | <span class="str">"d"</span> -> 1, 0</code></pre>
+
+	  <p>
+		 First, you'll probably notice that you're allowed hyphens in your variable names, leading to the convention in Radon of using "kebab-case" for identifiers. You'll also notice the Haskell-like <code>match</code> expression, the tuple literals without parentheses, and the lack of semi-colons. <code>move match key where</code> means <em>call the function "move" on the result of a match expression over the variable key</em>, which then goes on to specify the different branches of the match.
+	  </p>
+
+	  <p>
+		One of the main ideas in designing the syntax was to use, or at least require, as few parentheses as possible. Doing this makes a cleaner syntax, which are thus easier to read. A good example of this is with tuples &mdash; like in the last example, you can write a tuple either as <code>(1, 2, 3)</code> or the exactly equivalent <code>1, 2, 3</code>. Of course, it may sometimes be necessary to use the first, but the latter is potentially more readable in a large program. You'll also notice the lack of brackets in loops, conditionals, and other structures:
+	  </p>
+
+	  <pre><code><strong>for</strong> name <strong>in</strong> names <strong>do</strong>
+  print name
+<strong>end</strong></code></pre>
+
+	  <p>
+		Radon comes a new kind of type system. It doesn't use classes, structs, records, or any of that. It uses <em>models</em>, which are very similar to classes in that they are "cookie-cutters", if you will, which are used to instantiate new objects. Here's an example of some models in action:
+	  </p>
+
+	  <pre><code>animal = <strong>model</strong> name, species
+
+dog = <strong>model</strong> name : animal name, <span class="str">"dog"</span>
+cat = <strong>model</strong> name : animal name, <span class="str">"cat"</span>
+
+dog.woof = print <span class="str">"woof!"</span>
+
+a = dog <span class="str">"dog a"</span>
+b = cat <span class="str">"cat b"</span>
+
+assert $ a == {
+    __model: dog,
+    name: <span class="str">"dog a"</span>,
+    species: <span class="str">"dog"</span>,
+}</code></pre>
+
+	  <p>
+		Models are really good at inheritance, since they have a really short syntax for setting parent fields. They're also easy to extend, both your own models and ones from libraries, since you can add a method as simply as you would set a regular variable. The assertion at the end is to show that model instances are <em>literally</em> just hashmaps with a <code>__model</code> field.
+	</div>
+  </body>
+</html>
