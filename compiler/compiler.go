@@ -21,7 +21,7 @@ func New() *Compiler {
 		Bytes:     make([]byte, 0, 256),
 		Constants: make([]object.Object, 0, 8),
 		Names:     make([]string, 0, 8),
-		Jumps:     make([]int, 8),
+		Jumps:     make([]int, 0, 8),
 	}
 }
 

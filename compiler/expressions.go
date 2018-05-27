@@ -29,6 +29,8 @@ func (c *Compiler) CompileExpression(e ast.Expression) error {
 		return c.compileInfix(node)
 	case *ast.Prefix:
 		return c.compilePrefix(node)
+	case *ast.If:
+		return c.compileIf(node)
 	default:
 		return fmt.Errorf("compiler: compilation not yet implemented for %s", reflect.TypeOf(e))
 	}
@@ -283,6 +285,42 @@ func (c *Compiler) compilePrefix(node *ast.Prefix) error {
 	}[node.Operator]
 
 	c.push(op)
+
+	return nil
+}
+
+func (c *Compiler) compileIf(node *ast.If) error {
+	if err := c.CompileExpression(node.Condition); err != nil {
+		return err
+	}
+
+	// JumpIfFalse followed by two empty bytes for the argument
+	c.push(bytecode.JumpUnless, 0, 0)
+	condJump := len(c.Bytes) - 3
+
+	if err := c.CompileExpression(node.Consequence); err != nil {
+		return err
+	}
+
+	var skipJump int
+
+	if node.Alternative != nil {
+		// Jump past the alternative
+		c.push(bytecode.Jump, 0, 0)
+		skipJump = len(c.Bytes) - 3
+	}
+
+	// Set the jump target after the conditional
+	c.setJumpArg(condJump, len(c.Bytes))
+
+	if node.Alternative != nil {
+		if err := c.CompileExpression(node.Alternative); err != nil {
+			return err
+		}
+
+		// Set the jump target after the conditional
+		c.setJumpArg(skipJump, len(c.Bytes))
+	}
 
 	return nil
 }

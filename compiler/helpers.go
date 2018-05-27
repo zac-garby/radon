@@ -102,3 +102,12 @@ func (c *Compiler) expandTuple(e *ast.Infix) []ast.Expression {
 		panic("compiler: non-tuple expression passed to expandTuple!")
 	}
 }
+
+func (c *Compiler) setJumpArg(start, target int) {
+	c.Jumps = append(c.Jumps, target)
+	index := len(c.Jumps) - 1
+
+	low, high := runeToBytes(rune(index))
+	c.Bytes[start+1] = high
+	c.Bytes[start+2] = low
+}
