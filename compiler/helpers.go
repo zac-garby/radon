@@ -103,9 +103,28 @@ func (c *Compiler) expandTuple(e *ast.Infix) []ast.Expression {
 	}
 }
 
-func (c *Compiler) setJumpArg(start, target int) {
+func (c *Compiler) addJump(target int) (rune, error) {
+	for i, jmp := range c.Jumps {
+		if jmp == target {
+			return rune(i), nil
+		}
+	}
+
 	c.Jumps = append(c.Jumps, target)
 	index := len(c.Jumps) - 1
+
+	if index >= maxRune {
+		return 0, fmt.Errorf("compiler: you've somehow managed to use 65,536 jump targets, good job")
+	}
+
+	return rune(index), nil
+}
+
+func (c *Compiler) setJumpArg(start, target int) {
+	index, err := c.addJump(target)
+	if err != nil {
+		panic(err)
+	}
 
 	low, high := runeToBytes(rune(index))
 	c.Bytes[start+1] = high
