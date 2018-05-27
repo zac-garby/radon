@@ -33,6 +33,8 @@ func (c *Compiler) CompileExpression(e ast.Expression) error {
 		return c.compileIf(node)
 	case *ast.List:
 		return c.compileList(node)
+	case *ast.Map:
+		return c.compileMap(node)
 	default:
 		return fmt.Errorf("compiler: compilation not yet implemented for %s", reflect.TypeOf(e))
 	}
@@ -336,6 +338,23 @@ func (c *Compiler) compileList(node *ast.List) error {
 
 	low, high := runeToBytes(rune(len(node.Value)))
 	c.push(bytecode.MakeList, high, low)
+
+	return nil
+}
+
+func (c *Compiler) compileMap(node *ast.Map) error {
+	for key, val := range node.Value {
+		if err := c.CompileExpression(key); err != nil {
+			return err
+		}
+
+		if err := c.CompileExpression(val); err != nil {
+			return err
+		}
+	}
+
+	low, high := runeToBytes(rune(len(node.Value)))
+	c.push(bytecode.MakeMap, high, low)
 
 	return nil
 }
