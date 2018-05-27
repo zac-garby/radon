@@ -27,6 +27,8 @@ func (c *Compiler) CompileExpression(e ast.Expression) error {
 		return c.compileIdentifier(node)
 	case *ast.Infix:
 		return c.compileInfix(node)
+	case *ast.Prefix:
+		return c.compilePrefix(node)
 	default:
 		return fmt.Errorf("compiler: compilation not yet implemented for %s", reflect.TypeOf(e))
 	}
@@ -262,6 +264,25 @@ func (c *Compiler) compileAssignToFunction(function *ast.Call, body ast.Expressi
 	default:
 		return errors.New("compiler: can only define functions as identifiers or model methods")
 	}
+
+	return nil
+}
+
+func (c *Compiler) compilePrefix(node *ast.Prefix) error {
+	if err := c.CompileExpression(node.Right); err != nil {
+		return err
+	}
+
+	if node.Operator == "+" {
+		return nil
+	}
+
+	op := map[string]byte{
+		"-": bytecode.UnaryNegate,
+		"!": bytecode.UnaryInvert,
+	}[node.Operator]
+
+	c.push(op)
 
 	return nil
 }
