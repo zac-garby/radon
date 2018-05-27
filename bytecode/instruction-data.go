@@ -38,6 +38,7 @@ var Instructions = map[byte]Data{
 	BinaryMore:     {Name: "BINARY_MORE_THAN"},
 	BinaryLessEq:   {Name: "BINARY_LESS_EQ"},
 	BinaryMoreEq:   {Name: "BINARY_MORE_EQ"},
+	BinaryTuple:    {Name: "BINARY_TUPLE"},
 
 	CallFunction: {Name: "CALL_FUNCTION"},
 	CallMethod:   {Name: "CALL_METHOD"},

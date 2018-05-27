@@ -15,6 +15,7 @@ type Function struct {
 	Code       bytecode.Code
 	Constants  []Object
 	Names      []string
+	Jumps      []int
 	Self       *Map
 }
 

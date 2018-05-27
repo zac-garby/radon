@@ -53,6 +53,8 @@ func run(code string) error {
 		return err
 	}
 
+	fmt.Println(prog.Tree())
+
 	c := compiler.New()
 	if err := c.Compile(prog); err != nil {
 		return err

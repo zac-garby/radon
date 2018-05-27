@@ -48,6 +48,7 @@ const (
 	BinaryMore
 	BinaryLessEq
 	BinaryMoreEq
+	BinaryTuple
 
 	/* Functions & scopes */
 	// CallFunctions calls $0 and pops an item for each argument

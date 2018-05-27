@@ -3,6 +3,7 @@ package compiler
 import (
 	"fmt"
 
+	"github.com/Zac-Garby/radon/ast"
 	"github.com/Zac-Garby/radon/bytecode"
 	"github.com/Zac-Garby/radon/object"
 )
@@ -86,4 +87,18 @@ func (c *Compiler) compileName(name string) error {
 
 func (c *Compiler) push(bytes ...byte) {
 	c.Bytes = append(c.Bytes, bytes...)
+}
+
+func (c *Compiler) expandTuple(e *ast.Infix) []ast.Expression {
+	if e.Operator == "," {
+		li := []ast.Expression{e.Left}
+
+		if rInf, ok := e.Right.(*ast.Infix); ok && rInf.Operator == "," {
+			return append(li, c.expandTuple(rInf)...)
+		} else {
+			return append(li, e.Right)
+		}
+	} else {
+		panic("compiler: non-tuple expression passed to expandTuple!")
+	}
 }
