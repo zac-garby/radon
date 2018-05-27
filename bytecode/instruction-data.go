@@ -40,8 +40,8 @@ var Instructions = map[byte]Data{
 	BinaryMoreEq:   {Name: "BINARY_MORE_EQ"},
 	BinaryTuple:    {Name: "BINARY_TUPLE"},
 
-	CallFunction: {Name: "CALL_FUNCTION"},
-	CallMethod:   {Name: "CALL_METHOD"},
+	CallFunction: {Name: "CALL_FUNCTION", HasArg: true},
+	CallMethod:   {Name: "CALL_METHOD", HasArg: true},
 	Return:       {Name: "RETURN"},
 	OpenScope:    {Name: "OPEN_SCOPE"},
 	CloseScope:   {Name: "CLOSE_SCOPE"},

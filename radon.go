@@ -37,7 +37,7 @@ func main() {
 		line = strings.TrimSpace(line)
 
 		if err := run(line); err != nil {
-			fmt.Println(err)
+			fmt.Println("error:", err)
 		}
 	}
 }

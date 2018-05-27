@@ -1,6 +1,7 @@
 package bytecode
 
 import (
+	"fmt"
 	"io"
 )
 
@@ -50,6 +51,9 @@ func Read(r io.Reader) (Code, error) {
 				argBytes = make([]byte, 2)
 				_, err   = r.Read(argBytes)
 			)
+			if err == io.EOF {
+				return code, fmt.Errorf("read: not enough arguments to %s", data.Name)
+			}
 			if err != nil {
 				return code, err
 			}
