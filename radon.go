@@ -67,6 +67,7 @@ func run(code string) error {
 
 	fmt.Println("const:", c.Constants)
 	fmt.Println("names:", c.Names)
+	fmt.Println("jumps:", c.Jumps)
 
 	for _, instr := range parsedCode {
 		fmt.Println(instr)
