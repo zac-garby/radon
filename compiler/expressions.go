@@ -81,6 +81,8 @@ func (c *Compiler) compileInfix(node *ast.Infix) error {
 		return c.compileAssignOrDeclare(left, right, "declare")
 	case ".":
 		return c.compileDot(left, right)
+	case ",":
+		return c.compileCommaInfix(left, right)
 	}
 
 	if err := c.CompileExpression(left); err != nil {
@@ -109,7 +111,6 @@ func (c *Compiler) compileInfix(node *ast.Infix) error {
 		">":  bytecode.BinaryMod,
 		"<=": bytecode.BinaryLessEq,
 		">=": bytecode.BinaryMoreEq,
-		",":  bytecode.BinaryTuple,
 	}[node.Operator]
 
 	if !ok {
@@ -117,6 +118,25 @@ func (c *Compiler) compileInfix(node *ast.Infix) error {
 	}
 
 	c.push(op)
+
+	return nil
+}
+
+func (c *Compiler) compileCommaInfix(left, right ast.Expression) error {
+	if left == nil || right == nil {
+		c.addAndLoad(&object.Tuple{})
+		return nil
+	}
+
+	if err := c.CompileExpression(left); err != nil {
+		return err
+	}
+
+	if err := c.CompileExpression(right); err != nil {
+		return err
+	}
+
+	c.push(bytecode.BinaryTuple)
 
 	return nil
 }
