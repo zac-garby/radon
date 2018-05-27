@@ -31,6 +31,8 @@ func (c *Compiler) CompileExpression(e ast.Expression) error {
 		return c.compilePrefix(node)
 	case *ast.If:
 		return c.compileIf(node)
+	case *ast.List:
+		return c.compileList(node)
 	default:
 		return fmt.Errorf("compiler: compilation not yet implemented for %s", reflect.TypeOf(e))
 	}
@@ -321,6 +323,19 @@ func (c *Compiler) compileIf(node *ast.If) error {
 		// Set the jump target after the conditional
 		c.setJumpArg(skipJump, len(c.Bytes))
 	}
+
+	return nil
+}
+
+func (c *Compiler) compileList(node *ast.List) error {
+	for _, elem := range node.Value {
+		if err := c.CompileExpression(elem); err != nil {
+			return err
+		}
+	}
+
+	low, high := runeToBytes(rune(len(node.Value)))
+	c.push(bytecode.MakeList, high, low)
 
 	return nil
 }
