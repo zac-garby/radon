@@ -51,3 +51,4 @@ If `$GOPATH/bin` is in your `$PATH` variable, you can start the REPL using the `
  - Might be able to optimise tuple compilation by flattening the tree and calling `MakeTuple`
    - Probably only a very small performance increase though, but potentially worthwhile for large tuples
  - Make tuples _actually_ be stored using contiguous memory
+ - Currying, so calling a function with too few arguments would make a new curried function
