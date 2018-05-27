@@ -39,6 +39,8 @@ func (c *Compiler) CompileExpression(e ast.Expression) error {
 		return c.compileCall(node)
 	case *ast.Block:
 		return c.compileBlock(node)
+	case *ast.Match:
+		return c.compileMatch(node)
 	default:
 		return fmt.Errorf("compiler: compilation not yet implemented for %s", reflect.TypeOf(e))
 	}
@@ -394,6 +396,53 @@ func (c *Compiler) compileBlock(node *ast.Block) error {
 		if err := c.CompileStatement(stmt); err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (c *Compiler) compileMatch(node *ast.Match) error {
+	var endJumps []int
+
+	for _, branch := range node.Branches {
+		var (
+			branchJump int
+			wildcard   = false
+		)
+
+		if id, ok := branch.Condition.(*ast.Identifier); ok && id.Value == "_" {
+			wildcard = true
+		}
+
+		if !wildcard {
+			if err := c.CompileExpression(node.Input); err != nil {
+				return err
+			}
+
+			if err := c.CompileExpression(branch.Condition); err != nil {
+				return err
+			}
+
+			c.push(bytecode.BinaryEqual, bytecode.JumpUnless, 0, 0)
+			branchJump = len(c.Bytes) - 3
+		}
+
+		if err := c.CompileExpression(branch.Body); err != nil {
+			return err
+		}
+
+		c.push(bytecode.Jump, 0, 0)
+		endJumps = append(endJumps, len(c.Bytes)-3)
+
+		if !wildcard {
+			c.setJumpArg(branchJump, len(c.Bytes)-1)
+		}
+	}
+
+	end := len(c.Bytes) - 1
+
+	for _, jmp := range endJumps {
+		c.setJumpArg(jmp, end)
 	}
 
 	return nil
