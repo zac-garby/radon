@@ -21,6 +21,7 @@ var Instructions = map[byte]Data{
 
 	UnaryInvert:    {Name: "UNARY_INVERT"},
 	UnaryNegate:    {Name: "UNARY_NEGATE"},
+	UnaryTuple:     {Name: "UNARY_TUPLE"},
 	BinaryAdd:      {Name: "BINARY_ADD"},
 	BinarySub:      {Name: "BINARY_SUB"},
 	BinaryMul:      {Name: "BINARY_MUL"},
@@ -54,7 +55,7 @@ var Instructions = map[byte]Data{
 	StartLoop:  {Name: "START_LOOP"},
 	EndLoop:    {Name: "END_LOOP"},
 	StartFor:   {Name: "START_FOR", HasArg: true},
-	EndFor:     {Name: "END_FOR", HasArg: true},
+	EndFor:     {Name: "END_FOR"},
 
 	MakeList:  {Name: "MAKE_LIST", HasArg: true},
 	MakeTuple: {Name: "MAKE_TUPLE", HasArg: true},
