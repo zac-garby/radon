@@ -312,6 +312,7 @@ func (c *Compiler) compilePrefix(node *ast.Prefix) error {
 	op := map[string]byte{
 		"-": bytecode.UnaryNegate,
 		"!": bytecode.UnaryInvert,
+		",": bytecode.UnaryTuple,
 	}[node.Operator]
 
 	c.push(op)

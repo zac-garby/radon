@@ -31,6 +31,7 @@ const (
 	/* Operators */
 	UnaryInvert
 	UnaryNegate
+	UnaryTuple
 	BinaryAdd
 	BinarySub
 	BinaryMul
