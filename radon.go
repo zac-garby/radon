@@ -14,6 +14,13 @@ import (
 	"github.com/Zac-Garby/radon/parser"
 )
 
+const help = `Radon language, pre-1.0. me@zacgarby.co.uk
+
+usage: radon [ -r ] [ -repl ]
+             [ -f <filename> ] [ -file <filename> ]
+             [ -h ] [ -help ]
+`
+
 func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
