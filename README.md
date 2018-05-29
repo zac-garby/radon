@@ -53,3 +53,4 @@ If `$GOPATH/bin` is in your `$PATH` variable, you can start the REPL using the `
  - Make tuples _actually_ be stored using contiguous memory
  - Currying, so calling a function with too few arguments would make a new curried function
  - Only evaluate match inputs once
+ - Since lots of scopes will be created, a bunch could be made at the beginning, stored in a pool, and then used when needed
