@@ -422,8 +422,6 @@ func (c *Compiler) compileBlock(node *ast.Block) error {
 		}
 	}
 
-	c.push(bytecode.PopScope)
-
 	return nil
 }
 
