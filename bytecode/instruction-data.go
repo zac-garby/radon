@@ -44,8 +44,8 @@ var Instructions = map[byte]Data{
 	CallFunction: {Name: "CALL_FUNCTION", HasArg: true},
 	CallMethod:   {Name: "CALL_METHOD", HasArg: true},
 	Return:       {Name: "RETURN"},
-	OpenScope:    {Name: "OPEN_SCOPE"},
-	CloseScope:   {Name: "CLOSE_SCOPE"},
+	PushScope:    {Name: "PUSH_SCOPE"},
+	PopScope:     {Name: "POP_SCOPE"},
 	Export:       {Name: "EXPORT", HasArg: true},
 
 	Jump:       {Name: "JUMP", HasArg: true},

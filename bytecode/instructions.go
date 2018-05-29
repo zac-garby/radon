@@ -60,8 +60,8 @@ const (
 	CallMethod
 
 	Return
-	OpenScope
-	CloseScope
+	PushScope
+	PopScope
 	Export
 
 	/* Control flow */
