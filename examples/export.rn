@@ -1,0 +1,6 @@
+do
+  a = 5
+  export a
+end
+
+print a
