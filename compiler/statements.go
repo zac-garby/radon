@@ -24,6 +24,8 @@ func (c *Compiler) CompileStatement(s ast.Statement) error {
 		return c.compileWhile(node)
 	case *ast.For:
 		return c.compileFor(node)
+	case *ast.Export:
+		return c.compileExport(node)
 	default:
 		return fmt.Errorf("compiler: compilation not yet implemented for %s", reflect.TypeOf(s))
 	}
@@ -107,6 +109,38 @@ func (c *Compiler) compileFor(node *ast.For) error {
 	}
 
 	c.push(bytecode.EndFor)
+
+	return nil
+}
+
+func (c *Compiler) compileExport(node *ast.Export) error {
+	var names []string
+
+	if inf, ok := node.Names.(*ast.Infix); ok && inf.Operator == "," {
+		exprs := c.expandTuple(inf)
+
+		for _, expr := range exprs {
+			if id, ok := expr.(*ast.Identifier); ok {
+				names = append(names, id.Value)
+			} else {
+				return errors.New("compiler: can only export identifiers, or a tuple thereof")
+			}
+		}
+	} else if id, ok := node.Names.(*ast.Identifier); ok {
+		names = append(names, id.Value)
+	} else {
+		return errors.New("compiler: can only export identifiers, or a tuple thereof")
+	}
+
+	for _, name := range names {
+		index, err := c.addName(name)
+		if err != nil {
+			return err
+		}
+
+		low, high := runeToBytes(index)
+		c.push(bytecode.Export, high, low)
+	}
 
 	return nil
 }
