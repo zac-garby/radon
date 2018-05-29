@@ -30,6 +30,9 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.Import:
 		return p.parseImport()
 
+	case token.Export:
+		return p.parseExport()
+
 	default:
 		node = p.parseExpressionStatement()
 	}
@@ -122,5 +125,13 @@ func (p *Parser) parseImport() ast.Statement {
 
 	return &ast.Import{
 		Path: str.Value,
+	}
+}
+
+func (p *Parser) parseExport() ast.Statement {
+	p.next()
+
+	return &ast.Export{
+		Names: p.parseExpression(lowest),
 	}
 }
