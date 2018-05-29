@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/signal"
 	"strings"
@@ -14,13 +15,6 @@ import (
 	"github.com/Zac-Garby/radon/parser"
 )
 
-const help = `Radon language, pre-1.0. me@zacgarby.co.uk
-
-usage: radon [ -r ] [ -repl ]
-             [ -f <filename> ] [ -file <filename> ]
-             [ -h ] [ -help ]
-`
-
 func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
@@ -30,6 +24,24 @@ func main() {
 		quit()
 	}(c)
 
+	if len(os.Args) < 2 {
+		startRepl()
+	} else {
+		filename := os.Args[1]
+		bytes, err := ioutil.ReadFile(filename)
+		if err != nil {
+			fmt.Println("couldn't open", filename)
+			os.Exit(2)
+		}
+
+		if err := run(string(bytes)); err != nil {
+			fmt.Println("error:", err)
+			os.Exit(1)
+		}
+	}
+}
+
+func startRepl() {
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
