@@ -46,4 +46,10 @@ type (
 		stmt
 		Path string
 	}
+
+	// An Export statment exposes variable(s) to the enclosing scope.
+	Export struct {
+		stmt
+		Names []string
+	}
 )
