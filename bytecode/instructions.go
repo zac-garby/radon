@@ -62,6 +62,7 @@ const (
 	Return
 	OpenScope
 	CloseScope
+	Export
 
 	/* Control flow */
 	// The virtual machine stores jumps in a list, allowing a jump

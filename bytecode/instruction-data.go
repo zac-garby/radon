@@ -46,6 +46,7 @@ var Instructions = map[byte]Data{
 	Return:       {Name: "RETURN"},
 	OpenScope:    {Name: "OPEN_SCOPE"},
 	CloseScope:   {Name: "CLOSE_SCOPE"},
+	Export:       {Name: "EXPORT", HasArg: true},
 
 	Jump:       {Name: "JUMP", HasArg: true},
 	JumpIf:     {Name: "JUMP_IF", HasArg: true},
