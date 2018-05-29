@@ -321,7 +321,7 @@ func (c *Compiler) compilePrefix(node *ast.Prefix) error {
 }
 
 func (c *Compiler) compileIf(node *ast.If) error {
-	if err := c.CompileExpression(node.Condition); err != nil {
+	if err := c.encloseExpression(node.Condition); err != nil {
 		return err
 	}
 
@@ -329,7 +329,7 @@ func (c *Compiler) compileIf(node *ast.If) error {
 	c.push(bytecode.JumpUnless, 0, 0)
 	condJump := len(c.Bytes) - 3
 
-	if err := c.CompileExpression(node.Consequence); err != nil {
+	if err := c.encloseExpression(node.Consequence); err != nil {
 		return err
 	}
 
@@ -345,7 +345,7 @@ func (c *Compiler) compileIf(node *ast.If) error {
 	c.setJumpArg(condJump, len(c.Bytes))
 
 	if node.Alternative != nil {
-		if err := c.CompileExpression(node.Alternative); err != nil {
+		if err := c.encloseExpression(node.Alternative); err != nil {
 			return err
 		}
 
@@ -358,7 +358,7 @@ func (c *Compiler) compileIf(node *ast.If) error {
 
 func (c *Compiler) compileList(node *ast.List) error {
 	for _, elem := range node.Value {
-		if err := c.CompileExpression(elem); err != nil {
+		if err := c.encloseExpression(elem); err != nil {
 			return err
 		}
 	}
@@ -371,11 +371,11 @@ func (c *Compiler) compileList(node *ast.List) error {
 
 func (c *Compiler) compileMap(node *ast.Map) error {
 	for key, val := range node.Value {
-		if err := c.CompileExpression(key); err != nil {
+		if err := c.encloseExpression(key); err != nil {
 			return err
 		}
 
-		if err := c.CompileExpression(val); err != nil {
+		if err := c.encloseExpression(val); err != nil {
 			return err
 		}
 	}
@@ -397,12 +397,12 @@ func (c *Compiler) compileCall(node *ast.Call) error {
 
 	// Iterate arguments in reverse order
 	for i := len(args) - 1; i >= 0; i-- {
-		if err := c.CompileExpression(args[i]); err != nil {
+		if err := c.encloseExpression(args[i]); err != nil {
 			return err
 		}
 	}
 
-	if err := c.CompileExpression(node.Function); err != nil {
+	if err := c.encloseExpression(node.Function); err != nil {
 		return err
 	}
 
@@ -413,11 +413,16 @@ func (c *Compiler) compileCall(node *ast.Call) error {
 }
 
 func (c *Compiler) compileBlock(node *ast.Block) error {
+	c.pushScope()
+	defer c.popScope()
+
 	for _, stmt := range node.Value {
 		if err := c.CompileStatement(stmt); err != nil {
 			return err
 		}
 	}
+
+	c.push(bytecode.PopScope)
 
 	return nil
 }
@@ -440,7 +445,7 @@ func (c *Compiler) compileMatch(node *ast.Match) error {
 				return err
 			}
 
-			if err := c.CompileExpression(branch.Condition); err != nil {
+			if err := c.encloseExpression(branch.Condition); err != nil {
 				return err
 			}
 
@@ -448,7 +453,7 @@ func (c *Compiler) compileMatch(node *ast.Match) error {
 			branchJump = len(c.Bytes) - 3
 		}
 
-		if err := c.CompileExpression(branch.Body); err != nil {
+		if err := c.encloseExpression(branch.Body); err != nil {
 			return err
 		}
 

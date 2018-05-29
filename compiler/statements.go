@@ -57,7 +57,7 @@ func (c *Compiler) compileWhile(node *ast.While) error {
 	// Jump here for the next iteration
 	start := len(c.Bytes) - 1
 
-	if err := c.CompileExpression(node.Condition); err != nil {
+	if err := c.encloseExpression(node.Condition); err != nil {
 		return err
 	}
 
@@ -66,7 +66,7 @@ func (c *Compiler) compileWhile(node *ast.While) error {
 	skipJump := len(c.Bytes) - 3
 
 	// Compile the loop's body
-	if err := c.CompileExpression(node.Body); err != nil {
+	if err := c.encloseExpression(node.Body); err != nil {
 		return err
 	}
 
@@ -104,7 +104,7 @@ func (c *Compiler) compileFor(node *ast.For) error {
 	low, high := runeToBytes(rune(index))
 	c.push(bytecode.StartFor, high, low)
 
-	if err := c.CompileExpression(node.Body); err != nil {
+	if err := c.encloseExpression(node.Body); err != nil {
 		return err
 	}
 

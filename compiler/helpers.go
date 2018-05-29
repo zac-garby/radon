@@ -130,3 +130,18 @@ func (c *Compiler) setJumpArg(start, target int) {
 	c.Bytes[start+1] = high
 	c.Bytes[start+2] = low
 }
+
+func (c *Compiler) pushScope() {
+	c.push(bytecode.PushScope)
+}
+
+func (c *Compiler) popScope() {
+	c.push(bytecode.PopScope)
+}
+
+func (c *Compiler) encloseExpression(e ast.Expression) error {
+	c.pushScope()
+	defer c.popScope()
+
+	return c.CompileExpression(e)
+}
