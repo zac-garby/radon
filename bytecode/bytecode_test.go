@@ -11,9 +11,9 @@ import (
 func TestRead(t *testing.T) {
 	// Bytes to parse, hard to read because I have to write in decimal
 	b := []byte{
-		2, 1, 56, // LOAD_CONST 312
-		2, 0, 5, // LOAD_CONST 5
-		10, // BINARY_ADD
+		LoadConst, 1, 56, // LOAD_CONST 312
+		LoadConst, 0, 5, // LOAD_CONST 5
+		BinaryAdd, // BINARY_ADD
 	}
 
 	var (
@@ -28,17 +28,17 @@ func TestRead(t *testing.T) {
 
 	exp := Code{
 		Instruction{
-			Code: 2,
+			Code: LoadConst,
 			Name: "LOAD_CONST",
 			Arg:  312,
 		},
 		Instruction{
-			Code: 2,
+			Code: LoadConst,
 			Name: "LOAD_CONST",
 			Arg:  5,
 		},
 		Instruction{
-			Code: 10,
+			Code: BinaryAdd,
 			Name: "BINARY_ADD",
 		},
 	}
