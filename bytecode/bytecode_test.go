@@ -9,7 +9,6 @@ import (
 )
 
 func TestRead(t *testing.T) {
-	// Bytes to parse, hard to read because I have to write in decimal
 	b := []byte{
 		LoadConst, 1, 56, // LOAD_CONST 312
 		LoadConst, 0, 5, // LOAD_CONST 5
