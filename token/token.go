@@ -41,6 +41,7 @@ var Keywords = map[string]Type{
 	"do":     Do,
 	"end":    End,
 	"in":     In,
+	"export": Export,
 }
 
 // IsKeyword checks if a token type is a keyword type.

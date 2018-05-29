@@ -74,4 +74,5 @@ const (
 	Where  = "where"
 	Import = "import"
 	In     = "in"
+	Export = "export"
 )
