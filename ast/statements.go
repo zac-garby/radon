@@ -50,6 +50,6 @@ type (
 	// An Export statment exposes variable(s) to the enclosing scope.
 	Export struct {
 		stmt
-		Names []string
+		Names Expression
 	}
 )
