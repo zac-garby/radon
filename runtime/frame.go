@@ -17,6 +17,7 @@ type Frame struct {
 	breaks, nexts []int
 	constants     []object.Object
 	names         []string
+	jumps         []int
 }
 
 func (f *Frame) offsetToInstructionIndex(offset int) int {
