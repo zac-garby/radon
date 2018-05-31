@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Zac-Garby/radon/bytecode"
+	"github.com/Zac-Garby/radon/object"
 )
 
 // An Effector is the function which is called for a particular instruction.
@@ -79,5 +80,85 @@ func init() {
 		}
 
 		return nil
+	}
+
+	Effectors[bytecode.UnaryInvert] = unaryEffector("!")
+	Effectors[bytecode.UnaryNegate] = unaryEffector("-")
+	Effectors[bytecode.UnaryTuple] = unaryEffector(",")
+
+	Effectors[bytecode.BinaryAdd] = binaryEffector("+")
+	Effectors[bytecode.BinarySub] = binaryEffector("-")
+	Effectors[bytecode.BinaryMul] = binaryEffector("*")
+	Effectors[bytecode.BinaryDiv] = binaryEffector("/")
+	Effectors[bytecode.BinaryExp] = binaryEffector("**")
+	Effectors[bytecode.BinaryFloorDiv] = binaryEffector("//")
+	Effectors[bytecode.BinaryMod] = binaryEffector("%")
+	Effectors[bytecode.BinaryLogicOr] = binaryEffector("||")
+	Effectors[bytecode.BinaryLogicAnd] = binaryEffector("&&")
+	Effectors[bytecode.BinaryBitOr] = binaryEffector("|")
+	Effectors[bytecode.BinaryBitAnd] = binaryEffector("&")
+	Effectors[bytecode.BinaryEqual] = equalityEffector(true)
+	Effectors[bytecode.BinaryNotEqual] = equalityEffector(false)
+	Effectors[bytecode.BinaryLess] = binaryEffector("<")
+	Effectors[bytecode.BinaryMore] = binaryEffector(">")
+	Effectors[bytecode.BinaryLessEq] = binaryEffector("<=")
+	Effectors[bytecode.BinaryMoreEq] = binaryEffector(">=")
+	Effectors[bytecode.BinaryTuple] = binaryEffector(",")
+}
+
+func equalityEffector(shouldEqual bool) {
+	return func(v *VM, f *Frame, arg rune) error {
+		right, err := f.stack.Pop()
+		if err != nil {
+			return err
+		}
+
+		left, err := f.stack.Pop()
+		if err != nil {
+			return err
+		}
+
+		if left.Equals(right) == shouldEqual {
+			return f.stack.Push(&object.Boolean{Value: true})
+		} else {
+			return f.stack.Push(&object.Boolean{Value: false})
+		}
+	}
+}
+
+func unaryEffector(op string) {
+	return func(v *VM, f *Frame, arg rune) error {
+		obj, err := f.stack.Pop()
+		if err != nil {
+			return err
+		}
+
+		result, ok := obj.Prefix(op)
+		if !ok {
+			return fmt.Errorf("could not apply prefix operator %s to %s", op, obj.String())
+		}
+
+		return f.stack.Push(result)
+	}
+}
+
+func binaryEffector(op string) {
+	return func(v *VM, f *Frame, arg rune) error {
+		right, err := f.stack.Pop()
+		if err != nil {
+			return err
+		}
+
+		left, err := f.stack.Pop()
+		if err != nil {
+			return err
+		}
+
+		result, ok := left.Infix(op, right)
+		if !ok {
+			return fmt.Errorf("could not apply infix operator %s between %s and %s", op, left.String(), right.String())
+		}
+
+		return f.stack.Push(result)
 	}
 }
