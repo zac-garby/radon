@@ -3,4 +3,4 @@ do
   export a
 end
 
-print a
+a
