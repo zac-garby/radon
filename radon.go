@@ -36,7 +36,10 @@ func main() {
 		}
 
 		if err := run(string(bytes)); err != nil {
+			fmt.Print("\x1b[91m")
 			fmt.Println("error:", err)
+			fmt.Print("\x1b[0m")
+
 			os.Exit(1)
 		}
 	}
@@ -57,7 +60,9 @@ func startRepl() {
 		line = strings.TrimSpace(line)
 
 		if err := run(line); err != nil {
+			fmt.Print("\x1b[91m")
 			fmt.Println("error:", err)
+			fmt.Print("\x1b[0m")
 		}
 	}
 }
