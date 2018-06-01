@@ -62,6 +62,7 @@ func (f *Frame) store() *Store {
 }
 
 func (f *Frame) pushStore(s *Store) {
+	s.Enclosing = f.store()
 	f.stores = append([]*Store{s}, f.stores...)
 }
 
@@ -70,5 +71,5 @@ func (f *Frame) popStore() {
 		panic("no stores in the store stack")
 	}
 
-	f.stores = f.stores[:len(f.stores)-1]
+	f.stores = f.stores[1:]
 }
