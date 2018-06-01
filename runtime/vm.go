@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"fmt"
 	"io"
 	"os"
 
@@ -44,10 +45,10 @@ func New() *VM {
 	}
 }
 
-// makeFrame makes a Frame instance with the given parameters. offset is set to 0 and a new
+// MakeFrame makes a Frame instance with the given parameters. offset is set to 0 and a new
 // data stack is created. The variables in args, if it's non-nil, are declared in the Frame's
 // store (note: declared, not assigned).
-func (v *VM) makeFrame(code bytecode.Code, args, store *Store, constants []object.Object, names []string) *Frame {
+func (v *VM) MakeFrame(code bytecode.Code, args, store *Store, constants []object.Object, names []string, jumps []int) *Frame {
 	frame := &Frame{
 		code:      code,
 		store:     store,
@@ -55,6 +56,7 @@ func (v *VM) makeFrame(code bytecode.Code, args, store *Store, constants []objec
 		stack:     NewStack(),
 		constants: constants,
 		names:     names,
+		jumps:     jumps,
 		vm:        v,
 	}
 
@@ -67,25 +69,67 @@ func (v *VM) makeFrame(code bytecode.Code, args, store *Store, constants []objec
 	return frame
 }
 
-func (v *VM) pushFrame(frame *Frame) {
+func (v *VM) PushFrame(frame *Frame) {
 	v.frames = append(v.frames, frame)
 }
 
-func (v *VM) popFrame() *Frame {
+func (v *VM) PopFrame() *Frame {
 	f := v.frames[len(v.frames)-1]
 	v.frames = v.frames[:len(v.frames)-1]
 	return f
 }
 
 // ExtractValue returns the top value from the top frame, if both those things exist.
-func (v *VM) ExtractValue() (object.Object, error) {
+func (v *VM) ExtractValue() object.Object {
 	if len(v.frames) < 1 || v.frames[0].stack.Len() < 1 {
-		return nil, nil
+		return nil
 	}
-	return v.frames[0].stack.Top()
+
+	top, err := v.frames[0].stack.Top()
+	if err != nil {
+		return nil
+	}
+
+	return top
 }
 
 // Error returns the VM's error, if one exists. nil if there is no error.
 func (v *VM) Error() error {
 	return v.err
+}
+
+// Run executes a virtual machine, starting from the most recently pushed frame. If, after
+// execution, any values are left in the top frame, the top one will be returned. It will
+// also return, if any, a runtime error.
+func (v *VM) Run() (object.Object, error) {
+	for {
+		if len(v.frames) == 0 {
+			break
+		}
+
+		top := v.frames[len(v.frames)-1]
+
+		if top.offset >= len(top.code) {
+			break
+		}
+
+		// Fetch
+		instr := top.code[top.offset]
+		top.offset++
+
+		// Decode
+		eff := Effectors[instr.Code]
+		if eff == nil {
+			v.err = fmt.Errorf("vm: instruction %s not yet implemented", instr.Name)
+			break
+		}
+
+		// Execute :)
+		if err := eff(v, top, instr.Arg); err != nil {
+			v.err = err
+			break
+		}
+	}
+
+	return v.ExtractValue(), v.err
 }

@@ -8,8 +8,8 @@ import (
 
 var (
 	// MaxDataStackSize is the maximum amount of objects which are allowed to
-	// be inside the data stack. 8192 by default.
-	MaxDataStackSize = 8192
+	// be inside the data stack.
+	MaxDataStackSize = 100000
 
 	// DefaultDataStackCapacity is the capacity initially allocated to the stack. A
 	// higher value will possibly increase performance, but use more RAM.

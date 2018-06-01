@@ -13,6 +13,7 @@ import (
 	"github.com/Zac-Garby/radon/compiler"
 	"github.com/Zac-Garby/radon/lexer"
 	"github.com/Zac-Garby/radon/parser"
+	"github.com/Zac-Garby/radon/runtime"
 )
 
 func main() {
@@ -45,7 +46,7 @@ func startRepl() {
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		fmt.Print(">> ")
+		fmt.Print("> ")
 
 		line, err := reader.ReadString('\n')
 		if err != nil {
@@ -72,8 +73,6 @@ func run(code string) error {
 		return err
 	}
 
-	fmt.Println(prog.Tree())
-
 	c := compiler.New()
 	if err := c.Compile(prog); err != nil {
 		return err
@@ -84,13 +83,24 @@ func run(code string) error {
 		return err
 	}
 
-	fmt.Println("const:", c.Constants)
-	fmt.Println("names:", c.Names)
-	fmt.Println("jumps:", c.Jumps)
+	v := runtime.New()
+	frame := v.MakeFrame(
+		parsedCode,
+		runtime.NewStore(nil),
+		runtime.NewStore(nil),
+		c.Constants,
+		c.Names,
+		c.Jumps,
+	)
 
-	for _, instr := range parsedCode {
-		fmt.Println(instr)
+	v.PushFrame(frame)
+
+	res, err := v.Run()
+	if err != nil {
+		return err
 	}
+
+	fmt.Println("<", res)
 
 	return nil
 }

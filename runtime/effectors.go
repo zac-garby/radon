@@ -20,7 +20,15 @@ func init() {
 	Effectors[bytecode.Nop] = func(v *VM, f *Frame, arg rune) error { return nil }
 	Effectors[bytecode.NopArg] = func(v *VM, f *Frame, arg rune) error { return nil }
 	Effectors[bytecode.LoadConst] = func(v *VM, f *Frame, arg rune) error { return f.stack.Push(f.constants[arg]) }
-	Effectors[bytecode.LoadName] = func(v *VM, f *Frame, arg rune) error { return f.store.Get(f.names[arg]) }
+
+	Effectors[bytecode.LoadName] = func(v *VM, f *Frame, arg rune) error {
+		val, ok := f.store.Get(f.names[arg])
+		if !ok {
+			return fmt.Errorf("variable %s doesn't exist in the current scope", f.names[arg])
+		}
+
+		return f.stack.Push(val.Value)
+	}
 
 	Effectors[bytecode.StoreName] = func(v *VM, f *Frame, arg rune) error {
 		val, err := f.stack.Pop()
@@ -28,7 +36,8 @@ func init() {
 			return err
 		}
 
-		return f.store.Set(f.names[arg], val, false)
+		f.store.Set(f.names[arg], val, false)
+		return nil
 	}
 
 	Effectors[bytecode.DeclareName] = func(v *VM, f *Frame, arg rune) error {
@@ -37,10 +46,11 @@ func init() {
 			return err
 		}
 
-		return f.store.Set(f.names[arg], val, false)
+		f.store.Set(f.names[arg], val, false)
+		return nil
 	}
 
-	Effectors[bytecode.LoadSubcript] = func(v *VM, f *Frame, arg rune) error {
+	Effectors[bytecode.LoadSubscript] = func(v *VM, f *Frame, arg rune) error {
 		index, err := f.stack.Pop()
 		if err != nil {
 			return err
@@ -90,7 +100,7 @@ func init() {
 	Effectors[bytecode.BinarySub] = binaryEffector("-")
 	Effectors[bytecode.BinaryMul] = binaryEffector("*")
 	Effectors[bytecode.BinaryDiv] = binaryEffector("/")
-	Effectors[bytecode.BinaryExp] = binaryEffector("**")
+	Effectors[bytecode.BinaryExp] = binaryEffector("^")
 	Effectors[bytecode.BinaryFloorDiv] = binaryEffector("//")
 	Effectors[bytecode.BinaryMod] = binaryEffector("%")
 	Effectors[bytecode.BinaryLogicOr] = binaryEffector("||")
@@ -106,7 +116,7 @@ func init() {
 	Effectors[bytecode.BinaryTuple] = binaryEffector(",")
 }
 
-func equalityEffector(shouldEqual bool) {
+func equalityEffector(shouldEqual bool) Effector {
 	return func(v *VM, f *Frame, arg rune) error {
 		right, err := f.stack.Pop()
 		if err != nil {
@@ -126,7 +136,7 @@ func equalityEffector(shouldEqual bool) {
 	}
 }
 
-func unaryEffector(op string) {
+func unaryEffector(op string) Effector {
 	return func(v *VM, f *Frame, arg rune) error {
 		obj, err := f.stack.Pop()
 		if err != nil {
@@ -142,7 +152,7 @@ func unaryEffector(op string) {
 	}
 }
 
-func binaryEffector(op string) {
+func binaryEffector(op string) Effector {
 	return func(v *VM, f *Frame, arg rune) error {
 		right, err := f.stack.Pop()
 		if err != nil {
