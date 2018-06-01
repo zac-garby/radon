@@ -100,7 +100,9 @@ func run(code string) error {
 		return err
 	}
 
+	fmt.Print("\x1b[94m")
 	fmt.Println("<", res)
+	fmt.Print("\x1b[0m")
 
 	return nil
 }
