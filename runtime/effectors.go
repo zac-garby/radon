@@ -162,6 +162,11 @@ func init() {
 		return nil
 	}
 
+	Effectors[bytecode.Return] = func(v *VM, f *Frame, arg rune) error {
+		f.offset = len(f.code) - 1
+		return nil
+	}
+
 	Effectors[bytecode.PushScope] = func(v *VM, f *Frame, arg rune) error {
 		f.pushStore(v.storePool.Release(f.store()))
 		return nil
