@@ -9,9 +9,15 @@ type StorePool struct {
 }
 
 func NewStorePool() *StorePool {
-	return &StorePool{
+	pool := &StorePool{
 		stores: make([]*Store, initialStorePoolSize),
 	}
+
+	for i := 0; i < initialStorePoolSize; i++ {
+		pool.stores[i] = NewStore(nil)
+	}
+
+	return pool
 }
 
 func (s *StorePool) IsEmpty() bool {
@@ -24,6 +30,7 @@ func (s *StorePool) Release(enclosing *Store) *Store {
 	} else {
 		store := s.stores[0]
 		s.stores = s.stores[1:]
+		store.Enclosing = enclosing
 		return store
 	}
 }

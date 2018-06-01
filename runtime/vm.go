@@ -141,8 +141,6 @@ func (v *VM) Run() (object.Object, error) {
 		instr := top.code[top.offset]
 		top.offset++
 
-		fmt.Println(instr)
-
 		// Decode
 		eff := Effectors[instr.Code]
 		if eff == nil {

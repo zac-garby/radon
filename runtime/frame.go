@@ -58,13 +58,17 @@ func (f *Frame) searchName(name string) (object.Object, bool) {
 }
 
 func (f *Frame) store() *Store {
-	return f.stores[len(f.stores)-1]
+	return f.stores[0]
 }
 
 func (f *Frame) pushStore(s *Store) {
-	f.stores = append(f.stores, s)
+	f.stores = append([]*Store{s}, f.stores...)
 }
 
 func (f *Frame) popStore() {
+	if len(f.stores) == 0 {
+		panic("no stores in the store stack")
+	}
+
 	f.stores = f.stores[:len(f.stores)-1]
 }
