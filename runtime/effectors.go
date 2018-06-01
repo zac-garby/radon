@@ -176,6 +176,26 @@ func init() {
 		f.popStore()
 		return nil
 	}
+
+	Effectors[bytecode.Export] = func(v *VM, f *Frame, arg rune) error {
+		name := f.names[int(arg)]
+
+		variable, ok := f.store().Get(name)
+		if !ok {
+			return fmt.Errorf("can't export non-existant variable %s", name)
+		}
+
+		val := variable.Value
+
+		enclosing := f.store().Enclosing
+
+		if enclosing == nil {
+			return fmt.Errorf("can't export variable %s from a top-level scope", name)
+		}
+
+		enclosing.Set(name, val, true)
+		return nil
+	}
 }
 
 func equalityEffector(shouldEqual bool) Effector {
