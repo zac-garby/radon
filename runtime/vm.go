@@ -22,6 +22,7 @@ type VM struct {
 	returnVal object.Object
 	err       error
 	halted    bool
+	storePool *StorePool
 
 	// Interrupts is a queue (in the form of a channel) which, when an interrupt is added,
 	// will stop the virtual machine and do something based on the nature of the interrupt.
@@ -40,6 +41,7 @@ func New() *VM {
 		returnVal:  nil,
 		err:        nil,
 		halted:     false,
+		storePool:  NewStorePool(),
 		Interrupts: make(chan Interrupt, InterruptQueueSize),
 		Out:        os.Stdout,
 	}
@@ -51,7 +53,7 @@ func New() *VM {
 func (v *VM) MakeFrame(code bytecode.Code, args, store *Store, constants []object.Object, names []string, jumps []int) *Frame {
 	frame := &Frame{
 		code:      code,
-		store:     store,
+		stores:    []*Store{store},
 		offset:    0,
 		stack:     NewStack(),
 		constants: constants,
@@ -62,7 +64,7 @@ func (v *VM) MakeFrame(code bytecode.Code, args, store *Store, constants []objec
 
 	if args != nil {
 		for k, v := range args.Data {
-			frame.store.Set(k, v.Value, true)
+			frame.store().Set(k, v.Value, true)
 		}
 	}
 
@@ -107,15 +109,39 @@ func (v *VM) Run() (object.Object, error) {
 			break
 		}
 
+		// This may be able to be optimized slightly by putting it outside the loop
 		top := v.frames[len(v.frames)-1]
 
 		if top.offset >= len(top.code) {
-			break
+			if len(v.frames) == 1 {
+				break
+			} else {
+				v.PopFrame()
+
+				if top.stack.Len() > 0 {
+					next := v.frames[len(v.frames)-1]
+
+					ret, err := top.stack.Pop()
+					if err != nil {
+						v.err = err
+						break
+					}
+
+					if err := next.stack.Push(ret); err != nil {
+						v.err = err
+						break
+					}
+				}
+			}
+
+			continue
 		}
 
 		// Fetch
 		instr := top.code[top.offset]
 		top.offset++
+
+		fmt.Println(instr)
 
 		// Decode
 		eff := Effectors[instr.Code]

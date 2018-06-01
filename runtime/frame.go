@@ -12,7 +12,7 @@ type Frame struct {
 	code          bytecode.Code
 	offset        int
 	vm            *VM
-	store         *Store
+	stores        []*Store
 	stack         *Stack
 	breaks, nexts []int
 	constants     []object.Object
@@ -50,9 +50,21 @@ func (f *Frame) getName(arg rune) (string, bool) {
 }
 
 func (f *Frame) searchName(name string) (object.Object, bool) {
-	if val, ok := f.store.Get(name); ok {
+	if val, ok := f.store().Get(name); ok {
 		return val.Value, true
 	}
 
 	return nil, false
+}
+
+func (f *Frame) store() *Store {
+	return f.stores[len(f.stores)-1]
+}
+
+func (f *Frame) pushStore(s *Store) {
+	f.stores = append(f.stores, s)
+}
+
+func (f *Frame) popStore() {
+	f.stores = f.stores[:len(f.stores)-1]
 }

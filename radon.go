@@ -35,7 +35,7 @@ func main() {
 			os.Exit(2)
 		}
 
-		if err := run(string(bytes)); err != nil {
+		if err := run(string(bytes), runtime.NewStore(nil)); err != nil {
 			fmt.Print("\x1b[91m")
 			fmt.Println("error:", err)
 			fmt.Print("\x1b[0m")
@@ -47,6 +47,7 @@ func main() {
 
 func startRepl() {
 	reader := bufio.NewReader(os.Stdin)
+	store := runtime.NewStore(nil)
 
 	for {
 		fmt.Print("> ")
@@ -59,7 +60,7 @@ func startRepl() {
 
 		line = strings.TrimSpace(line)
 
-		if err := run(line); err != nil {
+		if err := run(line, store); err != nil {
 			fmt.Print("\x1b[91m")
 			fmt.Println("error:", err)
 			fmt.Print("\x1b[0m")
@@ -67,7 +68,7 @@ func startRepl() {
 	}
 }
 
-func run(code string) error {
+func run(code string, store *runtime.Store) error {
 	var (
 		l         = lexer.Lexer(code, "repl")
 		p         = parser.New(l)
@@ -91,8 +92,8 @@ func run(code string) error {
 	v := runtime.New()
 	frame := v.MakeFrame(
 		parsedCode,
-		runtime.NewStore(nil),
-		runtime.NewStore(nil),
+		nil,
+		store,
 		c.Constants,
 		c.Names,
 		c.Jumps,

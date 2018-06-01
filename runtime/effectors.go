@@ -22,7 +22,7 @@ func init() {
 	Effectors[bytecode.LoadConst] = func(v *VM, f *Frame, arg rune) error { return f.stack.Push(f.constants[arg]) }
 
 	Effectors[bytecode.LoadName] = func(v *VM, f *Frame, arg rune) error {
-		val, ok := f.store.Get(f.names[arg])
+		val, ok := f.store().Get(f.names[arg])
 		if !ok {
 			return fmt.Errorf("variable %s doesn't exist in the current scope", f.names[arg])
 		}
@@ -36,7 +36,7 @@ func init() {
 			return err
 		}
 
-		f.store.Set(f.names[arg], val, false)
+		f.store().Set(f.names[arg], val, false)
 		return nil
 	}
 
@@ -46,7 +46,7 @@ func init() {
 			return err
 		}
 
-		f.store.Set(f.names[arg], val, false)
+		f.store().Set(f.names[arg], val, false)
 		return nil
 	}
 
@@ -114,6 +114,63 @@ func init() {
 	Effectors[bytecode.BinaryLessEq] = binaryEffector("<=")
 	Effectors[bytecode.BinaryMoreEq] = binaryEffector(">=")
 	Effectors[bytecode.BinaryTuple] = binaryEffector(",")
+
+	Effectors[bytecode.CallFunction] = func(v *VM, f *Frame, argCount rune) error {
+		top, err := f.stack.Pop()
+		if err != nil {
+			return err
+		}
+
+		fn, ok := top.(*object.Function)
+		if !ok {
+			return fmt.Errorf("cannot call non-function type %s", top.Type())
+		}
+
+		if int(argCount) != len(fn.Parameters) {
+			return fmt.Errorf("wrong amount of arguments passed a function. expected %d, got %d", len(fn.Parameters), argCount)
+		}
+
+		store := NewStore(f.store())
+
+		for _, param := range fn.Parameters {
+			arg, err := f.stack.Pop()
+			if err != nil {
+				return err
+			}
+
+			store.Set(param, arg, true)
+		}
+
+		if fn.Self != nil {
+			store.Set("self", fn.Self, true)
+		}
+
+		frame := &Frame{
+			prev:      f,
+			code:      fn.Code,
+			offset:    0,
+			vm:        v,
+			stores:    []*Store{store},
+			stack:     NewStack(),
+			constants: fn.Constants,
+			names:     fn.Names,
+			jumps:     fn.Jumps,
+		}
+
+		f.vm.PushFrame(frame)
+
+		return nil
+	}
+
+	Effectors[bytecode.PushScope] = func(v *VM, f *Frame, arg rune) error {
+		f.pushStore(v.storePool.Release(f.store()))
+		return nil
+	}
+
+	Effectors[bytecode.PopScope] = func(v *VM, f *Frame, arg rune) error {
+		f.popStore()
+		return nil
+	}
 }
 
 func equalityEffector(shouldEqual bool) Effector {
