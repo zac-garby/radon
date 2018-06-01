@@ -42,7 +42,6 @@ var Instructions = map[byte]Data{
 	BinaryTuple:    {Name: "BINARY_TUPLE"},
 
 	CallFunction: {Name: "CALL_FUNCTION", HasArg: true},
-	CallMethod:   {Name: "CALL_METHOD", HasArg: true},
 	Return:       {Name: "RETURN"},
 	PushScope:    {Name: "PUSH_SCOPE"},
 	PopScope:     {Name: "POP_SCOPE"},

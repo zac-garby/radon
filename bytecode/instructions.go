@@ -55,10 +55,6 @@ const (
 	// CallFunctions calls $0 and pops an item for each argument
 	CallFunction
 
-	// CallMethod calls $0 (a method) on $1 (a map), popping an item
-	// for each argument
-	CallMethod
-
 	Return
 	PushScope
 	PopScope
