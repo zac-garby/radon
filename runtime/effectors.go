@@ -197,6 +197,38 @@ func init() {
 		enclosing.Set(name, val, true)
 		return nil
 	}
+
+	Effectors[bytecode.Jump] = func(v *VM, f *Frame, arg rune) error {
+		jump := f.offsetToInstructionIndex(f.jumps[int(arg)])
+		f.offset = jump
+		return nil
+	}
+
+	Effectors[bytecode.JumpIf] = func(v *VM, f *Frame, arg rune) error {
+		top, err := f.stack.Pop()
+		if err != nil {
+			return err
+		}
+
+		if object.IsTruthy(top) {
+			return Effectors[bytecode.Jump](v, f, arg)
+		}
+
+		return nil
+	}
+
+	Effectors[bytecode.JumpUnless] = func(v *VM, f *Frame, arg rune) error {
+		top, err := f.stack.Pop()
+		if err != nil {
+			return err
+		}
+
+		if !object.IsTruthy(top) {
+			return Effectors[bytecode.Jump](v, f, arg)
+		}
+
+		return nil
+	}
 }
 
 func equalityEffector(shouldEqual bool) Effector {
