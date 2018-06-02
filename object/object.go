@@ -66,3 +66,8 @@ func (d *defaults) Numeric() (float64, bool)            { return -1, false }
 func (d *defaults) Items() ([]Object, bool)             { return nil, false }
 func (d *defaults) Subscript(Object) (Object, bool)     { return nil, false }
 func (d *defaults) SetSubscript(Object, Object) bool    { return false }
+
+func IsTruthy(o Object) bool {
+	return !(o.Equals(&Nil{}) ||
+		o.Equals(&Boolean{Value: false}))
+}
