@@ -321,7 +321,7 @@ func (c *Compiler) compilePrefix(node *ast.Prefix) error {
 }
 
 func (c *Compiler) compileIf(node *ast.If) error {
-	if err := c.encloseExpression(node.Condition); err != nil {
+	if err := c.CompileExpression(node.Condition); err != nil {
 		return err
 	}
 
@@ -329,7 +329,8 @@ func (c *Compiler) compileIf(node *ast.If) error {
 	c.push(bytecode.JumpUnless, 0, 0)
 	condJump := len(c.Bytes) - 3
 
-	if err := c.encloseExpression(node.Consequence); err != nil {
+	c.pushScope()
+	if err := c.CompileExpression(node.Consequence); err != nil {
 		return err
 	}
 
@@ -340,18 +341,22 @@ func (c *Compiler) compileIf(node *ast.If) error {
 		c.push(bytecode.Jump, 0, 0)
 		skipJump = len(c.Bytes) - 3
 	}
+	c.popScope()
 
 	// Set the jump target after the conditional
-	c.setJumpArg(condJump, len(c.Bytes))
+	c.setJumpArg(condJump, len(c.Bytes)+1)
 
 	if node.Alternative != nil {
-		if err := c.encloseExpression(node.Alternative); err != nil {
+		c.pushScope()
+		if err := c.CompileExpression(node.Alternative); err != nil {
 			return err
 		}
-
-		// Set the jump target after the conditional
-		c.setJumpArg(skipJump, len(c.Bytes))
+		c.popScope()
 	}
+
+	// Set the jump target after a dummy byte
+	c.push(bytecode.Nop)
+	c.setJumpArg(skipJump, len(c.Bytes))
 
 	return nil
 }
