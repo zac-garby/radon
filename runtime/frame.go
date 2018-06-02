@@ -66,10 +66,12 @@ func (f *Frame) pushStore(s *Store) {
 	f.stores = append([]*Store{s}, f.stores...)
 }
 
-func (f *Frame) popStore() {
+func (f *Frame) popStore() *Store {
 	if len(f.stores) == 0 {
 		panic("no stores in the store stack")
 	}
 
+	sto := f.stores[0]
 	f.stores = f.stores[1:]
+	return sto
 }
