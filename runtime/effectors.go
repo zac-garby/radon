@@ -173,7 +173,8 @@ func init() {
 	}
 
 	Effectors[bytecode.PopScope] = func(v *VM, f *Frame, arg rune) error {
-		f.popStore()
+		sto := f.popStore()
+		v.storePool.Add(sto)
 		return nil
 	}
 
