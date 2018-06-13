@@ -18,6 +18,7 @@ type Frame struct {
 	constants     []object.Object
 	names         []string
 	jumps         []int
+	matchInputs   []object.Object
 }
 
 func (f *Frame) offsetToInstructionIndex(offset int) int {

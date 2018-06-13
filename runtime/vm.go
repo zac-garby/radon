@@ -52,14 +52,15 @@ func New() *VM {
 // store (note: declared, not assigned).
 func (v *VM) MakeFrame(code bytecode.Code, args, store *Store, constants []object.Object, names []string, jumps []int) *Frame {
 	frame := &Frame{
-		code:      code,
-		stores:    []*Store{store},
-		offset:    0,
-		stack:     NewStack(),
-		constants: constants,
-		names:     names,
-		jumps:     jumps,
-		vm:        v,
+		code:        code,
+		stores:      []*Store{store},
+		offset:      0,
+		stack:       NewStack(),
+		constants:   constants,
+		names:       names,
+		jumps:       jumps,
+		vm:          v,
+		matchInputs: make([]object.Object, 0),
 	}
 
 	if args != nil {
