@@ -38,7 +38,7 @@ func main() {
 
 		if _, err = run(string(bytes), runtime.NewStore(nil)); err != nil {
 			fmt.Print("\x1b[91m")
-			fmt.Println("error:", err)
+			fmt.Println(err)
 			fmt.Print("\x1b[0m")
 
 			os.Exit(1)
@@ -64,7 +64,7 @@ func startRepl() {
 		res, err := run(line, store)
 		if err != nil {
 			fmt.Print("\x1b[91m") // red
-			fmt.Println("  error:", err)
+			fmt.Println(" ", err)
 			fmt.Print("\x1b[0m")
 		} else if res != nil {
 			fmt.Print("\x1b[94m") // blue
