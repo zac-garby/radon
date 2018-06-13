@@ -431,48 +431,49 @@ func (c *Compiler) compileBlock(node *ast.Block) error {
 }
 
 func (c *Compiler) compileMatch(node *ast.Match) error {
-	var endJumps []int
+	c.pushScope()
+	defer c.popScope()
+
+	if err := c.CompileExpression(node.Input); err != nil {
+		return err
+	}
+
+	c.push(bytecode.StartMatch)
+
+	var wildcard ast.Expression
 
 	for _, branch := range node.Branches {
-		var (
-			branchJump int
-			wildcard   = false
-		)
-
 		if id, ok := branch.Condition.(*ast.Identifier); ok && id.Value == "_" {
-			wildcard = true
-		}
-
-		if !wildcard {
-			if err := c.CompileExpression(node.Input); err != nil {
-				return err
+			if wildcard != nil {
+				return errors.New("compiler: only one wildcard branch is permitted per match-expression")
 			}
 
-			if err := c.encloseExpression(branch.Condition); err != nil {
-				return err
-			}
-
-			c.push(bytecode.BinaryEqual, bytecode.JumpUnless, 0, 0)
-			branchJump = len(c.Bytes) - 3
+			wildcard = branch.Body
+			continue
 		}
 
-		if err := c.encloseExpression(branch.Body); err != nil {
+		if err := c.CompileExpression(branch.Condition); err != nil {
 			return err
 		}
 
-		c.push(bytecode.Jump, 0, 0)
-		endJumps = append(endJumps, len(c.Bytes)-3)
+		c.push(bytecode.StartBranch)
 
-		if !wildcard {
-			c.setJumpArg(branchJump, len(c.Bytes)-1)
+		if err := c.CompileExpression(branch.Body); err != nil {
+			return err
+		}
+
+		c.push(bytecode.EndBranch)
+	}
+
+	if wildcard == nil {
+		c.addAndLoad(&object.Nil{})
+	} else {
+		if err := c.CompileExpression(wildcard); err != nil {
+			return err
 		}
 	}
 
-	end := len(c.Bytes) - 1
-
-	for _, jmp := range endJumps {
-		c.setJumpArg(jmp, end)
-	}
+	c.push(bytecode.EndMatch)
 
 	return nil
 }
