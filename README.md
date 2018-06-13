@@ -54,3 +54,5 @@ If `$GOPATH/bin` is in your `$PATH` variable, you can start the REPL using the `
  - Currying, so calling a function with too few arguments would make a new curried function
  - Only evaluate match inputs once
  - Since lots of scopes will be created, a bunch could be made at the beginning, stored in a pool, and then used when needed
+ - Parse lists as a circumfix operator `[ ... ]` with a tuple inside
+ - Parse maps as a circumfix operator `{ ... }` with a tuple of tuples inside, making the `:` operator the same as `,`, but possibly a different precedence
