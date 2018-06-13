@@ -66,7 +66,7 @@ func startRepl() {
 			fmt.Print("\x1b[91m") // red
 			fmt.Println("  error:", err)
 			fmt.Print("\x1b[0m")
-		} else {
+		} else if res != nil {
 			fmt.Print("\x1b[94m") // blue
 			fmt.Println(" ", res)
 			fmt.Print("\x1b[0m")
