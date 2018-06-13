@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/Zac-Garby/radon/bytecode"
@@ -226,6 +227,109 @@ func init() {
 		if !object.IsTruthy(top) {
 			return Effectors[bytecode.Jump](v, f, arg)
 		}
+
+		return nil
+	}
+
+	Effectors[bytecode.StartMatch] = func(v *VM, f *Frame, arg rune) error {
+		top, err := f.stack.Pop()
+		if err != nil {
+			return err
+		}
+
+		f.matchInputs = append(f.matchInputs, top)
+
+		hasEnd := false
+
+		for i := f.offset; i < len(f.code); i++ {
+			if f.code[i].Code == bytecode.EndMatch {
+				f.breaks = append(f.breaks, i)
+				hasEnd = true
+				break
+			}
+		}
+
+		if !hasEnd {
+			return errors.New("malformed bytecode -- match expression has no END_MATCH")
+		}
+
+		return nil
+	}
+
+	Effectors[bytecode.EndMatch] = func(v *VM, f *Frame, arg rune) error {
+		if len(f.matchInputs) == 0 {
+			return errors.New("malformed bytecode -- END_MATCH found (likely) before START_MATCH")
+		}
+
+		f.matchInputs = f.matchInputs[:len(f.matchInputs)-1]
+
+		return nil
+	}
+
+	Effectors[bytecode.StartBranch] = func(v *VM, f *Frame, arg rune) error {
+		cond, err := f.stack.Pop()
+		if err != nil {
+			return err
+		}
+
+		if len(f.matchInputs) == 0 {
+			return errors.New("unexpected empty match input stack")
+		}
+
+		input := f.matchInputs[len(f.matchInputs)-1]
+
+		if !cond.Equals(input) {
+			hasEnd := false
+
+			for i := f.offset; i < len(f.code); i++ {
+				if f.code[i].Code == bytecode.EndMatch {
+					return errors.New("malformed bytecode -- END_BRANCH appears after END_MATCH")
+				}
+
+				if f.code[i].Code == bytecode.EndBranch {
+					f.offset = i + 1
+					hasEnd = true
+					break
+				}
+			}
+
+			if !hasEnd {
+				return errors.New("malformed bytecode -- match branch has no END_BRANCH")
+			}
+		}
+
+		return nil
+	}
+
+	Effectors[bytecode.EndBranch] = func(v *VM, f *Frame, arg rune) error {
+		if len(f.breaks) == 0 {
+			return errors.New("malformed bytecode -- END_BRANCH found outside match")
+		}
+
+		top := f.breaks[len(f.breaks)-1]
+		f.offset = top
+
+		return nil
+	}
+
+	Effectors[bytecode.Break] = func(v *VM, f *Frame, arg rune) error {
+		if len(f.breaks) == 0 {
+			return errors.New("break statements are only valid inside loops and matches")
+		}
+
+		top := f.breaks[len(f.breaks)-1]
+		f.offset = top
+
+		return nil
+	}
+
+	Effectors[bytecode.Next] = func(v *VM, f *Frame, arg rune) error {
+		if len(f.nexts) == 0 {
+			return errors.New("next statements are only valid inside loops")
+		}
+
+		top := f.nexts[len(f.nexts)-1]
+		f.offset = top
 
 		return nil
 	}
