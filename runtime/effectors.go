@@ -6,6 +6,7 @@ import (
 
 	"github.com/Zac-Garby/radon/bytecode"
 	"github.com/Zac-Garby/radon/object"
+	"github.com/cnf/structhash"
 )
 
 // An Effector is the function which is called for a particular instruction.
@@ -368,6 +369,36 @@ func init() {
 
 		return f.stack.Push(&object.List{
 			Value: elems,
+		})
+	}
+
+	Effectors[bytecode.MakeMap] = func(v *VM, f *Frame, arg rune) error {
+		keys := make(map[string]object.Object, arg)
+		vals := make(map[string]object.Object, arg)
+
+		for n := 0; n < int(arg); n++ {
+			val, err := f.stack.Pop()
+			if err != nil {
+				return err
+			}
+
+			key, err := f.stack.Pop()
+			if err != nil {
+				return err
+			}
+
+			hash, err := structhash.Hash(key, 1)
+			if err != nil {
+				return err
+			}
+
+			keys[hash] = key
+			vals[hash] = val
+		}
+
+		return f.stack.Push(&object.Map{
+			Keys:   keys,
+			Values: vals,
 		})
 	}
 }
