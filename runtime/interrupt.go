@@ -1,7 +1,7 @@
 package runtime
 
-// An Interrupt, when sent to the virtual machine through the Interrupts chan, stops
-// the fetch-decode-execute cycle and does something.
+// Interrupt defines the type of an interrupt which, when sent to the virtual machine through
+// the Interrupts chan, stops the fetch-decode-execute cycle and does something.
 type Interrupt int
 
 const (

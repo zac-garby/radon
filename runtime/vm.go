@@ -72,10 +72,12 @@ func (v *VM) MakeFrame(code bytecode.Code, args, store *Store, constants []objec
 	return frame
 }
 
+// PushFrame pushes a frame to the top of the call stack.
 func (v *VM) PushFrame(frame *Frame) {
 	v.frames = append(v.frames, frame)
 }
 
+// PopFrame pops the frame from the top of the call stack.
 func (v *VM) PopFrame() *Frame {
 	f := v.frames[len(v.frames)-1]
 	v.frames = v.frames[:len(v.frames)-1]

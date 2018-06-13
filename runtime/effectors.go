@@ -417,9 +417,9 @@ func equalityEffector(shouldEqual bool) Effector {
 
 		if left.Equals(right) == shouldEqual {
 			return f.stack.Push(&object.Boolean{Value: true})
-		} else {
-			return f.stack.Push(&object.Boolean{Value: false})
 		}
+
+		return f.stack.Push(&object.Boolean{Value: false})
 	}
 }
 
