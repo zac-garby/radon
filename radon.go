@@ -12,6 +12,7 @@ import (
 	"github.com/Zac-Garby/radon/bytecode"
 	"github.com/Zac-Garby/radon/compiler"
 	"github.com/Zac-Garby/radon/lexer"
+	"github.com/Zac-Garby/radon/object"
 	"github.com/Zac-Garby/radon/parser"
 	"github.com/Zac-Garby/radon/runtime"
 )
@@ -35,7 +36,7 @@ func main() {
 			os.Exit(2)
 		}
 
-		if err := run(string(bytes), runtime.NewStore(nil)); err != nil {
+		if _, err = run(string(bytes), runtime.NewStore(nil)); err != nil {
 			fmt.Print("\x1b[91m")
 			fmt.Println("error:", err)
 			fmt.Print("\x1b[0m")
@@ -60,15 +61,20 @@ func startRepl() {
 
 		line = strings.TrimSpace(line)
 
-		if err := run(line, store); err != nil {
-			fmt.Print("\x1b[91m")
-			fmt.Println("error:", err)
+		res, err := run(line, store)
+		if err != nil {
+			fmt.Print("\x1b[91m") // red
+			fmt.Println("  error:", err)
+			fmt.Print("\x1b[0m")
+		} else {
+			fmt.Print("\x1b[94m") // blue
+			fmt.Println(" ", res)
 			fmt.Print("\x1b[0m")
 		}
 	}
 }
 
-func run(code string, store *runtime.Store) error {
+func run(code string, store *runtime.Store) (object.Object, error) {
 	var (
 		l         = lexer.Lexer(code, "repl")
 		p         = parser.New(l)
@@ -76,17 +82,17 @@ func run(code string, store *runtime.Store) error {
 	)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	c := compiler.New()
 	if err := c.Compile(prog); err != nil {
-		return err
+		return nil, err
 	}
 
 	parsedCode, err := bytecode.Read(bytes.NewReader(c.Bytes))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	v := runtime.New()
@@ -101,16 +107,7 @@ func run(code string, store *runtime.Store) error {
 
 	v.PushFrame(frame)
 
-	res, err := v.Run()
-	if err != nil {
-		return err
-	}
-
-	fmt.Print("\x1b[94m")
-	fmt.Println(" ", res)
-	fmt.Println("\x1b[0m")
-
-	return nil
+	return v.Run()
 }
 
 func quit() {
