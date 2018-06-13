@@ -333,6 +333,26 @@ func init() {
 
 		return nil
 	}
+
+	Effectors[bytecode.StartLoop] = func(v *VM, f *Frame, arg rune) error {
+		f.nexts = append(f.nexts, f.offset+1)
+
+		var o int
+
+		for o = f.offset; f.code[o].Code != bytecode.EndLoop; o++ {
+		}
+
+		f.breaks = append(f.breaks, o)
+
+		return nil
+	}
+
+	Effectors[bytecode.EndLoop] = func(v *VM, f *Frame, arg rune) error {
+		f.breaks = f.breaks[:len(f.breaks)-1]
+		f.nexts = f.nexts[:len(f.nexts)-1]
+
+		return nil
+	}
 }
 
 func equalityEffector(shouldEqual bool) Effector {
