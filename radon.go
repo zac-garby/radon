@@ -107,8 +107,8 @@ func run(code string, store *runtime.Store) error {
 	}
 
 	fmt.Print("\x1b[94m")
-	fmt.Println("<", res)
-	fmt.Print("\x1b[0m")
+	fmt.Println(" ", res)
+	fmt.Println("\x1b[0m")
 
 	return nil
 }
