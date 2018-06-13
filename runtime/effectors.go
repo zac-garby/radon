@@ -353,6 +353,23 @@ func init() {
 
 		return nil
 	}
+
+	Effectors[bytecode.MakeList] = func(v *VM, f *Frame, arg rune) error {
+		elems := make([]object.Object, arg)
+
+		for n := int(arg) - 1; n >= 0; n-- {
+			top, err := f.stack.Pop()
+			if err != nil {
+				return err
+			}
+
+			elems[n] = top
+		}
+
+		return f.stack.Push(&object.List{
+			Value: elems,
+		})
+	}
 }
 
 func equalityEffector(shouldEqual bool) Effector {

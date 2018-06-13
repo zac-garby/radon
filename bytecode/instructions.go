@@ -98,9 +98,6 @@ const (
 	// MakeList pushes a list containing $0, $1, ..., $[arg]
 	MakeList
 
-	// MakeTuple pushes a tuple containing $0, $1, ..., $[arg]
-	MakeTuple
-
 	// MakeMap pushes a map from the top [arg]*2 items, in key, val order
 	MakeMap
 )
