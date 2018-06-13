@@ -1,8 +1,6 @@
 package runtime
 
 import (
-	"errors"
-
 	"github.com/Zac-Garby/radon/object"
 )
 
@@ -17,11 +15,11 @@ var (
 
 	// ErrDataStackOverflow tells the user that too many objects were pushed to
 	// the data stack.
-	ErrDataStackOverflow = errors.New("runtime: too many objects on the data stack")
+	ErrDataStackOverflow = makeError(InternalError, "too many objects on the data stack")
 
 	// ErrDataStackUnderflow tells the user that a pop was attempted but no objects
 	// were on the stack.
-	ErrDataStackUnderflow = errors.New("runtime: no objects to pop from the data stack")
+	ErrDataStackUnderflow = makeError(InternalError, "no objects to pop from the data stack")
 )
 
 // A Stack is created for each frame in the virtual machine, and stores a stack of

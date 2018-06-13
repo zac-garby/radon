@@ -1,7 +1,6 @@
 package runtime
 
 import (
-	"fmt"
 	"io"
 	"os"
 
@@ -147,7 +146,7 @@ func (v *VM) Run() (object.Object, error) {
 		// Decode
 		eff := Effectors[instr.Code]
 		if eff == nil {
-			v.err = fmt.Errorf("vm: instruction %s not yet implemented", instr.Name)
+			v.err = makeError(InternalError, "instruction %s not yet implemented", instr.Name)
 			break
 		}
 

@@ -1,9 +1,6 @@
 package runtime
 
 import (
-	"errors"
-	"fmt"
-
 	"github.com/Zac-Garby/radon/bytecode"
 	"github.com/Zac-Garby/radon/object"
 	"github.com/cnf/structhash"
@@ -26,7 +23,7 @@ func init() {
 	Effectors[bytecode.LoadName] = func(v *VM, f *Frame, arg rune) error {
 		val, ok := f.store().Get(f.names[arg])
 		if !ok {
-			return fmt.Errorf("variable %s doesn't exist in the current scope", f.names[arg])
+			return makeError(NameError, "variable %s doesn't exist in the current scope", f.names[arg])
 		}
 
 		return f.stack.Push(val.Value)
@@ -65,7 +62,7 @@ func init() {
 
 		result, ok := obj.Subscript(index)
 		if !ok {
-			return fmt.Errorf("could not subscript a %s object with index %s", obj.Type(), index.String())
+			return makeError(TypeError, "could not subscript a %s object with index %s", obj.Type(), index.String())
 		}
 
 		return f.stack.Push(result)
@@ -88,7 +85,7 @@ func init() {
 		}
 
 		if !obj.SetSubscript(index, val) {
-			return fmt.Errorf("could not set subscript %s on a %s object", index.String(), obj.Type())
+			return makeError(TypeError, "could not set subscript %s on a %s object", index.String(), obj.Type())
 		}
 
 		return nil
@@ -125,11 +122,11 @@ func init() {
 
 		fn, ok := top.(*object.Function)
 		if !ok {
-			return fmt.Errorf("cannot call non-function type %s", top.Type())
+			return makeError(TypeError, "cannot call non-function type %s", top.Type())
 		}
 
 		if int(argCount) != len(fn.Parameters) {
-			return fmt.Errorf("wrong amount of arguments passed a function. expected %d, got %d", len(fn.Parameters), argCount)
+			return makeError(ArgumentError, "wrong amount of arguments passed a function. expected %d, got %d", len(fn.Parameters), argCount)
 		}
 
 		store := NewStore(f.store())
@@ -185,7 +182,7 @@ func init() {
 
 		variable, ok := f.store().Get(name)
 		if !ok {
-			return fmt.Errorf("can't export non-existant variable %s", name)
+			return makeError(NameError, "can't export non-existant variable %s", name)
 		}
 
 		val := variable.Value
@@ -193,7 +190,7 @@ func init() {
 		enclosing := f.store().Enclosing
 
 		if enclosing == nil {
-			return fmt.Errorf("can't export variable %s from a top-level scope", name)
+			return makeError(StructureError, "can't export variable %s from a top-level scope", name)
 		}
 
 		enclosing.Set(name, val, true)
@@ -251,7 +248,7 @@ func init() {
 		}
 
 		if !hasEnd {
-			return errors.New("malformed bytecode -- match expression has no END_MATCH")
+			return makeError(InternalError, "malformed bytecode -- match expression has no END_MATCH")
 		}
 
 		return nil
@@ -259,7 +256,7 @@ func init() {
 
 	Effectors[bytecode.EndMatch] = func(v *VM, f *Frame, arg rune) error {
 		if len(f.matchInputs) == 0 {
-			return errors.New("malformed bytecode -- END_MATCH found (likely) before START_MATCH")
+			return makeError(InternalError, "malformed bytecode -- END_MATCH found (likely) before START_MATCH")
 		}
 
 		f.matchInputs = f.matchInputs[:len(f.matchInputs)-1]
@@ -274,7 +271,7 @@ func init() {
 		}
 
 		if len(f.matchInputs) == 0 {
-			return errors.New("unexpected empty match input stack")
+			return makeError(InternalError, "unexpected empty match input stack")
 		}
 
 		input := f.matchInputs[len(f.matchInputs)-1]
@@ -284,7 +281,7 @@ func init() {
 
 			for i := f.offset; i < len(f.code); i++ {
 				if f.code[i].Code == bytecode.EndMatch {
-					return errors.New("malformed bytecode -- END_BRANCH appears after END_MATCH")
+					return makeError(InternalError, "malformed bytecode -- END_BRANCH appears after END_MATCH")
 				}
 
 				if f.code[i].Code == bytecode.EndBranch {
@@ -295,7 +292,7 @@ func init() {
 			}
 
 			if !hasEnd {
-				return errors.New("malformed bytecode -- match branch has no END_BRANCH")
+				return makeError(InternalError, "malformed bytecode -- match branch has no END_BRANCH")
 			}
 		}
 
@@ -304,7 +301,7 @@ func init() {
 
 	Effectors[bytecode.EndBranch] = func(v *VM, f *Frame, arg rune) error {
 		if len(f.breaks) == 0 {
-			return errors.New("malformed bytecode -- END_BRANCH found outside match")
+			return makeError(InternalError, "malformed bytecode -- END_BRANCH found outside match")
 		}
 
 		top := f.breaks[len(f.breaks)-1]
@@ -315,7 +312,7 @@ func init() {
 
 	Effectors[bytecode.Break] = func(v *VM, f *Frame, arg rune) error {
 		if len(f.breaks) == 0 {
-			return errors.New("break statements are only valid inside loops and matches")
+			return makeError(InternalError, "break statements are only valid inside loops and matches")
 		}
 
 		top := f.breaks[len(f.breaks)-1]
@@ -326,7 +323,7 @@ func init() {
 
 	Effectors[bytecode.Next] = func(v *VM, f *Frame, arg rune) error {
 		if len(f.nexts) == 0 {
-			return errors.New("next statements are only valid inside loops")
+			return makeError(InternalError, "next statements are only valid inside loops")
 		}
 
 		top := f.nexts[len(f.nexts)-1]
@@ -432,7 +429,7 @@ func unaryEffector(op string) Effector {
 
 		result, ok := obj.Prefix(op)
 		if !ok {
-			return fmt.Errorf("could not apply prefix operator %s to %s", op, obj.String())
+			return makeError(TypeError, "could not apply prefix operator %s to %s", op, obj.String())
 		}
 
 		return f.stack.Push(result)
@@ -453,7 +450,7 @@ func binaryEffector(op string) Effector {
 
 		result, ok := left.Infix(op, right)
 		if !ok {
-			return fmt.Errorf("could not apply infix operator %s between %s and %s", op, left.String(), right.String())
+			return makeError(TypeError, "could not apply infix operator %s between %s and %s", op, left.String(), right.String())
 		}
 
 		return f.stack.Push(result)
