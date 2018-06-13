@@ -73,6 +73,20 @@ const (
 	// JumpUnless jumps to target [arg] unless $0 is truthy
 	JumpUnless
 
+	/* Matches */
+	// StartMatch begins a match block, pushing $0 to the match-value register
+	StartMatch
+
+	// EndMatch ends a match block, popping the match-value register
+	EndMatch
+
+	// StartBranch specifies the start of a match branch
+	StartBranch
+
+	// EndBranch specifies the end of a match branch
+	EndBranch
+
+	/* Loop stuff */
 	Break
 	Next
 	StartLoop
