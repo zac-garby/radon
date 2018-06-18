@@ -91,8 +91,17 @@ const (
 	Next
 	StartLoop
 	EndLoop
-	StartFor
-	EndFor
+
+	/* Iterables */
+	// PushIter converts $0 to an iterable if possible and pushes it to the iterable stack
+	PushIter
+
+	// PopIter pops the top iterable from the iterable stack, discarding it
+	PopIter
+
+	// AdvIterFor advances the top iterable on the iterable stack. If nothing left, breaks
+	// out of the loop. Designed for use in for-loops. Will also assign the top iter to [arg]
+	AdvIterFor
 
 	/* Data */
 	// MakeList pushes a list containing $0, $1, ..., $[arg]
