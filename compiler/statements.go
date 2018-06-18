@@ -57,7 +57,7 @@ func (c *Compiler) compileWhile(node *ast.While) error {
 	// Jump here for the next iteration
 	start := len(c.Bytes) - 1
 
-	if err := c.encloseExpression(node.Condition); err != nil {
+	if err := c.CompileExpression(node.Condition); err != nil {
 		return err
 	}
 
