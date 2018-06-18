@@ -341,7 +341,7 @@ func init() {
 	}
 
 	Effectors[bytecode.StartLoop] = func(v *VM, f *Frame, arg rune) error {
-		f.nexts = append(f.nexts, f.offset+1)
+		f.nexts = append(f.nexts, f.offset)
 
 		var o int
 
