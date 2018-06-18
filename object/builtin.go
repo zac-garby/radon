@@ -9,7 +9,7 @@ import (
 type Builtin struct {
 	defaults
 	Name string
-	Fn   func(args ...Object)
+	Fn   func(args ...Object) Object
 }
 
 func (b *Builtin) String() string {
