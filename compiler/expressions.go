@@ -363,7 +363,7 @@ func (c *Compiler) compileIf(node *ast.If) error {
 
 func (c *Compiler) compileList(node *ast.List) error {
 	for _, elem := range node.Value {
-		if err := c.encloseExpression(elem); err != nil {
+		if err := c.CompileExpression(elem); err != nil {
 			return err
 		}
 	}
@@ -376,11 +376,11 @@ func (c *Compiler) compileList(node *ast.List) error {
 
 func (c *Compiler) compileMap(node *ast.Map) error {
 	for key, val := range node.Value {
-		if err := c.encloseExpression(key); err != nil {
+		if err := c.CompileExpression(key); err != nil {
 			return err
 		}
 
-		if err := c.encloseExpression(val); err != nil {
+		if err := c.CompileExpression(val); err != nil {
 			return err
 		}
 	}
@@ -402,12 +402,12 @@ func (c *Compiler) compileCall(node *ast.Call) error {
 
 	// Iterate arguments in reverse order
 	for i := len(args) - 1; i >= 0; i-- {
-		if err := c.encloseExpression(args[i]); err != nil {
+		if err := c.CompileExpression(args[i]); err != nil {
 			return err
 		}
 	}
 
-	if err := c.encloseExpression(node.Function); err != nil {
+	if err := c.CompileExpression(node.Function); err != nil {
 		return err
 	}
 
