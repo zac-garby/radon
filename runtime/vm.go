@@ -20,7 +20,6 @@ type VM struct {
 	frame     *Frame
 	returnVal object.Object
 	err       error
-	halted    bool
 	storePool *StorePool
 
 	// Interrupts is a queue (in the form of a channel) which, when an interrupt is added,
@@ -39,7 +38,6 @@ func New() *VM {
 		frame:      nil,
 		returnVal:  nil,
 		err:        nil,
-		halted:     false,
 		storePool:  NewStorePool(),
 		Interrupts: make(chan Interrupt, InterruptQueueSize),
 		Out:        os.Stdout,
@@ -106,7 +104,25 @@ func (v *VM) Error() error {
 // execution, any values are left in the top frame, the top one will be returned. It will
 // also return, if any, a runtime error.
 func (v *VM) Run() (object.Object, error) {
+main:
 	for {
+		// Handle interrupts first
+		for len(v.Interrupts) > 0 {
+			interrupt := <-v.Interrupts
+
+			switch interrupt {
+			case Stop:
+				break main
+
+			case Pause:
+				for {
+					if <-v.Interrupts == Resume {
+						break
+					}
+				}
+			}
+		}
+
 		if len(v.frames) == 0 {
 			break
 		}
