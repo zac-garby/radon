@@ -19,6 +19,7 @@ type Frame struct {
 	names         []string
 	jumps         []int
 	matchInputs   []object.Object
+	iterStack     []object.Iterable
 }
 
 func (f *Frame) offsetToInstructionIndex(offset int) int {
