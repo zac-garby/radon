@@ -18,6 +18,7 @@ const (
 	MethodType   = "method"
 	BuiltinType  = "builtin"
 	ModelType    = "model"
+	IterType     = "iter"
 )
 
 // An Object is the interface which every Radon object implements.
@@ -51,6 +52,9 @@ type Object interface {
 
 	// SetSubscript implements assigning to the [] operator, e.g. list[5] = "foo"
 	SetSubscript(index Object, to Object) bool
+
+	// Iter makes an iterable from the object if possible
+	Iter() (Iterable, bool)
 }
 
 // defaults supplies default implementations so other Object types automatically
@@ -66,6 +70,7 @@ func (d *defaults) Numeric() (float64, bool)            { return -1, false }
 func (d *defaults) Items() ([]Object, bool)             { return nil, false }
 func (d *defaults) Subscript(Object) (Object, bool)     { return nil, false }
 func (d *defaults) SetSubscript(Object, Object) bool    { return false }
+func (d *defaults) Iter() (Iterable, bool)              { return nil, false }
 
 // IsTruthy checks whether or not an object is "truthy"
 func IsTruthy(o Object) bool {

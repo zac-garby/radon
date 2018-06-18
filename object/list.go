@@ -107,3 +107,11 @@ func (l *List) SetSubscript(index Object, to Object) bool {
 
 	return true
 }
+
+// Iter creates an iterable from an Object.
+func (l *List) Iter() (Iterable, bool) {
+	return &ListIterable{
+		List:  l,
+		Index: 0,
+	}, true
+}
