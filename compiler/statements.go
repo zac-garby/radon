@@ -91,6 +91,10 @@ func (c *Compiler) compileFor(node *ast.For) error {
 		return err
 	}
 
+	c.push(bytecode.PushIter, bytecode.StartLoop)
+
+	start := len(c.Bytes)
+
 	id, ok := node.Var.(*ast.Identifier)
 	if !ok {
 		return errors.New("compiler: a for-loop counter must be an identifier")
@@ -102,13 +106,20 @@ func (c *Compiler) compileFor(node *ast.For) error {
 	}
 
 	low, high := runeToBytes(rune(index))
-	c.push(bytecode.StartFor, high, low)
+	c.push(bytecode.AdvIterFor, high, low)
 
-	if err := c.encloseExpression(node.Body); err != nil {
+	if err := c.CompileExpression(node.Body); err != nil {
 		return err
 	}
 
-	c.push(bytecode.EndFor)
+	index, err = c.addJump(start)
+	if err != nil {
+		return err
+	}
+	low, high = runeToBytes(index)
+	c.push(bytecode.Jump, high, low)
+
+	c.push(bytecode.EndLoop, bytecode.PopIter)
 
 	return nil
 }
