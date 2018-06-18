@@ -67,6 +67,7 @@ func (d *defaults) Items() ([]Object, bool)             { return nil, false }
 func (d *defaults) Subscript(Object) (Object, bool)     { return nil, false }
 func (d *defaults) SetSubscript(Object, Object) bool    { return false }
 
+// IsTruthy checks whether or not an object is "truthy"
 func IsTruthy(o Object) bool {
 	return !(o.Equals(&Nil{}) ||
 		o.Equals(&Boolean{Value: false}))
