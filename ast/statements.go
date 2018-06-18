@@ -47,7 +47,7 @@ type (
 		Path string
 	}
 
-	// An Export statment exposes variable(s) to the enclosing scope.
+	// An Export statement exposes variable(s) to the enclosing scope.
 	Export struct {
 		stmt
 		Names Expression

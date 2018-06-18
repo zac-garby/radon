@@ -182,7 +182,7 @@ func init() {
 
 		variable, ok := f.store().Get(name)
 		if !ok {
-			return makeError(NameError, "can't export non-existant variable %s", name)
+			return makeError(NameError, "can't export non-existent variable %s", name)
 		}
 
 		val := variable.Value

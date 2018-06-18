@@ -95,12 +95,12 @@ func (c *Compiler) expandTuple(e *ast.Infix) []ast.Expression {
 
 		if rInf, ok := e.Right.(*ast.Infix); ok && rInf.Operator == "," {
 			return append(li, c.expandTuple(rInf)...)
-		} else {
-			return append(li, e.Right)
 		}
-	} else {
-		panic("compiler: non-tuple expression passed to expandTuple!")
+
+		return append(li, e.Right)
 	}
+
+	panic("compiler: non-tuple expression passed to expandTuple!")
 }
 
 func (c *Compiler) addJump(target int) (rune, error) {
