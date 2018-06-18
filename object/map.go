@@ -67,6 +67,28 @@ func (m *Map) Equals(o Object) bool {
 	return false
 }
 
+// Prefix applies a prefix operator to an object, returning the result. If the operation
+// cannot be performed, (nil, false) is returned.
+func (m *Map) Prefix(op string) (Object, bool) {
+	if op == "," {
+		return &Tuple{Value: []Object{m}}, true
+	}
+
+	return nil, false
+}
+
+// Infix applies a infix operator to an object, returning the result. If the operation
+// cannot be performed, (nil, false) is returned.
+func (m *Map) Infix(op string, right Object) (Object, bool) {
+	if op == "," {
+		return &Tuple{
+			Value: []Object{m, right},
+		}, true
+	}
+
+	return nil, false
+}
+
 // Items returns a slice containing all objects in an Object, or false otherwise.
 func (m *Map) Items() ([]Object, bool) {
 	var pairs []Object

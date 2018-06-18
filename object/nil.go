@@ -19,6 +19,16 @@ func (n *Nil) Equals(other Object) bool {
 	return other.Type() == NilType
 }
 
+// Prefix applies a prefix operator to an object, returning the result. If the operation
+// cannot be performed, (nil, false) is returned.
+func (n *Nil) Prefix(op string) (Object, bool) {
+	if op == "," {
+		return &Tuple{Value: []Object{n}}, true
+	}
+
+	return nil, false
+}
+
 // Infix applies a infix operator to an object, returning the result. If the operation
 // cannot be performed, (nil, false) is returned.
 func (n *Nil) Infix(op string, right Object) (Object, bool) {

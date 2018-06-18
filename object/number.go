@@ -43,6 +43,9 @@ func (n *Number) Prefix(op string) (Object, bool) {
 	case "-":
 		val = -n.Value
 
+	case ",":
+		return &Tuple{Value: []Object{n}}, true
+
 	default:
 		return nil, false
 	}

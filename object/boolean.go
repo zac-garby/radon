@@ -33,6 +33,8 @@ func (b *Boolean) Equals(other Object) bool {
 func (b *Boolean) Prefix(op string) (Object, bool) {
 	if op == "!" {
 		return &Boolean{Value: !b.Value}, true
+	} else if op == "," {
+		return &Tuple{Value: []Object{b}}, true
 	}
 	return nil, false
 }

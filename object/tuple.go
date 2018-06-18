@@ -48,6 +48,16 @@ func (t *Tuple) Equals(other Object) bool {
 	}
 }
 
+// Prefix applies a prefix operator to an object, returning the result. If the operation
+// cannot be performed, (nil, false) is returned.
+func (t *Tuple) Prefix(op string) (Object, bool) {
+	if op == "," {
+		return &Tuple{Value: []Object{t}}, true
+	}
+
+	return nil, false
+}
+
 // Infix applies a infix operator to an object, returning the result. If the operation
 // cannot be performed, (nil, false) is returned.
 func (t *Tuple) Infix(op string, right Object) (Object, bool) {
