@@ -315,6 +315,10 @@ func init() {
 			return makeError(InternalError, "break statements are only valid inside loops and matches")
 		}
 
+		// Pop the scope
+		sto := f.popStore()
+		v.storePool.Add(sto)
+
 		top := f.breaks[len(f.breaks)-1]
 		f.offset = top
 
@@ -325,6 +329,10 @@ func init() {
 		if len(f.nexts) == 0 {
 			return makeError(InternalError, "next statements are only valid inside loops")
 		}
+
+		// Pop the scope
+		sto := f.popStore()
+		v.storePool.Add(sto)
 
 		top := f.nexts[len(f.nexts)-1]
 		f.offset = top
