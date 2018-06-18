@@ -44,7 +44,7 @@ go install
 If `$GOPATH/bin` is in your `$PATH` variable, you can start the REPL using the `radon` command. Otherwise, you'll have to use the actual path to the binary: `$GOPATH/bin/radon`, although I do recommend adding `$GOPATH/bin` to `$PATH`. You also might want to `mv $GOPATH/bin/radon /usr/local/bin`.
 
 ### Some ideas
-
+ - **Do soon!** Make all types work with `,` prefix and infix operator
  - Some Haskell-style operators:
    - `|>` operator, e.g. `5 |> print`
    - `$` operator, e.g. `print $ 5 + 3`
