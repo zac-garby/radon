@@ -360,6 +360,54 @@ func init() {
 		return nil
 	}
 
+	Effectors[bytecode.PushIter] = func(v *VM, f *Frame, arg rune) error {
+		top, err := f.stack.Pop()
+		if err != nil {
+			return err
+		}
+
+		iter, ok := top.Iter()
+		if !ok {
+			return makeError(TypeError, "cannot make an iterable from a %s", top.Type())
+		}
+
+		f.iterStack = append(f.iterStack, iter)
+
+		return nil
+	}
+
+	Effectors[bytecode.PopIter] = func(v *VM, f *Frame, arg rune) error {
+		if len(f.iterStack) == 0 {
+			return makeError(InternalError, "no iters to pop from the iter stack")
+		}
+
+		f.iterStack = f.iterStack[:len(f.iterStack)-1]
+
+		return nil
+	}
+
+	Effectors[bytecode.AdvIterFor] = func(v *VM, f *Frame, arg rune) error {
+		if len(f.iterStack) == 0 {
+			return makeError(InternalError, "no iters to advance from the iter stack")
+		}
+
+		iter := f.iterStack[len(f.iterStack)-1]
+
+		val, ok := iter.Next()
+		if !ok {
+			return Effectors[bytecode.Break](v, f, arg)
+		}
+
+		name, ok := f.getName(arg)
+		if !ok {
+			return makeError(InternalError, "cannot get name: %d", arg)
+		}
+
+		f.store().Set(name, val, true)
+
+		return nil
+	}
+
 	Effectors[bytecode.MakeList] = func(v *VM, f *Frame, arg rune) error {
 		elems := make([]object.Object, arg)
 
