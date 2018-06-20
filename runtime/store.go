@@ -18,10 +18,16 @@ type Store struct {
 
 // NewStore creates a new empty store with the given enclosing scope (can be nil).
 func NewStore(enclosing *Store) *Store {
-	return &Store{
+	s := &Store{
 		Data:      make(map[string]*Variable),
 		Enclosing: enclosing,
 	}
+
+	for k, v := range object.Builtins {
+		s.Set(k, v, true)
+	}
+
+	return s
 }
 
 // Get gets a variable from the store. If it isn't found, it checks the enclosing scope,
