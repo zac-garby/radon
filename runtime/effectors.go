@@ -120,6 +120,31 @@ func init() {
 			return err
 		}
 
+		builtin, ok := top.(*object.Builtin)
+		if ok {
+			args := make([]object.Object, 0, argCount)
+
+			for i := 0; i < int(argCount); i++ {
+				arg, err := f.stack.Pop()
+				if err != nil {
+					return err
+				}
+
+				args = append(args, arg)
+			}
+
+			result, errorType, errorMessage := builtin.Fn(args...)
+			if err != nil {
+				return err
+			}
+
+			if errorType != "" {
+				return makeError(ErrorType(errorType), errorMessage)
+			}
+
+			return f.stack.Push(result)
+		}
+
 		fn, ok := top.(*object.Function)
 		if !ok {
 			return makeError(TypeError, "cannot call non-function type %s", top.Type())
