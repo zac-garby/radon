@@ -9,11 +9,16 @@ import (
 type Builtin struct {
 	defaults
 	Name string
-	Fn   func(args ...Object) Object
+	Fn   func(args ...Object) (result Object, errorType string, errorMessage string)
 }
 
 func (b *Builtin) String() string {
 	return fmt.Sprintf("<builtin %s>", b.Name)
+}
+
+// Type returns the type of an Object.
+func (b *Builtin) Type() Type {
+	return BuiltinType
 }
 
 // Equals checks if two builtins are equal to each-other. Two builtins are equal
