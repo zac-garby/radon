@@ -79,7 +79,7 @@ func (c *Compiler) compileWhile(node *ast.While) error {
 	c.push(bytecode.Jump, high, low)
 
 	// If the condition ism't met, jump to the end of the loop
-	c.setJumpArg(skipJump, len(c.Bytes))
+	c.setJumpArg(skipJump, len(c.Bytes)+1)
 
 	c.push(bytecode.EndLoop)
 
