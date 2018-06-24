@@ -1,6 +1,7 @@
 package compiler
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/Zac-Garby/radon/ast"
@@ -99,6 +100,36 @@ func (c *Compiler) expandTuple(e *ast.Infix) []ast.Expression {
 	}
 
 	panic("compiler: non-tuple expression passed to expandTuple!")
+}
+
+func (c *Compiler) getParameterList(arg ast.Expression) ([]string, error) {
+	params := make([]string, 0)
+
+	switch a := arg.(type) {
+	case *ast.Identifier:
+		params = append(params, a.Value)
+
+	case *ast.Infix:
+		if a.Operator != "," {
+			return nil, errors.New("compiler: function parameters must be identifiers")
+		}
+
+		expanded := c.expandTuple(a)
+
+		for _, param := range expanded {
+			sub, err := c.getParameterList(param)
+			if err != nil {
+				return nil, err
+			}
+
+			params = append(params, sub...)
+		}
+
+	default:
+		return nil, errors.New("compiler: function parameters must be identifiers")
+	}
+
+	return params, nil
 }
 
 func (c *Compiler) addJump(target int) (rune, error) {
