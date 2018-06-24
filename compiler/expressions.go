@@ -227,20 +227,12 @@ func (c *Compiler) compileAssignToIndex(obj, idx, val ast.Expression, t string) 
 func (c *Compiler) compileAssignToFunction(function *ast.Call, body ast.Expression, t string) error {
 	fn := &object.Function{}
 
-	// Set function parameters
-	if argTuple, ok := function.Argument.(*ast.Infix); ok && argTuple.Operator == "," {
-		for _, arg := range c.expandTuple(argTuple) {
-			if id, ok := arg.(*ast.Identifier); ok {
-				fn.Parameters = append(fn.Parameters, id.Value)
-			} else {
-				return errors.New("compiler: function parameters must be identifiers -- pattern matching is not supported (yet?)")
-			}
-		}
-	} else if arg, ok := function.Argument.(*ast.Identifier); ok {
-		fn.Parameters = append(fn.Parameters, arg.Value)
-	} else {
-		return errors.New("compiler: function parameters must be identifiers -- pattern matching is not supported (yet?)")
+	params, err := c.getParameterList(function.Argument)
+	if err != nil {
+		return err
 	}
+
+	fn.Parameters = params
 
 	// Compile the function body in a new Compiler instance
 	subCompiler := New()
