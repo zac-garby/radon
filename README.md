@@ -65,6 +65,7 @@ go install
 If `$GOPATH/bin` is in your `$PATH` variable, you can start the REPL using the `radon` command. Otherwise, you'll have to use the actual path to the binary: `$GOPATH/bin/radon`, although I do recommend adding `$GOPATH/bin` to `$PATH`. You also might want to `mv $GOPATH/bin/radon /usr/local/bin`.
 
 ### TODO, or Some ideas
+ - **List/tuple index operator!**
  - Some Haskell-style operators:
    - `|>` operator, e.g. `5 |> print`
    - `$` operator, e.g. `print $ 5 + 3`
@@ -76,4 +77,3 @@ If `$GOPATH/bin` is in your `$PATH` variable, you can start the REPL using the `
  - Parse lists as a circumfix operator `[ ... ]` with a tuple inside
  - Parse maps as a circumfix operator `{ ... }` with a tuple of tuples inside, making the `:` operator the same as `,`, but possibly a different precedence
  - Max call-stack size
- - Builtins!
