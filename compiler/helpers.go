@@ -91,13 +91,11 @@ func (c *Compiler) push(bytes ...byte) {
 
 func (c *Compiler) expandTuple(e *ast.Infix) []ast.Expression {
 	if e.Operator == "," {
-		li := []ast.Expression{e.Left}
-
-		if rInf, ok := e.Right.(*ast.Infix); ok && rInf.Operator == "," {
-			return append(li, c.expandTuple(rInf)...)
+		if lInf, ok := e.Left.(*ast.Infix); ok && lInf.Operator == "," {
+			return append(c.expandTuple(lInf), e.Right)
 		}
 
-		return append(li, e.Right)
+		return []ast.Expression{e.Left, e.Right}
 	}
 
 	panic("compiler: non-tuple expression passed to expandTuple!")
