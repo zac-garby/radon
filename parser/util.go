@@ -62,6 +62,7 @@ var precedences = map[token.Type]int{
 	token.Comma:          join,
 }
 
+// argTokens is the set of tokens which can appear as the first token to a function call
 var argTokens = []token.Type{
 	token.Number,
 	token.String,
