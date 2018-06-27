@@ -147,7 +147,7 @@ func init() {
 
 		fn, ok := top.(*object.Function)
 		if !ok {
-			return makeError(TypeError, "cannot call non-function type %s", top.Type())
+			return makeError(TypeError, "cannot call an object of type %s", top.Type())
 		}
 
 		if int(argCount) != len(fn.Parameters) {
