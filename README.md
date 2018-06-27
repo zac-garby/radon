@@ -78,3 +78,4 @@ If `$GOPATH/bin` is in your `$PATH` variable, you can start the REPL using the `
  - Parse maps as a circumfix operator `{ ... }` with a tuple of tuples inside, making the `:` operator the same as `,`, but possibly a different precedence
  - Max call-stack size
  - For some reason `a = 1; while a < 10 do print a; a = a + 1 end` fails on the condition of the second iteration, fix this
+ - Garbage collection
