@@ -74,37 +74,3 @@ func (t *Tuple) Infix(op string, right Object) (Object, bool) {
 func (t *Tuple) Items() ([]Object, bool) {
 	return t.Value, true
 }
-
-// Subscript subscrips an Object, e.g. foo[bar], or returns false if it can't be
-// done.
-func (t *Tuple) Subscript(index Object) (Object, bool) {
-	num, ok := index.(*Number)
-	if !ok {
-		return nil, false
-	}
-
-	i := int(num.Value)
-	if i < 0 || i >= len(t.Value) {
-		return nil, false
-	}
-
-	return t.Value[i], true
-}
-
-// SetSubscript sets the value of a subscript of an Object, e.g. foo[bar] = baz.
-// Returns false if it can't be done.
-func (t *Tuple) SetSubscript(index Object, to Object) bool {
-	num, ok := index.(*Number)
-	if !ok {
-		return false
-	}
-
-	i := int(num.Value)
-	if i < 0 || i >= len(t.Value) {
-		return false
-	}
-
-	t.Value[i] = to
-
-	return true
-}
