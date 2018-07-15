@@ -1,6 +1,8 @@
 package runtime
 
 import (
+	"math"
+
 	"github.com/Zac-Garby/radon/bytecode"
 	"github.com/Zac-Garby/radon/object"
 	"github.com/cnf/structhash"
@@ -145,45 +147,13 @@ func init() {
 			return f.stack.Push(result)
 		}
 
-		fn, ok := top.(*object.Function)
-		if !ok {
+		if fn, ok := top.(*object.Function); ok {
+			return callFunction(v, f, fn, argCount)
+		} else if items, ok := top.Items(); ok {
+			return indexCollection(v, f, items, argCount)
+		} else {
 			return makeError(TypeError, "cannot call an object of type %s", top.Type())
 		}
-
-		if int(argCount) != len(fn.Parameters) {
-			return makeError(ArgumentError, "wrong amount of arguments passed a function. expected %d, got %d", len(fn.Parameters), argCount)
-		}
-
-		store := NewStore(f.store())
-
-		for _, param := range fn.Parameters {
-			arg, err := f.stack.Pop()
-			if err != nil {
-				return err
-			}
-
-			store.Set(param, arg, true)
-		}
-
-		if fn.Self != nil {
-			store.Set("self", fn.Self, true)
-		}
-
-		frame := &Frame{
-			prev:      f,
-			code:      fn.Code,
-			offset:    0,
-			vm:        v,
-			stores:    []*Store{store},
-			stack:     NewStack(),
-			constants: fn.Constants,
-			names:     fn.Names,
-			jumps:     fn.Jumps,
-		}
-
-		f.vm.PushFrame(frame)
-
-		return nil
 	}
 
 	Effectors[bytecode.Return] = func(v *VM, f *Frame, arg rune) error {
@@ -536,4 +506,73 @@ func binaryEffector(op string) Effector {
 
 		return f.stack.Push(result)
 	}
+}
+
+func callFunction(v *VM, f *Frame, fn *object.Function, argCount rune) error {
+	if int(argCount) != len(fn.Parameters) {
+		return makeError(ArgumentError, "wrong amount of arguments passed to a function. expected %d, got %d", len(fn.Parameters), argCount)
+	}
+
+	store := NewStore(f.store())
+
+	for _, param := range fn.Parameters {
+		arg, err := f.stack.Pop()
+		if err != nil {
+			return err
+		}
+
+		store.Set(param, arg, true)
+	}
+
+	if fn.Self != nil {
+		store.Set("self", fn.Self, true)
+	}
+
+	frame := &Frame{
+		prev:      f,
+		code:      fn.Code,
+		offset:    0,
+		vm:        v,
+		stores:    []*Store{store},
+		stack:     NewStack(),
+		constants: fn.Constants,
+		names:     fn.Names,
+		jumps:     fn.Jumps,
+	}
+
+	f.vm.PushFrame(frame)
+
+	return nil
+}
+
+func indexCollection(v *VM, f *Frame, items []object.Object, argCount rune) error {
+	if argCount != 1 {
+		return makeError(ArgumentError, "a list can only be called with one argument")
+	}
+
+	arg, err := f.stack.Pop()
+	if err != nil {
+		return err
+	}
+
+	var indexObj object.Object
+
+	if argItems, ok := arg.Items(); ok && len(argItems) == 1 {
+		indexObj = argItems[0]
+	} else {
+		indexObj = arg
+	}
+
+	idx, ok := indexObj.(*object.Number)
+	if !ok {
+		return makeError(ArgumentError, "a list can only be called with a number or a length-1 list/tuple containing a number")
+	}
+
+	index := int(math.Floor(idx.Value))
+
+	if index < 0 || index >= len(items) {
+		return makeError(IndexError, "%d is out of bounds", index)
+	}
+
+	return f.stack.Push(items[index])
 }

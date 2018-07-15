@@ -27,6 +27,9 @@ const (
 
 	// StructureError is used for a structure error, such as a break outside a loop.
 	StructureError = "Structure"
+
+	// IndexError is used when an invalid index/key is used.
+	IndexError = "Index"
 )
 
 // An Error represents any type of runtime error (not just RuntimeError), and implements
