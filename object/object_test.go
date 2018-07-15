@@ -269,15 +269,9 @@ func TestSubscript(t *testing.T) {
 		in, index, out Object
 		ok             bool
 	}{
-		{l(n(1), n(2), n(3)), n(1), n(2), true},
-		{tu(n(1), n(2), n(3)), n(1), n(2), true},
 		{m(n(1), n(2), n(3), n(4)), n(1), n(2), true},
 		{m(n(1), n(2), n(3), n(4)), n(3), n(4), true},
 
-		{l(n(1), n(2), n(3)), n(3), n(2), false},
-		{l(n(1), n(2), n(3)), n(-1), n(2), false},
-		{tu(n(1), n(2), n(3)), n(3), n(2), false},
-		{tu(n(1), n(2), n(3)), n(-1), n(2), false},
 		{m(n(1), n(2), n(3), n(4)), n(4), n(2), false},
 		{m(n(1), n(2), n(3), n(4)), n(2), n(4), false},
 	}

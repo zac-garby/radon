@@ -105,6 +105,20 @@ func (m *Map) Items() ([]Object, bool) {
 	return pairs, true
 }
 
+// Subscript subscrips an Object, e.g. foo[bar], or returns false if it can't be
+// done.
+func (m *Map) Subscript(key Object) (Object, bool) {
+	if hash, err := structhash.Hash(key, 1); err == nil {
+		if val, ok := m.Values[hash]; ok {
+			return val, true
+		}
+	}
+
+	// TODO: Implement model methods
+
+	return nil, false
+}
+
 // SetSubscript sets the value of a subscript of an Object, e.g. foo[bar] = baz.
 // Returns false if it can't be done.
 func (m *Map) SetSubscript(key Object, val Object) bool {
