@@ -95,3 +95,39 @@ func (s *String) Iter() (Iterable, bool) {
 		Index: 0,
 	}, true
 }
+
+// SetSubscript sets the value of a subscript of an Object, e.g. foo[bar] = baz.
+// Returns false if it can't be done.
+func (s *String) SetSubscript(index Object, to Object) bool {
+	num, ok := index.(*Number)
+	if !ok {
+		return false
+	}
+
+	i := int(num.Value)
+	if i < 0 || i >= len(s.Value) {
+		return false
+	}
+
+	toStr, ok := to.(*String)
+	if !ok {
+		return false
+	}
+
+	toRunes := []rune(toStr.Value)
+	if len(toRunes) != 1 {
+		return false
+	}
+
+	toRune := toRunes[0]
+
+	runes := []rune(s.Value)
+	if i < 0 || i >= len(runes) {
+		return false
+	}
+
+	runes[i] = toRune
+	s.Value = string(runes)
+
+	return true
+}
