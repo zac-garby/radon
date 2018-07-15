@@ -77,3 +77,4 @@ If `$GOPATH/bin` is in your `$PATH` variable, you can start the REPL using the `
  - Parse maps as a circumfix operator `{ ... }` with a tuple of tuples inside, making the `:` operator the same as `,`, but possibly a different precedence
  - Max call-stack size
  - Garbage collection
+ - Might be a good idea to store strings as rune slices
