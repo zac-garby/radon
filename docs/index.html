@@ -34,7 +34,7 @@
 	  </p>
 
 	  <p>
-		One of the main ideas in designing the syntax was to use, or at least require, as few parentheses as possible. Doing this makes a cleaner syntax, which are thus easier to read. A good example of this is with tuples &mdash; like in the last example, you can write a tuple either as <code>(1, 2, 3)</code> or the exactly equivalent <code>1, 2, 3</code>. Of course, it may sometimes be necessary to use the first, but the latter is potentially more readable in a large program. You'll also notice the lack of brackets in loops, conditionals, and other structures:
+		One of the main ideas in designing the syntax was to use, or at least require, as few parentheses as possible. Doing this makes a cleaner syntax, which is thus easier to read. A good example of this is with tuples &mdash; like in the last example, you can write a tuple either as <code>(1, 2, 3)</code> or the exactly equivalent <code>1, 2, 3</code>. Of course, it may sometimes be necessary to use the first, but the latter is potentially more readable in a large program. You'll also notice the lack of brackets in loops, conditionals, and other structures:
 	  </p>
 
 	  <pre><code><strong>for</strong> name <strong>in</strong> names <strong>do</strong>
@@ -42,7 +42,7 @@
 <strong>end</strong></code></pre>
 
 	  <p>
-		Radon comes a new kind of type system. It doesn't use classes, structs, records, or any of that. It uses <em>models</em>, which are very similar to classes in that they are "cookie-cutters", if you will, which are used to instantiate new objects. Here's an example of some models in action:
+		Radon comes with a new kind of type system. It doesn't use classes, structs, records, or any of that. It uses <em>models</em>, which are very similar to classes in that they are "cookie-cutters", if you will, which are used to instantiate new objects. Here's an example of some models in action:
 	  </p>
 
 	  <pre><code>animal = <strong>model</strong> name, species
