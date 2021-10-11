@@ -4,7 +4,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/zac-garby/radon)](https://goreportcard.com/report/github.com/zac-garby/radon)
 
-Radon is a minimalistic, dynamic, compiled scripting language which runs on a virtual machine. In this sense it's in the same category as languages such as Python or Ruby. It's in very early development, and obviously isn't ready for production code yet, but it's quite fun to mess around with and see how much it can already do.
+Radon is a minimalistic, dynamic, compiled scripting language which runs on a virtual machine. In this sense it's in the same category as languages such as Python or Ruby. It's in very early development, and obviously isn't ready for production code yet, but it's quite fun to mess around with and see how much it can already do. And no, the name doesn't have any meaning.
 
 If you come across something which should work or should be considered as part of the language, make an issue. At this stage, I'll probably accept most things. If you think you can fix it yourself, still make an issue so I don't accidentally do the same thing, but I'm very happy to accept pull requests :). A number of things have been added to the TODO/ideas list at the bottom of this file, so if you're bored and want something to work on that'd be great!
 
